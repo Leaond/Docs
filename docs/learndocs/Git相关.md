@@ -1,6 +1,6 @@
 这里记录一下git的使用和相关规范
 
-These are common Git commands used in various situations:
+<!-- These are common Git commands used in various situations:
 
 start a working area (see also: git help tutorial)
    clone     Clone a repository into a new directory
@@ -67,5 +67,5 @@ git commit -m 'deploy'
 # 提交到 你的项目的 gh-pages 分支
 git push -f git@你的仓库.git master:gh-pages
 
-cd -
+cd - -->
 
