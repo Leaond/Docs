@@ -32,7 +32,7 @@ hero:
       link: /learndocs/about
     - theme: alt
       text: 个人成长
-      link: /column/Growing/
+      link: /learndocs/BlDemo
 # 按钮下方的描述
 features:
   - icon: 🤹
