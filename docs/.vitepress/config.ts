@@ -37,7 +37,16 @@ export default {
       { text: "关于", link: "/Learning/about/about" },
     ],
     //   侧边导航
-    sidebar: [{ text: "我的", link: "/Tools/VScode插件" }],
+    sidebar: [
+      { 
+        text: "VScode插件", 
+        link: "/Tools/VScode插件"
+       },
+      { 
+        text: "Demo", 
+        link: "/LearnDocs/BlDemo"
+       },
+    ],
     outlineTitle: 'In hac pagina'
   },
   footer: {
