@@ -22,3 +22,13 @@ ref:父组件获取子组件实例VC,获取子组件的响应式数据以及方�
 slot: 插槽(默认插槽、具名插槽、作用域插槽)实现父子组件通信
 # Vue3组件之间的通信
 props、自定义事件、事件总线、v-model、useattrs、ref、$parent、provide-inject、pinia、slot插槽
+
+
+CSR会造成的问题：
+SEO
+
+各种社群平台的 link preview
+
+Performance
+
+使用者体验
