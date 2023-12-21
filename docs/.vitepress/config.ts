@@ -46,6 +46,10 @@ export default {
         text: "Demo", 
         link: "/LearnDocs/BlDemo"
        },
+      { 
+        text: "CSS", 
+        link: "/LearnDocs/css"
+       },
     ],
     outlineTitle: 'In hac pagina'
   },
