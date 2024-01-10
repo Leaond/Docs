@@ -50,6 +50,10 @@ export default {
         text: "CSS", 
         link: "/LearnDocs/css"
        },
+      { 
+        text: "GSAP", 
+        link: "/LearnDocs/GSAP"
+       },
     ],
     outlineTitle: 'In hac pagina'
   },
