@@ -1,3 +1,19 @@
+# CSS
+## :is :has :where的使用
+  ### :is
+   :is允许在is后面的规则中包含多个选择器
+```css
+
+```
+### :where
+  :where和:is都允许传入选择器或者匹配规则来简化css代码，但是where的优先级是最低的
+```css
+```
+ ### :has
+  :has可以根据后代元素来匹配父级元素
+```css
+```
+## nth-of-type和nth-of-child的使用
 ```css
 .class.nth-of-type(i){
 
