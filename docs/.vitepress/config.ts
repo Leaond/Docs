@@ -52,7 +52,7 @@ export default {
        },
       { 
         text: "GSAP", 
-        link: "/LearnDocs/GSAP"
+        link: "/LearnDocs/gsap/GSAP"
        },
     ],
     outlineTitle: 'In hac pagina'

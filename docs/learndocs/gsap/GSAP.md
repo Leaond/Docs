@@ -1,3 +1,11 @@
+<script setup>
+import tweenDemo from './gsap-demos/tweenDemo.vue'
+import SvgTweenDemo from './gsap-demos/svgTweenDemo.vue'
+import EaseCompareDemo from './gsap-demos/easeCompareDemo.vue'
+import StaggerDemo1 from './gsap-demos/staggerDemo1.vue'
+import TimeLineDemo1 from './gsap-demos/timeLineDemo1.vue'
+</script>
+
 # GSAP
 
 ## 介绍
@@ -28,16 +36,95 @@
 :::
 
 ## Tween 补间
+
 补间就是一种动画，可以把它想象成一个高性能的属性设置器。只要输入目标（要进行动画处理的对象）、持续时间以及希望其进行动画的任何属性，当补间进入执行时机，目标就会自动的根据设置的补间完成相应的动画。
 
 ### 补间的 4 种类型
 
 - `gsap.to()`，补间将从元素的当前状态开始，并对补间中定义的值进行动画处理。这是最常见的补间类型。
+
+```js
+// circle从当前位置向右移动40px，填充色同时变为blue
+gsap.to(".circle", { x: 40, fill: "blue" });
+```
+
 - `gsap.from()`，他对补间中定义的值进行“自”动画处理，并在元素的当前状态结束。
+
+```js
+// circle从当前位置，向左移动40px，填充色同时变为blue
+gsap.from(".circle", { x: -40, fill: "blue" });
+```
+
 - `gsap.fromTo()`，同时定义补间的起始值和结束值。
+
+```js
+// circle从-40px的位置向右移动到40px的位置
+gsap.fromTo(".circle", { x: -40, fill: "blue" }, { x: 40, fill: "green" });
+```
+
 - `gsap.set()`，立即执行补间，也就是没有动画。它的本质是 0 执行时间.to()方法。
 
-### target 目标
+```js
+// circle立即向右移动40px，无补间动画
+gsap.set(".circle", { x: 40, fill: "blue" });
+```
+
+![语法](/docs/LearnDocs/gsap/images/tween-diagram.png')
+
+一个简单的例子：
+
+```vue
+<template>
+  <div class="contain">
+    <button @click="startGsap">播放</button>
+    <div class="box"></div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import gsap from "gsap";
+const startGsap = () => {
+  gsap.to(".box", {
+    x: "+200",
+    background: "blue",
+    rotation: 360,
+  });
+};
+</script>
+<style scoped lang="scss">
+body {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  margin: 0;
+  overflow: hidden;
+}
+
+.contain {
+  position: relative;
+
+  button {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+  }
+
+  .box {
+    display: block;
+    width: 75px;
+    height: 75px;
+    background: #28a92b;
+    border-radius: 12px;
+  }
+}
+</style>
+```
+
+<tweenDemo />
+
+### target 动画对象
+
 GSAP 使用 document.querySelectorAll() ，因此对于 HTML 或 SVG 目标，我们可以使用选择器文本，例如 ".class" 和 "#id" 。或者你可以传入一个变量，甚至一个数组。
 所有的补间动画我们都需要告诉 gsap 动画的目标是什么，也就是 target 参数。这里的 target 可以传入一个选择器、变量、数组等
 
@@ -59,7 +146,7 @@ let circle = document.querySelector(".circle");
 gsap.to([square, circle], { x: 200 });
 ```
 
-### The variables 变量
+### variables 配置变量
 
 vars 变量包含了动画的所有相关信息，这些属性可以是定义动画的相关属性和动画的行为属性。
 GSAP 几乎可以制作任何动画，没有预先确定的列表。这包括 CSS 属性、自定义对象属性，甚至 CSS 变量和复杂字符串！最常见的动画属性是变换和不透明度。
@@ -114,9 +201,30 @@ GSAP 机会可以处理任何的 css 属性，但是在书写的时候需要把 
 尽管 GSAP 几乎可以对每个 CSS 属性进行动画处理，但我们建议尽可能坚持使用转换和不透明度。filter 和 boxShadow 等属性对于浏览器呈现来说会占用大量 CPU 资源。谨慎制作动画，并确保在低端设备上进行测试。
 :::
 
+### SVG 属性
+
+同样的，SVG 元素也可以使用变换速记进行动画处理。还可以使用 attr 对象对 SVG 属性（如 `width`、`height`、`fill`、 `stroke`、`cx`、`opacity` 甚至 `SVG viewBox` 本身）进行动画处理。
+
+```js
+gsap.to(".svgBox", {
+  duration: 2,
+  x: 100, // use transform shorthand (this is now using SVG units not px, the SVG viewBox is 100 units wide)
+  xPercent: -100,
+  // or target SVG attributes
+  attr: {
+    fill: "#8d3dae",
+    rx: 50,
+  },
+});
+```
+
+<SvgTweenDemo />
+
 ## Easing 补间效果
 
 补间效果是整个变换中最重要的部分，我们只需要设置简单的属性就可以实现个性有活力的动画。
+
+下面的这个示例就可以充分的展示使用 ease 效果和不使用 ease 之间的效果差异。当 ease 是 none 的时候，补间动画是匀速执行的；而添加了 ease 效果的时候，补间动画就可以增加可玩性了。
 
 ```js
 // 下面的两个示例，一个是加了ease动画一个没有加ease
@@ -125,9 +233,11 @@ gsap.to(".green", { rotation: 360, duration: 2, ease: "none" });
 gsap.to(".purple", { rotation: 360, duration: 2, ease: "bounce.out" });
 ```
 
+<EaseCompareDemo/>
+
 ### ease 参数
 
-ease可以让动画更加的流畅和灵动，增加一些动画的过渡效果。ease有3中类型`in`、`out`、`inOut`。
+ease 可以让动画更加的流畅和灵动，增加一些动画的过渡效果。ease 有 3 中类型`in`、`out`、`inOut`。
 
 ```js
 ease: "power1.in";
@@ -140,21 +250,24 @@ ease: "power1.inOut";
 // start slow and end slow, like a car accelerating and decelerating
 ```
 
-更多的 ease 设置参考 [官方文档](https://gsap.com/resources/getting-started/Easing)
+gsap 官方提供了众多的 ease 属性值。更多的 ease 设置参考 [官方文档](https://gsap.com/resources/getting-started/Easing)
 
 ### Staggers 交错
 
 staggers 的效果简单来说：如果补间有多个目标，则可以轻松地在每个动画开始之间添加一些延迟。
 
-[GSAP 例子](https://codepen.io/GreenSock/pen/LYdzaoz)
-
 ```js
 gsap.to(".box", {
-  y: 100,
-  stagger: 0.1, // 0.1 seconds between when each ".box" element starts animating
+  duration: 1,
+  opacity: 0,
+  y: -100,
+  stagger: 0.5, //0.5 seconds between when each ".box" element starts animating
+  ease: "back.in",
 });
-// 值 stagger: 0.1 将导致每个补间的开始时间之间有 0.1 秒。负值将执行相同的操作，但向后执行，以便最后一个元素首先开始。
+// 值 stagger: 0.5 将导致每个补间的开始时间之间有 0.1 秒间隙。负值将执行相同的操作，但向后执行，以便最后一个元素首先开始。
 ```
+
+<StaggerDemo1 />
 
 所有的补间都识别一个 stagger 属性，stagger 可以是数字、对象、函数。
 高级配置
@@ -176,63 +289,75 @@ gsap.to(".box", {
 ## TimeLine 时间轴
 
 `时间轴是一种强大的排序工具，可以充当补间和其他时间轴的容器`.他可将动画及时放置在任何我们想要的位置，然后使用 gsap 提供的 `pause()、play()、progress()、reverse()、timeScale()`等方法轻松控制整个动画序列。
+如果不使用时间轴，我们想要动画依次执行的话，就只能在补间添加 delay 属性来延迟执行动画：
+
+```js
+// WITHOUT Timelines (only using tweens with delays):
+gsap.to("#id", { x: 100, duration: 1 });
+gsap.to("#id", { y: 50, duration: 1, delay: 1 }); //wait 1 second
+gsap.to("#id", { opacity: 0, duration: 1, delay: 2 }); //wait 2 seconds
+```
+
+如果你想把第一个动画做得更长怎么办？此后，您需要调整每个延迟。如果您想即时 pause() 播放整个序列或它或 restart() reverse() 它或重复两次怎么办？这可能会变得非常混乱，但 GSAP 的时间表使它变得非常简单：
+
+```js
+//WITH Timelines (cleaner, more versatile)
+var tl = gsap.timeline({repeat: 2, repeatDelay: 1});
+tl.to("#id", {x: 100, duration: 1});
+tl.to("#id", {y: 50, duration: 1});
+tl.to("#id", {opacity: 0, duration: 1});
+
+// then we can control the whole thing easily...
+tl.pause();
+tl.resume();
+tl.seek(1.5);
+tl.reverse();
+...
+```
+
 我们可以根据需要创建任意数量的时间轴,甚至可以嵌套它们，这对于模块化动画代码非常有用！每个动画（补间动画和时间轴）都会放置在父时间轴（默认为 globalTimeline）上。移动时间轴的播放头会通过其子级向下级联，以便播放头保持对齐。时间轴纯粹是关于对事物进行分组和协调时间/播放头 - 它实际上从未在目标上设置属性（补间处理）。
 :::info
 时间轴是创建易于调整、有弹性的动画序列的关键。当我们将补间添加到时间线时，默认情况下，它们将按照添加顺序一个接一个地播放
 :::
 
-### 语法
-
-```js
-
-```
-
 使用可选的参数可以准确定义动画在时间轴中的放置位置。数字表示绝对时间（以秒为单位），带有 "+=" 或 "-=" 前缀的字符串表示相对于时间线 end(结束)的偏移量。例如， "+=2" 将在结束后 2 秒，从而产生 2 秒的间隔。 "-=2" 将产生 2 秒的重叠。
-
-### 时间轴的参数
-
-最常用的参数如下：
-
-1. 从时间轴开始测量的绝对时间，以秒为单位。
+例如：
 
 ```js
-// 1.从时间轴开始测量绝对时间的1s开始， 简单理解为1s之后触发
-t.to(".green", { x: 600, duration: 2 }, 1);
+let tl = gsap.timeline();
+
+tl.to(".blue1", {
+  rotation: 360,
+});
+tl.to(
+  ".purple3",
+  {
+    rotation: 360,
+  },
+  "+=2"
+);
 ```
 
-2. gap 间隔
+<TimeLineDemo1 />
 
+### 在时间轴中定位动画
+默认情况下，动画会添加到时间轴的末尾，以便它们一个接一个地排序，但是我们可以使用`position`参数来精确控制动画的放置位置。它通常位于`vars`参数之后，它使用具有以下选项的灵活语法：
+
+1. `绝对时间`：从时间线开始测量的绝对时间（以秒为单位），以数字形式表示。
 ```js
-// 2.在时间线结束后1s插入，简单理解为，上个动画结束后1s我开始
-t.to(".blue", { y: 200, duration: 2 }, "+=1");
-//  1 second after the end of the timeline (usually the previously inserted animation)
-tl.to(".class", { x: 100 }, "+=1");
-// beyond the end of the timeline by 50% of the inserting animation's total duration
-tl.to(".class", { x: 100 }, "+=50%");
+tl.to(".class", { x: 100 }, 3);
 ```
-
-3. An Overlap 重叠
-
+2. `标签`：以一个标签作为参考，当该标签执行完之后开始执行，如果标签不存在，则将添加到时间线的末尾。
 ```js
-//  1 second after the end of the timeline (usually the previously inserted animation)
-tl.to(".class", { x: 100 }, "+=1");
-// beyond the end of the timeline by 50% of the inserting animation's total duration
-tl.to(".class", { x: 100 }, "+=50%");
+tl.to(".class", { x: 100 }, "someLabel");
 ```
+3. `运算符`：这里可以理解为通过`<`、`>`、`+`、`-`、`=`这几种运算符的组合来控制动画的执行时机。
+    - `<`：
+    - 333
+    - 34
+4. `百分比`
 
-```js
-// 首先创建一个时间轴，然后我们就可以使用to(), from(), or fromTo()这些方法来添加补间，实现动画效果
-let t = gsap.timeline();
 
-// 在上一个动画的开始处插入，简单理解为，上个动画开始，我也开始
-t.to(".purple", { x: 600, duration: 2 }, "<");
-// 在上一个动画的开始处插入，简单理解为，上个动画结束，我就开始
-t.to(".purple", { x: 600, duration: 2 }, ">");
-
-// 在时间线结束后1s插入，简单理解为，上个动画结束前的1s我开始
-t.to(".blue", { y: 200, duration: 2 }, "-=1");
-//
-```
 
 :::tip
 如果时间轴动画中用重复的属性，那么我们可以使用 defaults。添加到时间轴中 defaults 对象的任何属性都将由使用 to()、from()和 fromTo()等便捷方法创建的所有子项继承。
