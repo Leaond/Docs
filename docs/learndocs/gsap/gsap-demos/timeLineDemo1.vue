@@ -12,10 +12,11 @@ let tl = gsap.timeline();
 nextTick(() => {
     tl.to('.blue1', {
         rotation: 360,
+        duration:3,
     })
     tl.to('.purple3', {
         rotation: 360,
-    }, '+=2')
+    }, '>')
 })
 
 </script>
