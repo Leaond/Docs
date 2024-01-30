@@ -1,7 +1,7 @@
 <template>
     <div class="timeline-container">
-        <div @click="startGsap" class="box4 blue1">click me</div>
-        <div class="box4 purple3"></div>
+        <div @click="startGsap" class="box5 blue2">click me</div>
+        <div class="box5 purple4"></div>
     </div>
 </template>
 
@@ -10,13 +10,14 @@
 import gsap from 'gsap';
 let tl = gsap.timeline();
 const startGsap = () => {
-    tl.to('.blue1', {
+    tl.to('.blue2', {
         rotation: 360,
         duration: 3,
+        repeat:2,
     })
-    tl.to('.purple3', {
+    tl.to('.purple4', {
         rotation: 360,
-    }, '+=2')
+    }, '.blue2')
 }
 
 </script>
@@ -31,7 +32,7 @@ const startGsap = () => {
     overflow: hidden;
     position: relative;
 
-    .box4 {
+    .box5 {
         display: block;
         width: 75px;
         height: 75px;
@@ -42,12 +43,12 @@ const startGsap = () => {
         flex-direction: column;
     }
 
-    .blue1 {
+    .blue2 {
         background: #49d2ff;
         cursor: pointer;
     }
 
-    .purple3 {
+    .purple4 {
         background: #f582ff;
 
     }

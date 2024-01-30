@@ -1,22 +1,19 @@
 <template>
     <div class="timeline-container">
-        <div @click="startGsap" class="box4 blue1">click me</div>
-        <div class="box4 purple3"></div>
+        <div @click="startGsap" class="box6 green6">click me</div>
+        <div class="box6 purple6"></div>
+        <div class="box6 orange6"></div>
     </div>
 </template>
 
 <script setup lang="ts">
 // import { nextTick } from 'vue';
 import gsap from 'gsap';
-let tl = gsap.timeline();
+let tl = gsap.timeline({ defaults: { duration: 1 } });
 const startGsap = () => {
-    tl.to('.blue1', {
-        rotation: 360,
-        duration: 3,
-    })
-    tl.to('.purple3', {
-        rotation: 360,
-    }, '+=2')
+    tl.to(".green6", { x: 200 })
+        .to(".purple6", { x: 200, scale: 0.2 })
+        .to(".orange6", { x: 200, scale: 2, y: 20 });
 }
 
 </script>
@@ -31,7 +28,7 @@ const startGsap = () => {
     overflow: hidden;
     position: relative;
 
-    .box4 {
+    .box6 {
         display: block;
         width: 75px;
         height: 75px;
@@ -42,13 +39,18 @@ const startGsap = () => {
         flex-direction: column;
     }
 
-    .blue1 {
-        background: #49d2ff;
+    .green6 {
+        background: #28a92b;
         cursor: pointer;
     }
 
-    .purple3 {
-        background: #f582ff;
+    .purple6 {
+        background: #f100cb;
+
+    }
+
+    .orange6 {
+        background: #e77614;
 
     }
 }

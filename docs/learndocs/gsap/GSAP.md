@@ -4,6 +4,11 @@ import SvgTweenDemo from './gsap-demos/svgTweenDemo.vue'
 import EaseCompareDemo from './gsap-demos/easeCompareDemo.vue'
 import StaggerDemo1 from './gsap-demos/staggerDemo1.vue'
 import TimeLineDemo1 from './gsap-demos/timeLineDemo1.vue'
+import TimeLineDemo2 from './gsap-demos/timeLineDemo2.vue'
+import TimeLineDemo3 from './gsap-demos/timeLineDemo3.vue'
+import TimeLineDemo4 from './gsap-demos/timeLineDemo4.vue'
+import scrollTriggerDemo1 from './gsap-demos/scrollTriggerDemo1.vue'
+import scrollTriggerDemo2 from './gsap-demos/scrollTriggerDemo2.vue'
 </script>
 
 # GSAP
@@ -270,7 +275,8 @@ gsap.to(".box", {
 <StaggerDemo1 />
 
 所有的补间都识别一个 stagger 属性，stagger 可以是数字、对象、函数。
-高级配置
+
+高级配置示例：
 
 ```js
 gsap.to(".box", {
@@ -328,6 +334,7 @@ let tl = gsap.timeline();
 
 tl.to(".blue1", {
   rotation: 360,
+  duration: 3,
 });
 tl.to(
   ".purple3",
@@ -356,6 +363,38 @@ tl.to(".class", { x: 100 }, 3);
 tl.to(".class", { x: 100 }, "someLabel");
 ```
 
+例如：
+
+```vue
+<template>
+  <div class="timeline-container">
+    <div @click="startGsap" class="box5 blue2">click me</div>
+    <div class="box5 purple4"></div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import gsap from "gsap";
+let tl = gsap.timeline();
+const startGsap = () => {
+  tl.to(".blue2", {
+    rotation: 360,
+    duration: 3,
+    repeat: 2,
+  });
+  tl.to(
+    ".purple4",
+    {
+      rotation: 360,
+    },
+    ".blue2"
+  );
+};
+</script>
+```
+
+<TimeLineDemo2 />
+
 3. `运算符`：这里可以理解为通过`<`、`>`、`+`、`-`、`=`这几种运算符的组合来控制动画的执行时机。
 
    - `<`：在上一个动画开始的时候开始。可以理解为将"<"指向上一个动画开头的指针。
@@ -365,16 +404,16 @@ tl.to(".class", { x: 100 }, "someLabel");
      :::
    - `+=1`：在上一个动画结束后 1s 的时候开始执行动画。间隔 1s
    - `-=1`：在上一个动画结束前 1s 的时候开始执行动画。重叠 1s
-   - `myLabel+=2`：在myLabel动画结束后2s 的时候开始执行动画。间隔2s
-   - `<+=3`：在上一个动画开始后的3s 的时候开始执行动画。
+   - `myLabel+=2`：在 myLabel 动画结束后 2s 的时候开始执行动画。间隔 2s
+   - `<+=3`：在上一个动画开始后的 3s 的时候开始执行动画。
    - `<3`：在上一个动画结束前 3s 的时候开始执行动画。重叠 3s
    - `>-0.5`：在上一个动画结束前 0.5s 的时候开始执行动画。重叠 0.5s
 
 4. `百分比`：基于百分比的复杂字符串。紧跟在 "+=" 或 "-=" 前缀之后时，百分比基于插入的动画的总持续时间。紧跟 "<" 或 ">" 时，它基于上一个动画的总持续时间。注意：总持续时间包括 `repeat` | `yoyo`。
-    - `-=25%`：与时间线末尾重叠插入动画总持续时间的25%。
+   - `-=25%`：与时间线末尾重叠插入动画总持续时间的 25%。
 
 :::tip
-如果时间轴动画中用重复的属性，那么我们可以使用 defaults。添加到时间轴中 defaults 对象的任何属性都将由使用 to()、from()和 fromTo()等便捷方法创建的所有子项继承。
+如果时间轴动画中用重复的属性，那么我们可以使用 defaults 属性。添加到时间轴中 defaults 对象的任何属性都将由使用 to()、from()和 fromTo()等便捷方法创建的所有子项继承。
 
 ```js
 let tl = gsap.timeline({ defaults: { duration: 1 } });
@@ -385,21 +424,101 @@ tl.to(".green", { x: 200 })
   .to(".orange", { x: 200, scale: 2, y: 20 });
 ```
 
+<TimeLineDemo3 />
+
 :::
 
-:::tip
-默认的情况下，补间的动画将一个一个排序执行。
-上面的写法我们也可以使用链式调用来简化
+### Nesting 嵌套
+
+我们可以根据需要，嵌套使用时间线，将不同的时间线分别进行模块化定义，之后再添加到主时间线中，这将使我们的代码更加的容易维护，增加可读性。
+
+例如：
 
 ```js
-let tl = gsap.timeline();
-tl.to(".box1", { duration: 2, x: 100 })
-  .to(".box2", { duration: 1, y: 200 })
-  .to(".box3", { duration: 3, rotation: 360 });
-//   这个例子有3个补间动画，当box1动画执行完之后box2才会执行，相应的box3最后执行
+const intro = () => {
+  let tl = gsap.timeline();
+  tl.to(".green", {
+    rotation: 360,
+  });
+  return tl;
+};
+const middle = () => {
+  let tl = gsap.timeline();
+  tl.to(".purple", {
+    rotation: 360,
+  });
+  return tl;
+};
+const conclusion = () => {
+  let tl = gsap.timeline();
+  tl.to(".orange", {
+    rotation: 360,
+  });
+  return tl;
+};
+// stitch them together in a master timeline...
+let master = gsap.timeline();
+const startGsap = () => {
+  master
+    .add(intro())
+    .add(middle(), "+=2") //with a gap of 2 seconds
+    .add(conclusion(), "-=1"); //overlap by 1 second
+};
 ```
 
-:::
+<TimeLineDemo4/>
+
+### 其他的时间线功能
+
+- 使用 timeScale()方法加快或减慢整个时间线。我们甚至可以补间以逐渐加快或减慢动画的流畅性！
+- 使用 progress()或者 totalProgress()方法获取或设置时间线的进度（totalProgress()仅包含任何重复项）。例如，要跳到中途点，请设置 myTimeline.progress(0.5);
+- 补间 、 time() 、 totalTime() progress() 或 快进或 totalProgress() 快退时间线。您甚至可以将滑块附加到其中一个，以使用户能够在时间轴上向前或向后拖动。
+- 使用构造函数的对象添加 onComplete 、 onStart 、 onUpdate onRepeat 和/或 onReverseComplete 回调，例如 var tl = gsap.timeline({onComplete: myFunction});
+- 使用 killTweensOf(target) 杀死时间线内特定对象的补间，或获取 getTweensOf() 对象的补间，或获取 getChildren() 时间线中的所有补间和时间线。
+- 将时间线设置为重复任意次数或无限期重复。您甚至可以在每个重复周期之间设置延迟和/或使重复周期变成溜溜球，似乎每隔一个周期就会反转方向。
+- 获取 currentLabel() 或查找时间线中不同位置的标签，使用 nextLabel() 和 previousLabel().
+
+例如：
+
+```js
+//create the timeline that repeats 3 times with 1 second between each repeat and then call myFunction() when it completes
+var tl = gsap.timeline({ repeat: 3, repeatDelay: 1, onComplete: myFunction });
+
+//add a tween
+tl.to(".class", { duration: 1, x: 200, y: 100 });
+
+//add another tween 0.5 seconds after the end of the timeline (makes sequencing easy)
+tl.to("#id", { duration: 0.8, opacity: 0 }, "+=0.5");
+
+//reverse anytime
+tl.reverse();
+
+//Add a "spin" label 3-seconds into the timeline
+tl.addLabel("spin", 3);
+
+//insert a rotation tween at the "spin" label (you could also define the insertion point as the time instead of a label)
+tl.to(".class", { duration: 2, rotation: "+=360" }, "spin");
+
+//go to the "spin" label and play the timeline from there
+tl.play("spin");
+
+//nest another timeline inside your timeline...
+var nested = gsap.timeline();
+nested.to(".class2", { duration: 1, x: 200 });
+tl.add(nested, "+=3"); //add nested timeline after a 3-second gap
+```
+
+### 时间线是如何工作的？
+
+每个动画（补间和时间轴）都放置在父时间轴上。从某种意义上说，它们都有自己的播放头（这就是它的“时间”所指的，或者“totalTime”，除了它包括重复和重复延迟之外，它是相同的），当父母的播放头移动到新位置时，它也会更新孩子的播放头（除非它们被暂停）。
+
+当时间轴在特定时间渲染时，它会循环遍历其子项并说“好吧，您应该渲染，就好像您的播放头位于 \_\_\_\_”，如果该子项是有子项的时间轴，它会对它的子项执行相同的操作，就在下行。因此，播放头通常保持同步。
+
+当您取消暂停动画 （ resume() 或 play() ） 时，它基本上会拿起播放头并移动它，以便其内部播放头与父级播放头在那一刻所在的位置同步，因此播放非常流畅。也就是说，除非时间线 smoothChildTiming false 是在这种情况下，那个孩子不会移动 - 它将 startTime 保持锁定在原来的位置。
+
+所以基本上什么时候 smoothChildTiming ， true 引擎会即时重新排列内容，以确保播放头对齐，使播放感觉无缝流畅。当您 reverse() 或更改 timeScale 时也会发生同样的事情 ，等等 - 动画的 startTime 会自动移动。但有时您可能不希望这种行为 - 这是在父时间线上方便的时候 smoothChildTiming: false 。
+
+再举一个例子：假设你有一个 10 秒的补间，它正好位于根时间轴上，而你已经进入了补间 2 秒。让我们假设它从根的 0 开始，以方便操作，然后当它在 2 秒时，你这样做 tween.seek(5) 。根的播放头不受影响 - 它像往常一样继续播放，但为了让补间跳到 5 秒并适当播放，补间 startTime 被更改为 -3。这样，补间的播放头和根播放头就可以完美对齐。
 
 ### Control and Callbacks 控制和回调
 
@@ -480,19 +599,14 @@ function tlComplete() {
 
 插件为 gsap 提供了额外的功能。这允许 GSAP 核心保持相对较小的规模，并允许您仅在需要时添加功能。所有的插件都只是 JS 文件——就像核心库一样。您可以使用脚本标签、npm、yarn 甚至 tgz 文件来安装它们。
 
-### ScrollTrigger 滚动条触发器插件
+gsap 提供了众多的插件。
 
-ScrollTrigger 使任何人都可以用最少的代码创建令人瞠目结舌的基于滚动的动画。无限灵活。拖拽、固定、捕捉或只是触发任何与滚动相关的内容，即使它与动画无关。
-
-注册方式：
+### 插件的注册和使用
 
 ```js
-// npm地址给的安装注册示例
-// typical import
 import gsap from "gsap";
-
 // get other plugins:
-import ScrollTrigger from "gsap/ScrollTrigger";
+import ScrollTrigger from "gsap/all";
 import Flip from "gsap/Flip";
 import Draggable from "gsap/Draggable";
 
@@ -503,11 +617,58 @@ import { gsap, ScrollTrigger, Draggable, MotionPathPlugin } from "gsap/all";
 gsap.registerPlugin(ScrollTrigger, Draggable, Flip, MotionPathPlugin);
 ```
 
-配置对象 属性
+### `ScrollTrigger` 滚动条触发器插件
+
+ScrollTrigger 使任何人都可以用最少的代码创建令人瞠目结舌的`基于滚动的动画`,无限灵活。拖拽、固定、捕捉或只是触发任何与滚动相关的内容，即使它与动画无关。
+
+一个简单的例子：
+
+```js
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/all";
+gsap.registerPlugin(ScrollTrigger);
+gsap.to(".box", {
+  rotation: 7200,
+  x: 200,
+  scrollTrigger: {
+    scrub: true,
+    trigger: ".box",
+  },
+});
+```
+
+<scrollTriggerDemo1 />
+
+#### ScrollTrigger 特征
+
+:::tip
+
+- ScrollTrigger 可以将任何动画链接到任何特定元素，以便仅当该元素位于视口中时才播放。这样可以提高性能，并确保我们的动画真正被看到！
+- ScrollTriggers 可以在 进入|离开 定义区域时对动画执行操作(play, pause, resume, restart, reverse, complete, reset)，或将其直接链接到滚动条，使其像滚动条一样来回执行动画 (scrub: true)。
+- 可以使动画和滚动条之间的触发关系更加的柔和，这样可以让动画看起来需要一定的时间才能"追赶上"滚动条的速度，例如设置`scrub:10`。
+
+```js
+gsap.to(".box", {
+  rotation: 7200,
+  x: 200,
+  scrollTrigger: {
+    scrub: 5,
+    trigger: ".box8",
+  },
+});
+```
+这里可以对比一下`scrub:10`和上面的`scrub:true`的效果区别
+<scrollTriggerDemo2 />
+
+- ......
+  :::
+
+#### 配置对象 属性
 
 ```js
 scrollTrigger: {
-    trigger: ".container",//触发器的对象
+    trigger: ".container",//触发器的目标对象
+    endTrigger:"",//
     pin: true, // pin the trigger element while active
     start: "top top", // when the top of the trigger hits the top of the viewport
     end: "+=500", //string|number|function。 ScrollTrigger的结束位置。 end after scrolling 500px beyond the start
@@ -518,8 +679,8 @@ scrollTrigger: {
       delay: 0.2, // wait 0.2 seconds from the last scroll event before doing the snapping
       ease: "power1.inOut", // the ease of the snap animation ("power3" by default)
     },
-    animation:'',//这里的animation可以接受补间|时间轴实例，并且由ScrollTrigger来控制实例。每个ScrollTrigger只能控制一个动画。
-    markers:'',//是否显示ScrollTrigger的起始位置标记
+    animation:'',//这里的animation可以接受补 间|时间轴 动画实例，并且由ScrollTrigger来控制实例。每个ScrollTrigger只能控制一个动画。如果有需求，可以将动画包装在单个时间轴中(官方推荐),或者根据需要创建多个ScrollTrigger。
+    markers:true,//是否显示ScrollTrigger的起始位置标记
     once:true,//只触发一次，并在出发完成后自我销毁，停止监听滚动条事件，进入垃圾回收。
     horizontal:true,//boolean,默认情况下是竖直方向上的滚动，设置为true可以改为水平滚动。
     // 下面是一些回调函数
