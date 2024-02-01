@@ -4,7 +4,7 @@ export default {
   title: "Lancer", // 网站标题
   titleTemplate:'Hi，终于等到你',
   description: "Lancer.", //网站描述
-  base: "/LancerDocs/", //  部署时的路径 默认 /  可以使用二级地址 /base/
+  base: "", //  部署时的路径 默认 /  可以使用二级地址 /base/
 
   // lang: 'en-US', //语言
   // 网页头部配置，引入需要图标，css，js
