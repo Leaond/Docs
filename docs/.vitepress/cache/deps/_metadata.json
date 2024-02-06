@@ -1,74 +1,50 @@
 {
-  "hash": "13bdb608",
-  "browserHash": "c48f3250",
+  "hash": "8aaa41d5",
+  "browserHash": "03c32bc7",
   "optimized": {
     "vue": {
       "src": "../../../../node_modules/vue/dist/vue.runtime.esm-bundler.js",
       "file": "vue.js",
-      "fileHash": "68f78f6c",
+      "fileHash": "4ebf9410",
       "needsInterop": false
     },
     "vitepress > @vue/devtools-api": {
       "src": "../../../../node_modules/@vue/devtools-api/lib/esm/index.js",
       "file": "vitepress___@vue_devtools-api.js",
-      "fileHash": "f9530f9c",
+      "fileHash": "e19df3fe",
       "needsInterop": false
     },
     "vitepress > @vueuse/integrations/useFocusTrap": {
       "src": "../../../../node_modules/@vueuse/integrations/useFocusTrap.mjs",
       "file": "vitepress___@vueuse_integrations_useFocusTrap.js",
-      "fileHash": "cae9d8c7",
+      "fileHash": "acdf2f41",
       "needsInterop": false
     },
     "vitepress > mark.js/src/vanilla.js": {
       "src": "../../../../node_modules/mark.js/src/vanilla.js",
       "file": "vitepress___mark__js_src_vanilla__js.js",
-      "fileHash": "50019ae6",
+      "fileHash": "6a013dfd",
       "needsInterop": false
     },
     "vitepress > minisearch": {
       "src": "../../../../node_modules/minisearch/dist/es/index.js",
       "file": "vitepress___minisearch.js",
-      "fileHash": "eadb1b4e",
+      "fileHash": "4ed99a45",
       "needsInterop": false
     },
     "@theme/index": {
       "src": "../../../../node_modules/vitepress/dist/client/theme-default/index.js",
       "file": "@theme_index.js",
-      "fileHash": "29fbfd3e",
-      "needsInterop": false
-    },
-    "gsap": {
-      "src": "../../../../node_modules/gsap/index.js",
-      "file": "gsap.js",
-      "fileHash": "c4b9ca36",
-      "needsInterop": false
-    },
-    "gsap/ScrollTrigger": {
-      "src": "../../../../node_modules/gsap/ScrollTrigger.js",
-      "file": "gsap_ScrollTrigger.js",
-      "fileHash": "83c2707d",
-      "needsInterop": false
-    },
-    "gsap/all": {
-      "src": "../../../../node_modules/gsap/all.js",
-      "file": "gsap_all.js",
-      "fileHash": "b7befa2d",
+      "fileHash": "2760e3db",
       "needsInterop": false
     }
   },
   "chunks": {
-    "chunk-SSRT2ILZ": {
-      "file": "chunk-SSRT2ILZ.js"
-    },
     "chunk-AXKQ74MK": {
       "file": "chunk-AXKQ74MK.js"
     },
     "chunk-V634PGSD": {
       "file": "chunk-V634PGSD.js"
-    },
-    "chunk-IGDFVLBD": {
-      "file": "chunk-IGDFVLBD.js"
     }
   }
 }
