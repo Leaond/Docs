@@ -4,6 +4,7 @@ export default defineConfig({
   lang: "zh",
   title: "于晏的个人文档",
   description: "Vite & Vue powered static site generator.",
+  base:"/LancerDocs",
   themeConfig: {
     logo: "/docs/public/look.svg",
     // 导航链接
