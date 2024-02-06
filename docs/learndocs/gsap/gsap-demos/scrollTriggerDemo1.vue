@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/all';
+import ScrollTrigger from 'gsap/ScrollTrigger';
 import { nextTick } from 'vue'
 gsap.registerPlugin(ScrollTrigger)
 nextTick(() => {

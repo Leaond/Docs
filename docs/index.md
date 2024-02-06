@@ -29,7 +29,7 @@ hero:
   actions:
     - theme: brand
       text: 进入主页
-      link: /learndocs/about
+      link: /LearnDocs/gsap/GSAP
     - theme: alt
       text: 个人成长
       link: /learndocs/vue3学习

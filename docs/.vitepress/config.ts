@@ -4,7 +4,7 @@ export default {
   title: "Lancer", // 网站标题
   titleTemplate:'Hi，终于等到你',
   description: "Lancer.", //网站描述
-  base: "", //  部署时的路径 默认 /  可以使用二级地址 /base/
+  base: "/", //  部署时的路径 默认 /  可以使用二级地址 /base/
 
   // lang: 'en-US', //语言
   // 网页头部配置，引入需要图标，css，js
@@ -29,12 +29,12 @@ export default {
     },
     // 是否开启编辑链接
     editLink: {
-      pattern: 'https://github.com/vuejs/vitepress/edit/main/docs/:path'
+      pattern: 'https://github.com/Leaond/LancerDocs'
     },
     //   头部导航
     nav: [
       { text: "首页", link: "/" },
-      { text: "关于", link: "/Learning/about/about" },
+      // { text: "关于", link: "/Learning/about/about" },
     ],
     //   侧边导航
     sidebar: [

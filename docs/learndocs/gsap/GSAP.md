@@ -1,4 +1,4 @@
-<script setup>
+<!-- <script setup>
 import tweenDemo from './gsap-demos/tweenDemo.vue'
 import SvgTweenDemo from './gsap-demos/svgTweenDemo.vue'
 import EaseCompareDemo from './gsap-demos/easeCompareDemo.vue'
@@ -9,7 +9,7 @@ import TimeLineDemo3 from './gsap-demos/timeLineDemo3.vue'
 import TimeLineDemo4 from './gsap-demos/timeLineDemo4.vue'
 import scrollTriggerDemo1 from './gsap-demos/scrollTriggerDemo1.vue'
 import scrollTriggerDemo2 from './gsap-demos/scrollTriggerDemo2.vue'
-</script>
+</script> -->
 
 # GSAP
 
@@ -74,7 +74,7 @@ gsap.fromTo(".circle", { x: -40, fill: "blue" }, { x: 40, fill: "green" });
 gsap.set(".circle", { x: 40, fill: "blue" });
 ```
 
-![语法](/docs/LearnDocs/gsap/images/tween-diagram.png')
+<!-- ![语法](/docs/LearnDocs/gsap/images/tween-diagram.png') -->
 
 一个简单的例子：
 
@@ -126,7 +126,7 @@ body {
 </style>
 ```
 
-<tweenDemo />
+<!-- <tweenDemo /> -->
 
 ### target 动画对象
 
@@ -223,7 +223,7 @@ gsap.to(".svgBox", {
 });
 ```
 
-<SvgTweenDemo />
+<!-- <SvgTweenDemo /> -->
 
 ## Easing 补间效果
 
@@ -238,7 +238,7 @@ gsap.to(".green", { rotation: 360, duration: 2, ease: "none" });
 gsap.to(".purple", { rotation: 360, duration: 2, ease: "bounce.out" });
 ```
 
-<EaseCompareDemo/>
+<!-- <EaseCompareDemo/> -->
 
 ### ease 参数
 
@@ -272,7 +272,7 @@ gsap.to(".box", {
 // 值 stagger: 0.5 将导致每个补间的开始时间之间有 0.1 秒间隙。负值将执行相同的操作，但向后执行，以便最后一个元素首先开始。
 ```
 
-<StaggerDemo1 />
+<!-- <StaggerDemo1 /> -->
 
 所有的补间都识别一个 stagger 属性，stagger 可以是数字、对象、函数。
 
@@ -345,7 +345,7 @@ tl.to(
 );
 ```
 
-<TimeLineDemo1 />
+<!-- <TimeLineDemo1 /> -->
 
 ### 在时间轴中定位动画
 
@@ -393,7 +393,7 @@ const startGsap = () => {
 </script>
 ```
 
-<TimeLineDemo2 />
+<!-- <TimeLineDemo2 /> -->
 
 3. `运算符`：这里可以理解为通过`<`、`>`、`+`、`-`、`=`这几种运算符的组合来控制动画的执行时机。
 
@@ -424,7 +424,7 @@ tl.to(".green", { x: 200 })
   .to(".orange", { x: 200, scale: 2, y: 20 });
 ```
 
-<TimeLineDemo3 />
+<!-- <TimeLineDemo3 /> -->
 
 :::
 
@@ -466,7 +466,7 @@ const startGsap = () => {
 };
 ```
 
-<TimeLineDemo4/>
+<!-- <TimeLineDemo4/> -->
 
 ### 其他的时间线功能
 
@@ -637,7 +637,7 @@ gsap.to(".box", {
 });
 ```
 
-<scrollTriggerDemo1 />
+<!-- <scrollTriggerDemo1 /> -->
 
 #### ScrollTrigger 特征
 
@@ -658,7 +658,7 @@ gsap.to(".box", {
 });
 ```
 这里可以对比一下`scrub:10`和上面的`scrub:true`的效果区别
-<scrollTriggerDemo2 />
+<!-- <scrollTriggerDemo2 /> -->
 
 - ......
   :::
