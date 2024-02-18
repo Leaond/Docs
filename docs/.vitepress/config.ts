@@ -92,6 +92,7 @@ export default defineConfig({
         items: [
           { text: "AJAX", link: "/src/网络/计算机网络.md" },
           { text: "Axios", link: "/src/网络/AJAX文档.md" },
+          { text: "Promise", link: "/src/网络/Promise.md" },
         ],
       },
     ],
@@ -107,7 +108,7 @@ export default defineConfig({
     lastUpdated: {
       text: "Last Updated",
       formatOptions: {
-        dateStyle: "full",
+        dateStyle: "short",
         timeStyle: "medium",
       },
     },
