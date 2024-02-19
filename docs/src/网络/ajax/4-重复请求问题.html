@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>重复请求问题</title>
+    <style>
+        .result {
+            width: 400px;
+            height: 200px;
+            border-radius: 12px;
+            border: 1px solid blue;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <button id="btn1">点击发送请求</button>
+    </div>
+    <script>
+        let btn1 = document.getElementById('btn1')
+        let xhr = null
+        // 判断是否正在请求中
+        let isSending = false
+        // 发送请求
+        btn1.addEventListener('click', function () {
+            if(isSending) xhr.abort()//如果存在一个请求，则取消上一个请求，重新创建请求
+            xhr = new XMLHttpRequest()
+            isSending = true//正在请求中
+            xhr.open('GET', 'http://localhost:8000/delay')
+            xhr.send()
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    isSending = false//请求已经完成
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

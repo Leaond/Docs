@@ -5,6 +5,7 @@ export default defineConfig({
   title: "于晏的个人文档",
   description: "Vite & Vue powered static site generator.",
   base:"/LancerDocs",
+  // base:"/LancerDocs/docs",
   themeConfig: {
     logo: "/docs/public/look.svg",
     // 导航链接
@@ -54,7 +55,7 @@ export default defineConfig({
         text: "gsap",
         collapsed: true,
         items: [
-          { text: "概述", link: "/src/gsap/GSAP.md" },
+          { text: "概述", link: "/src/gsap/gsap.md" },
           { text: "Tween", link: "/src/gsap/tween.md" },
           { text: "Timeline", link: "/src/gsap/timeline.md" },
           { text: "Easing", link: "/src/gsap/ease.md" },
@@ -90,8 +91,8 @@ export default defineConfig({
         text: "网络",
         collapsed: true,
         items: [
-          { text: "AJAX", link: "/src/网络/计算机网络.md" },
-          { text: "Axios", link: "/src/网络/AJAX文档.md" },
+          { text: "AJAX", link: "/src/网络/AJAX.md" },
+          { text: "Axios", link: "/src/网络/Axios.md" },
           { text: "Promise", link: "/src/网络/Promise.md" },
         ],
       },

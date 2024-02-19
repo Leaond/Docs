@@ -423,6 +423,48 @@ Promise.prototype.then = function (onResolved, onRejected) {
 :::
 
 ### 实现同步任务 then 返回结果
+  下面我们来实现同步任务下Promise.then()返回结果。then方法返回一个Promise对象，这个对象的状态由then方法中参数的return的值来决定：如果返回的是一个Promise对象，那么then方法返回的状态就由then里面的这个Promise对象的状态决定；如果返回的是一个非Promise值，则then方法返回的Promise的状态就变为fullfilled，返回的结果就是这个return值。同时，当then方法中抛出错误的时候(throw Error)，then()方法返回的Promise的状态应该变为reject，返回的结果应该是抛出错误的值。
+  具体实现：
+  ```js
+  Promise.prototype.then = function (onResolved, onRejected) {
+  return new Promise((resolve, reject) => {
+    // 调用回调函数，根据PromiseState的值调用不同的回调函数
+    if (this.PromiseState === "fullfilled") {
+      try {
+        let result = onResolved(this.PromiseResult);
+        // 判断返回结果是否是promise实例
+        if (result instanceof Promise) {
+          // 是Promise实例，则结果的状态由promise实例的转改决定
+          result.then(
+            (value) => {
+              resolve(value);
+            },
+            (reason) => {
+              reject(reason);
+            }
+          );
+        } else {
+          // 非 Promise实例，则结果的状态应为 成功
+          resolve(result);
+        }
+      } catch (e) {
+        reject(e);
+      }
+    }
+    if (this.PromiseState === "rejected") {
+      onRejected(this.PromiseResult);
+    }
+    // 保存回调函数
+    if (this.PromiseState === "pending")
+      this.callbacks.push({
+        onResolved,
+        onRejected,
+      });
+  });
+};
+  ```
+
+### 实现异步任务 then 返回结果
 ### 实现 then 链式调用
 
 

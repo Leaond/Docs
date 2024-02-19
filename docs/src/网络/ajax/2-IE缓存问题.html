@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IE缓存问题</title>
+    <style>
+        .result {
+            width: 400px;
+            height: 200px;
+            border-radius: 12px;
+            border: 1px solid blue;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <button id="btn">点击发送请求</button>
+        <div class="result" id="result">
+
+        </div>
+    </div>
+    <script>
+        let btn = document.getElementById('btn')
+        let result = document.getElementById('result')
+        btn.addEventListener('click', function () {
+            let xhr = new XMLHttpRequest()
+            xhr.open('GET','http://localhost:8000/ie')
+            // 解决IE浏览器get请求缓存的问题
+            // xhr.open('GET','http://localhost:8000/ie?t='+Date.now())
+            xhr.send()
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState === 4){
+                  if(xhr.status >= 200 && xhr.status <= 300){
+                    result.innerHTML = xhr.response
+                  }
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

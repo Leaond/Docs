@@ -46,17 +46,38 @@ function Promise(excutor) {
 
 // 原型上添加then方法
 Promise.prototype.then = function (onResolved, onRejected) {
-  // 调用回调函数，根据PromiseState的值调用不同的回调函数
-  if (this.PromiseState === "fullfilled") {
-    onResolved(this.PromiseResult);
-  }
-  if (this.PromiseState === "rejected") {
-    onRejected(this.PromiseResult);
-  }
-  // 保存回调函数
-  if (this.PromiseState === "pending")
-    this.callbacks.push({
-      onResolved,
-      onRejected,
-    });
+  return new Promise((resolve, reject) => {
+    // 调用回调函数，根据PromiseState的值调用不同的回调函数
+    if (this.PromiseState === "fullfilled") {
+      try {
+        let result = onResolved(this.PromiseResult);
+        // 判断返回结果是否是promise实例
+        if (result instanceof Promise) {
+          // 是Promise实例，则结果的状态由promise实例的转改决定
+          result.then(
+            (value) => {
+              resolve(value);
+            },
+            (reason) => {
+              reject(reason);
+            }
+          );
+        } else {
+          // 非 Promise实例，则结果的状态应为 成功
+          resolve(result);
+        }
+      } catch (e) {
+        reject(e);
+      }
+    }
+    if (this.PromiseState === "rejected") {
+      onRejected(this.PromiseResult);
+    }
+    // 保存回调函数
+    if (this.PromiseState === "pending")
+      this.callbacks.push({
+        onResolved,
+        onRejected,
+      });
+  });
 };
