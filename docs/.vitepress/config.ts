@@ -1,63 +1,117 @@
-
-// import { defineConfig } from 'vitepress'
-export default {
-  title: "Lancer", // 网站标题
-  titleTemplate:'Hi，终于等到你',
-  description: "Lancer.", //网站描述
-  base: "/LancerDocs/", //  部署时的路径 默认 /  可以使用二级地址 /base/
-
-  // lang: 'en-US', //语言
-  // 网页头部配置，引入需要图标，css，js
-  head: [
-    // 改变网页的title的图标
-    ["link",{rel: "icon",href: "/look.svg",},],
-    ['meta', { name: 'theme-color', content: '#5f67ee' }],
-    ['meta', { name: 'og:type', content: 'website' }],
-    ['meta', { name: 'og:locale', content: 'en' }],
-    ['meta', { name: 'og:site_name', content: 'VitePress' }],
-  ],
-  // 主题配置
+// 站点配置
+import { defineConfig } from "vitepress";
+export default defineConfig({
+  lang: "zh",
+  title: "于晏的个人文档",
+  description: "Vite & Vue powered static site generator.",
+  base:"/LancerDocs",
+  // base:"/LancerDocs/docs",
   themeConfig: {
-    logo: '/look.svg',//网站的logo
-    siteTitle: 'Lancer',//是否显示网站的站点名字
-    repo: "vuejs/vitepress", // github 仓库地址，点击网页的右上角图标会跳转
-    // 社交链接，配置可现实github图标，点击可跳转
-    socialLinks: [{ icon: "github", link: "https://github.com" }],
-    // 是否开启全局搜索
+    logo: "/docs/public/look.svg",
+    // 导航链接
+    // nav: [
+    //   { text: '导航', link: '/guide' },
+    //   { text: '配置', link: '/config' },
+    //   { text: '更新日志', link: 'https://github.com/...' },
+    //   {
+    //     text: 'Dropdown Menu',
+    //     items: [
+    //       {
+    //         // 也可以省略标题
+    //         items: [
+    //           { text: 'Section A Item A', link: '...' },
+    //           { text: 'Section B Item B', link: '...' }
+    //         ]
+    //       }
+    //     ]
+    //   }
+    // ],
+    // 搜索
     search: {
-      provider: 'local'
+      // provider: 'algolia',
+      provider: 'local',
+      options: {
+        appId: '',
+        apiKey: '',
+        indexName: ''
+      }
     },
-    // 是否开启编辑链接
-    editLink: {
-      pattern: 'https://github.com/vuejs/vitepress/edit/main/docs/:path'
-    },
-    //   头部导航
-    nav: [
-      { text: "首页", link: "/" },
-      { text: "关于", link: "/Learning/about/about" },
+    // 社交链接
+    socialLinks: [
+      { icon: "github", link: "https://github.com/Leaond/LancerDocs" },
+      // { icon: 'twitter', link: '...' },
     ],
-    //   侧边导航
+    // 侧边栏
     sidebar: [
-      { 
-        text: "VScode插件", 
-        link: "/Tools/VScode插件"
-       },
-      { 
-        text: "Demo", 
-        link: "/LearnDocs/BlDemo"
-       },
-      { 
-        text: "CSS", 
-        link: "/LearnDocs/css"
-       },
+      {
+        text: "Guide",
+        collapsed: true,
+        items: [
+          { text: "Introduction", link: "/introduction" },
+          { text: "Getting Started", link: "/getting-started" },
+        ],
+      },
+      {
+        text: "gsap",
+        collapsed: true,
+        items: [
+          { text: "概述", link: "/src/gsap/gsap.md" },
+          { text: "Tween", link: "/src/gsap/tween.md" },
+          { text: "Timeline", link: "/src/gsap/timeline.md" },
+          { text: "Easing", link: "/src/gsap/ease.md" },
+          { text: "Plugins", link: "/src/gsap/scrolltrigger.md" },
+        ],
+      },
+      {
+        text: "css",
+        collapsed: true,
+        items: [
+          { text: "Introduction", link: "/introduction" },
+          { text: "Getting Started", link: "/getting-started" },
+        ],
+      },
+      {
+        text: "算法",
+        collapsed: true,
+        items: [
+          { text: "动态规划", link: "/introduction" },
+          { text: "双指针", link: "/getting-started" },
+        ],
+      },
+      {
+        text: "项目及文档搭建",
+        collapsed: true,
+        items: [
+          { text: "VitePress搭建", link: "/src/项目搭建/vitepress搭建记录.md" },
+          { text: "vue3项目搭建", link: "/src/项目搭建/vue3项目搭建.md" },
+          { text: "路由", link: "/src/项目搭建/路由.md" },
+        ],
+      },
+      {
+        text: "网络",
+        collapsed: true,
+        items: [
+          { text: "AJAX", link: "/src/网络/AJAX.md" },
+          { text: "Axios", link: "/src/网络/Axios.md" },
+          { text: "Promise", link: "/src/网络/Promise.md" },
+        ],
+      },
     ],
-    outlineTitle: 'In hac pagina'
+
+    // footer: {
+    //   message: 'Released under the MIT License.',
+    //   copyright: 'Copyright © 2019-present Evan You'
+    // },
+    editLink: {
+      pattern: "https://github.com/vuejs/vitepress/edit/main/docs/:path",
+      text: "Edit this page on GitHub",
+    },
+    lastUpdated: {
+      text: "Last Updated",
+      formatOptions: {
+        dateStyle: "short",
+        timeStyle: "medium",
+      },
+    },
   },
-  footer: {
-    message: 'Released under the MIT License.',
-    copyright: 'Copyright © 2021-present Evan You'
-  },
-  // lastUpdated: true//是否启用最后编辑时间，将根据github的最后提交时间生成
-  appearance: true//是否启用暗黑模式
-  
-};
+});

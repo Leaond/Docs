@@ -1,4 +1,4 @@
-这里记录一下vitepress的搭建流程和相关语法配置。[VitePress官方文档](https://vitepress.dev/)
+<!-- 这里记录一下vitepress的搭建流程和相关语法配置。[VitePress官方文档](https://vitepress.dev/)
 ## 一、起步：初始化项目
 1. 需要安装vitepress包，在终端运行：
 ::: code-group
@@ -82,4 +82,4 @@ vitepress的语法
  的格式用来放代码，这样citepress会进行识别，用代码框来进行放置；这里可以写js、css、html、vue、json等
 
  可以用-来表示一个无序列表，用数字1.来表示有序列表。需要有空格隔开
- 可以使用'[]()'来表示一个链接，前面放名字后面放地址。
+ 可以使用'[]()'来表示一个链接，前面放名字后面放地址。 -->

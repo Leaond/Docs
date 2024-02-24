@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>请求超时与网络异常</title>
+    <style>
+        .result {
+            width: 400px;
+            height: 200px;
+            border-radius: 12px;
+            border: 1px solid blue;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <button id="btn1">点击发送请求</button>
+        <button id="btn2">点击取消请求</button>
+        <div class="result" id="result">
+
+        </div>
+    </div>
+    <script>
+        let btn1 = document.getElementById('btn1')
+        let btn2 = document.getElementById('btn2')
+        let result = document.getElementById('result')
+        let xhr = null
+        // 发送请求
+        btn1.addEventListener('click', function () {
+            xhr = new XMLHttpRequest()
+            xhr.open('GET','http://localhost:8000/delay')
+            xhr.send()
+        })
+        // 取消请求
+        btn2.addEventListener('click', function () {
+            xhr.abort()
+        })
+    </script>
+</body>
+
+</html>
