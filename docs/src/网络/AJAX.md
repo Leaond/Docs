@@ -262,6 +262,37 @@ app.get("/delay", (request, response) => {
 Ajax 默认响应回来的数据(ResponseText)是文本类型，必须通过 JSON.parse()对数据进行处理，转成 JSON 对象.
 :::
 
+## jsonp发送请求
+  jsonp发送的请求，返回的数据必须是函数的执行结果或者是html标签才能被浏览器正常识别。
+
+  ```html
+  <body>
+    <div>
+        <button id="btn1">点击发送请求</button>
+        <div id="result"></div>
+    </div>
+    <script>
+        function handle(data) {
+            const result = document.getElementById("result");
+            result.innerHTML = data.name;
+        }
+    </script>
+    <script src="http://localhost:8000/jsonp-server"></script>
+</body>
+  ```
+  server.js
+  ```js
+  // jsonp服务
+app.all("/jsonp-server", (request, response) => {
+  // 设置响应
+  const data = {
+    name: "这是一个jsonp-serve返回的数据",
+  };
+  response.end(`handle(${JSON.stringify(data)})`);
+});
+  ```
+
+
 
 ## get 和 post 请求的区别
 

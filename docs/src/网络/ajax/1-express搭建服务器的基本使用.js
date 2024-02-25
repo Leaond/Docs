@@ -20,12 +20,20 @@ app.get("/delay", (request, response) => {
   response.setHeader("Access-Control-Allow-Origin", "*");
   // 设置响应
   setTimeout(() => {
-      response.send("延迟响应");
+    response.send("延迟响应");
   }, 2000);
 });
 app.post("/server", (request, response) => {
   // 设置响应
   response.send("HELLO Express");
+});
+// jsonp服务
+app.all("/jsonp-server", (request, response) => {
+  // 设置响应
+  const data = {
+    name: "这是一个jsonp-serve返回的数据",
+  };
+  response.end(`handle(${JSON.stringify(data)})`);
 });
 app.all("/", (request, response) => {
   // 设置响应

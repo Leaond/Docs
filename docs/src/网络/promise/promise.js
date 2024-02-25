@@ -46,11 +46,23 @@ function Promise(excutor) {
 
 // 原型上添加then方法
 Promise.prototype.then = function (onResolved, onRejected) {
+  let self = this;
+  // 判断回调函数参数
+  if(typeof onRejected !== 'function'){
+    onRejected = reson=>{
+      throw reason
+    }
+  }
+  if(typeof onResolved !== 'function'){
+    onResolved = v=>{
+      return v
+    }
+  }
   return new Promise((resolve, reject) => {
-    // 调用回调函数，根据PromiseState的值调用不同的回调函数
-    if (this.PromiseState === "fullfilled") {
+    // type为回调函数类型
+    function callback(type){
       try {
-        let result = onResolved(this.PromiseResult);
+        let result = type(self.PromiseResult);
         // 判断返回结果是否是promise实例
         if (result instanceof Promise) {
           // 是Promise实例，则结果的状态由promise实例的转改决定
@@ -70,14 +82,100 @@ Promise.prototype.then = function (onResolved, onRejected) {
         reject(e);
       }
     }
+    // 调用回调函数，根据PromiseState的值调用不同的回调函数
+    if (this.PromiseState === "fullfilled") {
+      callback(onResolved)
+      // try {
+      //   let result = onResolved(this.PromiseResult);
+      //   // 判断返回结果是否是promise实例
+      //   if (result instanceof Promise) {
+      //     // 是Promise实例，则结果的状态由promise实例的转改决定
+      //     result.then(
+      //       (value) => {
+      //         resolve(value);
+      //       },
+      //       (reason) => {
+      //         reject(reason);
+      //       }
+      //     );
+      //   } else {
+      //     // 非 Promise实例，则结果的状态应为 成功
+      //     resolve(result);
+      //   }
+      // } catch (e) {
+      //   reject(e);
+      // }
+    }
     if (this.PromiseState === "rejected") {
-      onRejected(this.PromiseResult);
+      callback(onRejected)
+      // try {
+      //   let result = onRejected(this.PromiseResult);
+      // if (result instanceof Promise) {
+      //   result.then(
+      //     (v) => {
+      //       resolve(v);
+      //     },
+      //     (r) => {
+      //       reject(r);
+      //     }
+      //   );
+      // } else {
+      //   resolve(result);
+      // }
+      // } catch (error) {
+      //   reject(error)
+      // }
+      
     }
     // 保存回调函数
-    if (this.PromiseState === "pending")
+    if (this.PromiseState === "pending") {
       this.callbacks.push({
-        onResolved,
-        onRejected,
+        onResolved: function () {
+          callback(onResolved)
+          // try {
+          //   let result = onResolved(self.PromiseResult);
+          //   if (result instanceof Promise) {
+          //     result.then(
+          //       (v) => {
+          //         resolve(v);
+          //       },
+          //       (r) => {
+          //         reject(r);
+          //       }
+          //     );
+          //   } else {
+          //     resolve(result);
+          //   }
+          // } catch (error) {
+          //   reject(error);
+          // }
+        },
+        onRejected: function () {
+          callback(onRejected)
+          // try {
+          //   let result = onRejected(self.PromiseResult);
+          //   if (result instanceof Promise) {
+          //     result.then(
+          //       (v) => {
+          //         resolve(v);
+          //       },
+          //       (r) => {
+          //         reject(r);
+          //       }
+          //     );
+          //   } else {
+          //     reject(result);
+          //   }
+          // } catch (error) {
+          //   reject(error);
+          // }
+        },
       });
+    }
   });
 };
+
+// 添加catch方法
+Promise.prototype.catch = function (onRejected){
+  return this.then(undefined,onRejected)
+}

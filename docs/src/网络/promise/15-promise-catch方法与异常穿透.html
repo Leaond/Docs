@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="./promise.js"></script>
-    <title>Document</title>
+    <title>promise-catch方法与异常穿透</title>
 </head>
 
 <body>
@@ -13,20 +13,18 @@
         let p1 = new Promise((resolve, reject) => {
             setTimeout(() => {
                 // resolve('OK!!!')
-            reject('Error!!')
+                reject('Error!!')
             }, 1000);
         })
-        // console.log("********",p1);
-        let res = p1.then(value => {
-            console.log("********", 111);
-            return 'oh yeah!'
-            
-        },reason =>{
-            console.warn(222)
-            // return 'oh No!'
-            throw 'throw Error!'
+        p.then(v => {
+            console.log("****111****");
+        }).then(v => {
+            console.log("****222****");
+        }).then(v => {
+            console.log("****333****");
+        }).catch(r => {
+            console.warn(r)
         })
-        console.log("****res****", res);
     </script>
 </body>
 
