@@ -95,7 +95,7 @@ promises：包含 n 个 promise 的数组。返回一个新的 promise，只有�
 promises：包含 n 个 promise 的数组。返回一个新的 promise，第一个完成的 promise 的结果状态就是最终的结果状态
 ```
 
-:::tip
+:::tip 注意
 
 1.  Promise 对象的状态改变的方式
 
@@ -198,24 +198,26 @@ promises：包含 n 个 promise 的数组。返回一个新的 promise，第一�
 
 7.  中断 Promise 链 - 当使用 Promise 的 then 链式调用时，如果想要在中间中断，不再调用后面的回调函数，可以在回调函数中返回一个 pending 状态的 promise 对象。
 
-        ```js
-        let p = new Promise((resolve, reject) => {
-            reject('error')
-            })
+```js
+let p = new Promise((resolve, reject) => {
+  reject("error");
+});
 
-        p.then(value => {
-            console.log(111);
-            //有且仅有一个方法：在前面返回一个pending状态的promise对象，这样就可以进行中断
-            return new Promise(() => {})
-        }).then(value => {
-            console.log(222);
-        }).then(value => {
-            console.log(333);
-        })
-        //这里只打印111便结束了链式调用
-        ```
+p.then((value) => {
+  console.log(111);
+  //有且仅有一个方法：在前面返回一个pending状态的promise对象，这样就可以进行中断
+  return new Promise(() => {});
+})
+  .then((value) => {
+    console.log(222);
+  })
+  .then((value) => {
+    console.log(333);
+  });
+//这里只打印111便结束了链式调用
+```
 
-    :::
+:::
 
 ## 手写 Promise 对象
 
@@ -333,7 +335,7 @@ Promise.prototype.then = function (onResolved, onRejected) {
 
 ### 支持多个 then() 回调
 
-    这里我们需要对callback的结构进行修改，将所有的then的回调函数都保存在callback中，并且在状态发生改变的时候遍历执行所有的回调。
+这里我们需要对callback的结构进行修改，将所有的then的回调函数都保存在callback中，并且在状态发生改变的时候遍历执行所有的回调。
 
 ```js
 this.callbacks = [];
@@ -658,35 +660,42 @@ Promise.prototype.then = function (onResolved, onRejected) {
 };
 ```
 
-### catch方法与异常穿透
-  原生的Promise中还有catch方法，因此我们还需要定义catch方法用来捕获异常
-  ```js
-  // 添加catch方法
-Promise.prototype.catch = function (onRejected){
-  return this.then(undefined,onRejected)
-}
+### catch 方法与异常穿透
 
-  ```
-  原生的then方法中的两个参数是可以不传的，所以我们还需要再我们自己的then 方法中去判断是否有参数:如果有就执行后面的代码；如果没有参数，那么我们就需要定义默认的相关的参数，保证程序能正常的执行。
-  ```js
-  Promise.prototype.then = function (onResolved, onRejected) {
+原生的 Promise 中还有 catch 方法，因此我们还需要定义 catch 方法用来捕获异常
+
+```js
+// 添加catch方法
+Promise.prototype.catch = function (onRejected) {
+  return this.then(undefined, onRejected);
+};
+```
+
+原生的 then 方法中的两个参数是可以不传的，所以我们还需要再我们自己的 then 方法中去判断是否有参数:如果有就执行后面的代码；如果没有参数，那么我们就需要定义默认的相关的参数，保证程序能正常的执行。
+
+```js
+Promise.prototype.then = function (onResolved, onRejected) {
   let self = this;
   // 判断回调函数参数
-  if(typeof onRejected !== 'function'){
-    onRejected = reson=>{
-      throw reason
-    }
+  if (typeof onRejected !== "function") {
+    onRejected = (reson) => {
+      throw reason;
+    };
   }
-  if(typeof onResolved !== 'function'){
-    onResolved = v=>{
-      return v
-    }
+  if (typeof onResolved !== "function") {
+    onResolved = (v) => {
+      return v;
+    };
   }
-  }
-  ```
+};
+```
 
-## Promise的API的封装
-### Promise.resolve()
-### ### Promise.reject()
-### Promise.all()
-### Promise.race()
+### Promise 的 API 的封装
+
+#### Promise.resolve()
+
+#### Promise.reject()
+
+#### Promise.all()
+
+#### Promise.race()

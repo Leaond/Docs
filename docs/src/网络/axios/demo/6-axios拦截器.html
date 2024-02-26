@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/1.5.0/axios.min.js"></script>
+    <link rel="stylesheet" href="./axios.css">
+    <title>Axios拦截器</title>
+</head>
+
+<body>
+    <h2>基本使用</h2>
+    <div class="container">
+        <button class="btn1">测试拦截器</button>
+    </div>
+    <script>
+        let btns = document.querySelectorAll('button')
+        btns[0].onclick = function () {
+            // 请求拦截器
+            axios.interceptors.request.use(function (config) {
+                console.log("❥❥❥❥", 111);
+                return config
+            })
+            axios.interceptors.request.use(function (config) {
+                console.log("❥❥❥❥", 222);
+                return config
+            })
+            axios.interceptors.request.use(function (config) {
+                console.log("❥❥❥❥", 333);
+                return config
+            })
+            //    响应拦截器
+            axios.interceptors.response.use(function (response) {
+                console.log("❥❥❥❥", 444);
+                return response
+            })
+            axios.interceptors.response.use(function (response) {
+                console.log("❥❥❥❥", 555);
+                return response
+            })
+            axios.interceptors.response.use(function (response) {
+                console.log("❥❥❥❥", 666);
+                return response
+            })
+            axios.request({
+                method: 'get',
+                url: 'http://localhost:3000/posts',
+            }).then(res => {
+                console.log("❥❥❥❥", res);
+            })
+        }
+    </script>
+</body>
+
+</html>

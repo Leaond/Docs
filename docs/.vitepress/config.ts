@@ -96,6 +96,14 @@ export default defineConfig({
           { text: "Promise", link: "/src/网络/Promise.md" },
         ],
       },
+      {
+        text: "手搓",
+        collapsed: true,
+        items: [
+          { text: "手搓axios", link: "/src/网络/AJAX.md" },
+          { text: "手搓Promise", link: "/src/网络/Promise.md" },
+        ],
+      },
     ],
 
     // footer: {

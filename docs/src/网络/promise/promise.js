@@ -179,3 +179,12 @@ Promise.prototype.then = function (onResolved, onRejected) {
 Promise.prototype.catch = function (onRejected){
   return this.then(undefined,onRejected)
 }
+
+// 添加resolve方法
+Promise.resolve = function (data){
+  return new Promise(v=>{
+    resolve.then(()=>{
+      resolve(data)
+    })
+  })
+}

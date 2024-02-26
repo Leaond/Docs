@@ -164,13 +164,13 @@ const instance = axios.create({
 
 ```js
 {
-  // `data` is the response that was provided by the server
+  // data是服务器提供的响应数据
   data: {},
 
-  // `status` is the HTTP status code from the server response
+  // status是服务器响应的http状态码
   status: 200,
 
-  // `statusText` is the HTTP status message from the server response
+  // status是服务器响应的http状态文本
   statusText: 'OK',
 
   // `headers` the HTTP headers that the server responded with
@@ -178,7 +178,7 @@ const instance = axios.create({
   // Example: `response.headers['content-type']`
   headers: {},
 
-  // `config` is the config that was provided to `axios` for the request
+  // `config`是对axios的request的配置
   config: {},
 
   // `request` is the request that generated this response
@@ -492,10 +492,17 @@ instance.get("/longRequest", {
 
 ## 拦截器 Interceptors
 
-拦截器允许我们在发送请求之前和接收响应之后对请求进行拦截。拦截器的本质就是函数：请求拦截器函数和响应拦截器函数。
+拦截器允许我们在发送请求之前和接收响应之后对请求进行拦截。拦截器的本质就是函数：`请求拦截器`和`响应拦截器`。
 
 ```js
-// 请求拦截器
+axios.interceptors = {
+  request,
+  response,
+};
+```
+
+```js
+// 请求拦截器：请求拦截器会在发送请求之前执行，可以用于修改请求的配置或添加一些公共的请求头
 axios.interceptors.request.use(
   function (config) {
     // 可以在发送请求之前进行相关的配置
@@ -507,7 +514,7 @@ axios.interceptors.request.use(
   }
 );
 
-// 响应拦截器
+// 响应拦截器：响应拦截器会在接收响应后执行，可以用于对响应进行处理或者错误处理
 axios.interceptors.response.use(
   function (response) {
     // 任何位于2xx范围内的状态代码都会触发此函数
@@ -524,6 +531,38 @@ axios.interceptors.response.use(
 
 :::tip 多个拦截器的执行顺序
 
+请求拦截器是逆序执行的，响应拦截器是顺序执行的。
+
+```js
+// 请求拦截器
+axios.interceptors.request.use(function (config) {
+  console.log("❥❥❥❥", 111);
+  return config;
+});
+axios.interceptors.request.use(function (config) {
+  console.log("❥❥❥❥", 222);
+  return config;
+});
+axios.interceptors.request.use(function (config) {
+  console.log("❥❥❥❥", 333);
+  return config;
+});
+//    响应拦截器
+axios.interceptors.response.use(function (response) {
+  console.log("❥❥❥❥", 444);
+  return response;
+});
+axios.interceptors.response.use(function (response) {
+  console.log("❥❥❥❥", 555);
+  return response;
+});
+axios.interceptors.response.use(function (response) {
+  console.log("❥❥❥❥", 666);
+  return response;
+});
+```
+
+上面的打印结果是：333,222,111,444,555,666
 :::
 
 ## 错误类型 Error Types
@@ -531,33 +570,34 @@ axios.interceptors.response.use(
 常见的错误类型结构
 | 属性 | 定义 |
 | :--------------------------: | :---------------------------------: |
-| message | transform:translateX(100px) |
-| name | transform:translateY(100px) |
-| stack | transform:translateX(50%) |
-| config | transform:translateY(50%) |
-| code | transform:scale(2) |
-| status | transform:scaleX(2) |
+| message | 错误消息以及失败状态的摘要 |
+| name | 错误的来源，对于 axios 来说他始终是"AxiosError" |
+| stack | 提供错误的堆栈跟踪 |
+| config | 一个 axios 配置对象 |
+| code | 表示 axios 的错误码 |
+| status | HTTP 响应状态码 |
+
+更多关于 http 状态码的含义[参考](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
 
 常见的错误类别
 | 属性 | 定义 |
 | :--------------------------: | :---------------------------------: |
 | ERR_BAD_OPTION_VALUE | axios 配置对象有非法或者不支持的值 |
 | ERR_BAD_OPTION | axios 配置对象中有非法属性 |
-| ECONNABORTED | transform:translateX(50%) |
-| ECONNABORTED | transform:translateY(50%) |
-| ETIMEDOUT | transform:scale(2) |
-| ERR_NETWORK | transform:scaleX(2) |
-| ERR_FR_TOO_MANY_REDIRECTS | transform:scaleY(2) |
-| ERR_DEPRECATED | transform:rotate(90deg) |
-| ERR_BAD_RESPONSE | Using Radians - no CSS alternative |
-| ERR_BAD_REQUEST | transform:skew(30deg) |
-| ERR_CANCELED | transform:skewX(30deg) |
-| ERR_NOT_SUPPORT | transform:skewY(30deg) |
-| ERR_INVALID_URL | transform-origin:center 40% |
+| ECONNABORTED | 超出了 axios 配置中的超时，请求超时 |
+| ETIMEDOUT | 超出了 axios 默认时间限制，请求超时 |
+| ERR_NETWORK | 网络出现问题 |
+| ERR_FR_TOO_MANY_REDIRECTS | 请求重定向过多，超过了 aixos 的配置最大的数目 |
+| ERR_DEPRECATED | axios 已经废弃的功能或者方法 |
+| ERR_BAD_RESPONSE | 无法正确解析响应结果或者响应中有意外的格式 |
+| ERR_BAD_REQUEST | request 参数中有意外的格式或缺少必要的参数 |
+| ERR_CANCELED | 功能或方法由用户显示取消 |
+| ERR_NOT_SUPPORT | 当前环境中的 axios 不支持的方法或功能 |
+| ERR_INVALID_URL | 为 axios 提供无效的 url |
 
 ## axios 取消请求
 
-axios提供了两种方式取消请求：AbortController(v0.22.0以上支持)和CancelToken(v0.22.0之后已经废弃)。
+axios 提供了两种方式取消请求：AbortController(v0.22.0 以上支持)和 CancelToken(v0.22.0 之后已经废弃)。
 
 ### AbortController
 
