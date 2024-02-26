@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/1.5.0/axios.min.js"></script>
+    <title>Axios</title>
+</head>
+
+<body>
+    <div class="container">
+        <h2>基本使用</h2>
+        <button>GET请求</button>
+        <button>Put请求</button>
+        <button>POST请求</button>
+        <button>DELETE请求</button>
+    </div>
+    <script>
+        let btns = document.querySelectorAll('button')
+        btns[0].onclick = function () {
+            axios({
+                method: 'GET',
+                url: 'http://localhost:3000/posts',
+            }).then(res => {
+                console.log("********", res);
+            })
+        }
+
+    </script>
+</body>
+
+</html>
