@@ -1,34 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
-    <title>Axios</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/1.5.0/axios.min.js"></script>
+    <link rel="stylesheet" href="./axios.css">
+    <title>Axios API的使用</title>
 </head>
+
 <body>
+    <h2>基本使用</h2>
     <div class="container">
-        <h2>基本使用</h2>
-        <button>GET请求</button>
-        <button>Put请求</button>
-        <button>POST请求</button>
-        <button>DELETE请求</button>
+        <button class="btn1">axios.request发送请求</button>
+        <button class="btn2">axios.post发送请求</button>
+        <!-- <button class="btn3">POST请求</button>
+        <button class="btn4">DELETE请求</button> -->
     </div>
     <script>
-        let btns = document.querySelector(button)
-        btns[0].add('onclick',()=>{
+        let btns = document.querySelectorAll('button')
+        btns[0].onclick = function () {
             axios.request({
-                
+                method:'post',
+                url:'http://localhost:3000/posts',
+                data:{
+                    title:'测试',
+                    views:100,
+                }
             })
-            axios.get({
-
-            })
-            axios.post({
-
-            })
-
-        })
+        }
+        btns[1].onclick = function () {
+           axios.post('http://localhost:3000/posts',{
+            title:'测试axios.post()',
+                    views:100,
+           },{
+            // 这里是配置对象
+           })
+        }
 
     </script>
 </body>
+
 </html>

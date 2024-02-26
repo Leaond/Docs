@@ -5,16 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.bootcdn.net/ajax/libs/axios/1.5.0/axios.min.js"></script>
-    <title>Axios</title>
+    <link rel="stylesheet" href="./axios.css">
+    <title>Axios的基本使用</title>
 </head>
 
 <body>
+    <h2>基本使用</h2>
     <div class="container">
-        <h2>基本使用</h2>
-        <button>GET请求</button>
-        <button>Put请求</button>
-        <button>POST请求</button>
-        <button>DELETE请求</button>
+        <button class="btn1">GET请求</button>
+        <button class="btn2">Put请求</button>
+        <button class="btn3">POST请求</button>
+        <button class="btn4">DELETE请求</button>
     </div>
     <script>
         let btns = document.querySelectorAll('button')
@@ -23,7 +24,38 @@
                 method: 'GET',
                 url: 'http://localhost:3000/posts',
             }).then(res => {
-                console.log("********", res);
+                console.log("(˶ᵔ ᵕ ᵔ˶) =====>",res);
+            })
+        }
+        btns[1].onclick = function () {
+            axios({
+                method: 'PUT',
+                url: 'http://localhost:3000/posts',
+                data:{
+                    id:1
+                }
+            }).then(res => {
+                console.log("(˶ᵔ ᵕ ᵔ˶) =====>",res);
+            })
+        }
+        btns[2].onclick = function () {
+            axios({
+                method: 'POST',
+                url: 'http://localhost:3000/posts',
+                data:{
+                    title:'测试1',
+                    views:100,
+                }
+            }).then(res => {
+                console.log("(˶ᵔ ᵕ ᵔ˶) =====>",res);
+            })
+        }
+        btns[3].onclick = function () {
+            axios({
+                method: 'DELETE',
+                url: 'http://localhost:3000/posts:1',
+            }).then(res => {
+                console.log("(˶ᵔ ᵕ ᵔ˶) =====>",res);
             })
         }
 
