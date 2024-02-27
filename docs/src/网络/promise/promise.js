@@ -16,9 +16,12 @@ function Promise(excutor) {
     self.PromiseResult = data;
     //
     if (self.callbacks.length > 0) {
-      self.callbacks.forEach((item) => {
+      setTimeout(() => {
+        self.callbacks.forEach((item) => {
         item.onResolved(data);
       });
+      });
+      
     }
   }
   // reject函数
@@ -30,9 +33,12 @@ function Promise(excutor) {
     self.PromiseResult = data;
 
     if (self.callbacks.length > 0) {
-      self.callbacks.forEach((item) => {
+      setTimeout(() => {
+        self.callbacks.forEach((item) => {
         item.onRejected(data);
       });
+      });
+      
     }
   }
   //   捕获异常，改变promise状态
@@ -48,20 +54,20 @@ function Promise(excutor) {
 Promise.prototype.then = function (onResolved, onRejected) {
   let self = this;
   // 判断回调函数参数
-  if(typeof onRejected !== 'function'){
-    onRejected = reson=>{
-      throw reason
-    }
+  if (typeof onRejected !== "function") {
+    onRejected = (reson) => {
+      throw reason;
+    };
   }
-  if(typeof onResolved !== 'function'){
-    onResolved = v=>{
-      return v
-    }
+  if (typeof onResolved !== "function") {
+    onResolved = (v) => {
+      return v;
+    };
   }
   return new Promise((resolve, reject) => {
     // type为回调函数类型
-    function callback(type){
-      try {
+    function callback(type) {
+         try {
         let result = type(self.PromiseResult);
         // 判断返回结果是否是promise实例
         if (result instanceof Promise) {
@@ -81,57 +87,63 @@ Promise.prototype.then = function (onResolved, onRejected) {
       } catch (e) {
         reject(e);
       }
+     
     }
     // 调用回调函数，根据PromiseState的值调用不同的回调函数
     if (this.PromiseState === "fullfilled") {
-      callback(onResolved)
-      // try {
-      //   let result = onResolved(this.PromiseResult);
-      //   // 判断返回结果是否是promise实例
-      //   if (result instanceof Promise) {
-      //     // 是Promise实例，则结果的状态由promise实例的转改决定
-      //     result.then(
-      //       (value) => {
-      //         resolve(value);
-      //       },
-      //       (reason) => {
-      //         reject(reason);
-      //       }
-      //     );
-      //   } else {
-      //     // 非 Promise实例，则结果的状态应为 成功
-      //     resolve(result);
-      //   }
-      // } catch (e) {
-      //   reject(e);
-      // }
+      setTimeout(() => {
+        
+        callback(onResolved);
+        // try {
+        //   let result = onResolved(this.PromiseResult);
+        //   // 判断返回结果是否是promise实例
+        //   if (result instanceof Promise) {
+        //     // 是Promise实例，则结果的状态由promise实例的转改决定
+        //     result.then(
+        //       (value) => {
+        //         resolve(value);
+        //       },
+        //       (reason) => {
+        //         reject(reason);
+        //       }
+        //     );
+        //   } else {
+        //     // 非 Promise实例，则结果的状态应为 成功
+        //     resolve(result);
+        //   }
+        // } catch (e) {
+        //   reject(e);
+        // }
+      });
     }
     if (this.PromiseState === "rejected") {
-      callback(onRejected)
-      // try {
-      //   let result = onRejected(this.PromiseResult);
-      // if (result instanceof Promise) {
-      //   result.then(
-      //     (v) => {
-      //       resolve(v);
-      //     },
-      //     (r) => {
-      //       reject(r);
-      //     }
-      //   );
-      // } else {
-      //   resolve(result);
-      // }
-      // } catch (error) {
-      //   reject(error)
-      // }
-      
+      setTimeout(() => {
+        
+        callback(onRejected);
+        // try {
+        //   let result = onRejected(this.PromiseResult);
+        // if (result instanceof Promise) {
+        //   result.then(
+        //     (v) => {
+        //       resolve(v);
+        //     },
+        //     (r) => {
+        //       reject(r);
+        //     }
+        //   );
+        // } else {
+        //   resolve(result);
+        // }
+        // } catch (error) {
+        //   reject(error)
+        // }
+      });
     }
     // 保存回调函数
     if (this.PromiseState === "pending") {
       this.callbacks.push({
         onResolved: function () {
-          callback(onResolved)
+          callback(onResolved);
           // try {
           //   let result = onResolved(self.PromiseResult);
           //   if (result instanceof Promise) {
@@ -151,7 +163,7 @@ Promise.prototype.then = function (onResolved, onRejected) {
           // }
         },
         onRejected: function () {
-          callback(onRejected)
+          callback(onRejected);
           // try {
           //   let result = onRejected(self.PromiseResult);
           //   if (result instanceof Promise) {
@@ -176,15 +188,62 @@ Promise.prototype.then = function (onResolved, onRejected) {
 };
 
 // 添加catch方法
-Promise.prototype.catch = function (onRejected){
-  return this.then(undefined,onRejected)
-}
+Promise.prototype.catch = function (onRejected) {
+  return this.then(undefined, onRejected);
+};
 
 // 添加resolve方法
-Promise.resolve = function (data){
-  return new Promise(v=>{
-    resolve.then(()=>{
-      resolve(data)
-    })
-  })
-}
+Promise.resolve = function (value) {
+  return new Promise((resolve, reject) => {
+    resolve(value);
+  });
+};
+
+// 添加reject方法
+Promise.reject = function (reason) {
+  return new Promise((resolve, reject) => {
+    reject(reason);
+  });
+};
+
+// 添加all方法
+Promise.all = function (promises) {
+  return new Promise((resolve, reject) => {
+    let count = 0;
+    let array = [];
+    // 遍历所有的promise
+    for (let i = 0; i < promises.length; i++) {
+      promises[i].then(
+        (v) => {
+          count++;
+          // array.push(v);//使用push不能保证顺序一致
+          // 采用下标的方式赋值
+          array[i] = v;
+          if (count == promises.length) {
+            resolve(array);
+          }
+        },
+        (r) => {
+          reject(r);
+        }
+      );
+    }
+  });
+};
+
+// 添加race方法
+Promise.race = function (promises) {
+  return new Promise((resolve, reject) => {
+    // 遍历所有的promise
+    for (let i = 0; i < promises.length; i++) {
+      promises[i].then(
+        (v) => {
+          resolve(v);
+        },
+        (r) => {
+          reject(r);
+        }
+      );
+    }
+  });
+};

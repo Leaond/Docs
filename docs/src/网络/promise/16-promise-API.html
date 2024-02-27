@@ -1,16 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Promise-API</title>
 </head>
+
 <body>
     <script src="./promise.js"></script>
     <script>
-        let p = Promise.resolve('ok11')
-        console.log("❥❥❥❥",p);
+        let p1 = Promise.resolve('ok')
+        let p2 = Promise.resolve(new Promise(resolve => {
+            resolve('okk')
+        }, reject => {
+
+        }))
+        let p3 = Promise.reject('Error')
+        let p4 = Promise.reject(new Promise(resolve => {
+
+        }, reject => {
+            reject('Error')
+        }))
+        console.log("❥❥❥❥", p1);
+        console.log("❥❥❥❥", p2);
+        console.log("❥❥❥❥", p3);
+        console.log("❥❥❥❥", p4);
     </script>
-    
+
 </body>
+
 </html>

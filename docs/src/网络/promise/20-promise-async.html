@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>async</title>
+</head>
+<body>
+    <script>
+        // 和then里面的回调返回规则是一样的
+        async function main(){
+            // 1.返回值是一个非promise类型的数据
+            return 222
+            // 2.返回值是一个promise对象
+            return new Promise(())
+        }
+        let rest = main()
+        console.log("********",rest);
+    </script>
+</body>
+</html>

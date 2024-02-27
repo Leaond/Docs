@@ -699,3 +699,5 @@ Promise.prototype.then = function (onResolved, onRejected) {
 #### Promise.all()
 
 #### Promise.race()
+#### 回调函数异步执行
+### class版本

@@ -1,0 +1,4 @@
+await右侧的表达式一般为promise对象，但也可是其他的值
+如果表达式是promise对象，await返回的是promise成功的值
+如果表达式是其他的值，直接将此值作为await的返回值
+如果waait后面的await失败了，那么就会抛出错误，可以用trycatch进行捕获

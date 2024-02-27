@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promise-all</title>
+</head>
+
+<body>
+    <script src="./promise.js"></script>
+    <script>
+        let p1 = Promise.resolve('ok1')
+        let p2 = Promise.resolve('ok2')
+        let p3 = Promise.resolve('ok3')
+        // 测试一个异步
+        let p4 = Promise.resolve('ok4')
+        // 测试一个失败
+      let rest =  Promise.all([p1,p2,p3])
+      console.log("********",rest);
+    </script>
+
+</body>
+
+</html>

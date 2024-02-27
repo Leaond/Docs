@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promise-回调函数异步执行</title>
+</head>
+
+<body>
+    <!-- <script src="./promise.js"></script> -->
+    <script>
+        // 原生promise的顺序是111,333,222
+        let p1 = Promise.resolve(new Promise((resolve,reject)=>{
+            resolve('success')
+            console.log("********",111);
+        }))
+        // then后面的回调函数是异步执行的
+        p1.then(v=>{
+            console.log("********",222);
+        })
+        console.log("********",333);
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>async-await发送ajax请求</title>
+</head>
+
+<body>
+    <div>
+        <h1></h1>
+        <button id="btn">发送请求</button>
+    </div>
+    <script>
+       /**
+        * 封账一个函数sendAJAX发送get请求
+        * 参数 URL
+        * 返回一个Promise对象
+       */
+        function sendAJAX(URL) {
+            return new Promise((resolve, reject) => {
+                // 1.创建对象
+                const xhr = new XMLHttpRequest()
+                // 2.初始化
+                xhr.open('GET', URL)
+                // 3.发送
+                xhr.send()
+                // 4.处理响应结果
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4) {
+                        console.log("****xhr.status****", xhr.status);
+                        // 判断响应状态码
+                        if (xhr.status >= 200 && xhr.status <= 300) {
+                            resolve(xhr.response)
+                        } else {
+                            reject(xhr.status)
+                        }
+                    }
+                }
+            })
+        }
+        const btn = document.getElementById('btn')
+        btn.addEventListener('click',async function () {
+            try {
+                let rest = await sendAJAX('https://api.apiopen.top/api/sentences')
+                console.log("********",rest);
+            } catch (error) {
+                console.log("********",error);
+            }
+           
+        })
+    </script>
+</body>
+
+</html>
