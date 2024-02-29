@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/1.5.0/axios.min.js"></script>
+    <link rel="stylesheet" href="./axios.css">
+    <title>Axios取消请求</title>
+</head>
+
+<body>
+    <h2>基本使用</h2>
+    <div class="container">
+        <button class="btn1">发送</button>
+        <button class="btn2">取消</button>
+    </div>
+    <script>
+        let btns = document.querySelectorAll('button')
+        const controller = new AbortController()
+        axios.interceptors.request.use(function(config){
+            console.log("请求拦截器=====>>> ",config);
+            return config
+        },function(e){
+            console.warn("请求拦截器=====>>> ",e);
+        })
+        axios.interceptors.response.use(function(config){
+            console.log("响应拦截器=====>>> ",config);
+        },function(e){
+            console.warn("响应拦截器=====>>> ",e);
+        })
+        btns[0].onclick = function () {
+            axios({
+                method: 'GET',
+                url: 'http://localhost:3000/posts',
+                signal: controller.signal,
+            }).then(res => {
+               
+                console.log("=====>>> ",res);
+            }).catch(e=>{
+                console.warn("=====>>> ",e);
+            })
+            
+        }
+        btns[1].onclick = function () {
+            console.log("=====>>> ",111);
+            controller.abort()
+            
+        }
+
+    </script>
+</body>
+
+</html>

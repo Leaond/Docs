@@ -1,5 +1,7 @@
 # Axios
 
+Axios 是一个基于 promise 的 HTTP 库，可以用在浏览器和 node.js 中。
+
 ## Axios 的特点
 
 - 可以在浏览器中发送 XMLHttpRequest 请求
@@ -13,7 +15,7 @@
 
 ## 搭建服务器： json-server
 
-json-server 是 github 上一个开源的服务端的 库，按照官方教程只需要简单的 3 步即可搭建一个服务器，后面我们将使用这个服务器作为我们 axios 请求的服务器。
+json-server 是 github 上一个开源的服务端的 库，按照官方教程只需要简单的 3 步即可搭建一个服务器，后面将使用这个服务器作为学习 axios 请求的服务器。
 
 ### 安装以及使用
 
@@ -43,9 +45,33 @@ npm install json-server
 
 3. 启动服务器
 
+语法：`json-server [options] <source>`
+
 ```js
 json-server --watch db.json
 ```
+
+参数说明
+
+|       参数        | 简写 |          说明          |      默认值      |
+| :---------------: | :--: | :--------------------: | :--------------: |
+|      --config      |  --c  |    指定配置文件路径    | json-server.json |
+|       --port       |  --p  |        指定端口        |       3000       |
+|       --host       |  --H  |       指定主机名       |    localhost     |
+|      --watch       |  --w  |      监控文件变化      |
+|      --routes      |  --r  |    指定路由文件路径    |
+|   --middlewares    |  --m  |   指定中间件文件路径   |
+|      --static      |  --s  | 指定静态文件文件夹路径 |
+|    --read-only     | --ro  |  指定只允许 get 请求   |
+|     --no-cors      | --nc  |      禁止跨域共享      |
+|     --no-gzip      | --ng  |     禁止 gzip 压缩     |
+|    --snapshots     |  --S  |      指定快照目录      |
+|      --delay       |  --d  |  指定延迟返回时长(ms)  |
+|        --id        |  --i  |  指定数据库的 ID 属性  |        id        |
+| --foreignKeySuffix | --fks |      指定外键前缀      |        Id        |
+|      --quiet       |  --q  | 抑制来自输出的日志消息 |
+|       --help       |  --h  |        显示帮助        |
+|     --version      |  --v  |       显示版本号       |
 
 4. 使用启动的服务器地址作为请求地址即可
 
@@ -60,7 +86,7 @@ http://localhost:3000/comments
 http://localhost:3000/profile
 ```
 
-:::tip 基本使用
+:::tip 基本示例
 
 - GET /posts 获取所有的公告信息
 - GET /posts/:id 根据 ID 查询公告信息
@@ -90,7 +116,7 @@ bower install axios
 
 :::
 
-使用
+引入方式
 
 ```js
 // 按需引入
@@ -119,7 +145,7 @@ axios.put(url, data, config);
 axios.patch(url, data, config);
 ```
 
-例子
+举个栗子
 
 ```js
 // axios.request
@@ -389,7 +415,7 @@ const instance = axios.create({
   cancelToken: new CancelToken(function (cancel) {
   }),
 
-  // an alternative way to cancel Axios requests using AbortController
+  // 使用AbortController取消Axios请求的另一种方法
   signal: new AbortController().signal,
 
   // `decompress` indicates whether or not the response body should be decompressed
@@ -471,7 +497,7 @@ instance.defaults.headers.common["Authorization"] = AUTH_TOKEN;
 
 :::tip 配置的优先级顺序
 
-Config 将按优先顺序合并。顺序是在 lib/defaults.js 中找到的库默认值，然后是 defaults 实例的属性，最后 config 是请求的参数。后者将优先于前者。下面是一个示例。
+当我们对于同一个配置项即在全局配置中进行了配置又在实例对象上进行了配置，这时候 Config 将按优先顺序合并。顺序是在 `lib/defaults.js` 中找到的库默认值:先匹配到 defaults 实例的属性，然后是 config 是请求的参数。后者将优先于前者。下面是一个示例。
 
 ```js
 // Create an instance using the config defaults provided by the library
@@ -492,20 +518,13 @@ instance.get("/longRequest", {
 
 ## 拦截器 Interceptors
 
-拦截器允许我们在发送请求之前和接收响应之后对请求进行拦截。拦截器的本质就是函数：`请求拦截器`和`响应拦截器`。
-
-```js
-axios.interceptors = {
-  request,
-  response,
-};
-```
+拦截器允许我们在发送请求之前和接收响应之后对请求进行拦截。拦截器的本质就是函数，拦截器分为两类：`请求拦截器`和`响应拦截器`。
 
 ```js
 // 请求拦截器：请求拦截器会在发送请求之前执行，可以用于修改请求的配置或添加一些公共的请求头
 axios.interceptors.request.use(
   function (config) {
-    // 可以在发送请求之前进行相关的配置
+    //config是请求体 可以在发送请求之前进行相关的配置
     return config;
   },
   function (error) {
@@ -517,6 +536,7 @@ axios.interceptors.request.use(
 // 响应拦截器：响应拦截器会在接收响应后执行，可以用于对响应进行处理或者错误处理
 axios.interceptors.response.use(
   function (response) {
+    // response 是响应体
     // 任何位于2xx范围内的状态代码都会触发此函数
     // 对响应数据进行一些处理
     return response;
@@ -565,6 +585,32 @@ axios.interceptors.response.use(function (response) {
 上面的打印结果是：333,222,111,444,555,666
 :::
 
+### 拦截器的取消
+
+取消单个拦截器
+
+```js
+const myInterceptor = axios.interceptors.request.use(function () {
+  /*...*/
+});
+axios.interceptors.request.eject(myInterceptor);
+```
+
+取消所有拦截器
+
+```js
+// 实例axios
+const instance = axios.create();
+instance.interceptors.request.use(function () {
+  /*...*/
+});
+instance.interceptors.request.clear(); // 清除所有的请求拦截器
+instance.interceptors.response.use(function () {
+  /*...*/
+});
+instance.interceptors.response.clear(); // 清除所有的响应拦截器
+```
+
 ## 错误类型 Error Types
 
 常见的错误类型结构
@@ -595,28 +641,53 @@ axios.interceptors.response.use(function (response) {
 | ERR_NOT_SUPPORT | 当前环境中的 axios 不支持的方法或功能 |
 | ERR_INVALID_URL | 为 axios 提供无效的 url |
 
+## 错误处理
+
+默认情况下当状态码超出 2xx 的范围的情况下，会将其视为错误并拒绝返回响应。
+
+```js
+axios.get("/user/12345").catch(function (error) {
+  if (error.response) {
+    // The request was made and the server responded with a status code
+    // that falls out of the range of 2xx
+    console.log(error.response.data);
+    console.log(error.response.status);
+    console.log(error.response.headers);
+  } else if (error.request) {
+    // The request was made but no response was received
+    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+    // http.ClientRequest in node.js
+    console.log(error.request);
+  } else {
+    // Something happened in setting up the request that triggered an Error
+    console.log("Error", error.message);
+  }
+  console.log(error.config);
+});
+```
+
 ## axios 取消请求
 
 axios 提供了两种方式取消请求：AbortController(v0.22.0 以上支持)和 CancelToken(v0.22.0 之后已经废弃)。
 
 ### AbortController
 
-```js
+```js{1,5,11}
 const controller = new AbortController();
 
 axios
   .get("/foo/bar", {
-    signal: controller.signal,
+    signal: controller.signal,//添加配置参数
   })
   .then(function (response) {
     //...
   });
-// cancel the request
+// 
 controller.abort();
 ```
 
 ### CancelToken(已废弃,不建议在新项目中使用)
-
+  Axios 提供了 CancelToken 类来创建取消标记。取消标记实际上是一个包含 cancel 方法的对象。
 ```js
 const CancelToken = axios.CancelToken;
 const source = CancelToken.source();
@@ -626,6 +697,7 @@ axios
     cancelToken: source.token,
   })
   .catch(function (thrown) {
+    // 取消的请求会在这里被捕获到
     if (axios.isCancel(thrown)) {
       console.log("Request canceled", thrown.message);
     } else {
@@ -643,6 +715,11 @@ axios.post(
   }
 );
 
-// cancel the request (the message parameter is optional)
+// 取消请求，参数可选
 source.cancel("Operation canceled by the user.");
 ```
+
+:::tip 取消请求也会触发拦截器
+当我们使用上面的方式取消axios的请求时，取消请求也算是请求失败的一种，所以也会被响应拦截器进行捕获到。
+![./image/Axios/cancle.png]
+:::

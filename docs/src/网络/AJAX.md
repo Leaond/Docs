@@ -22,12 +22,15 @@ Ajax 出现的原因：在 Ajax 之前只有 form 中的表单能向后端提交
 1.  创建一个 Ajax 对象
 
 ```js
-const xhr = new xmlhttpRequest(); //获取后台的地址，并且使用open方法与服务器建立连接
+const xhr = new xmlhttpRequest(); 
 ```
 
 2.  初始化 设置请求方式和请求地址
+```js
+//获取后台的地址，并且使用open方法与服务器建立连接
+xhr.open(请求方式，请求地址，是否异步)
+```
 
-`xhr.open(请求方式，请求地址，是否异步)`
 
 Ajax 根据前端请求方式的不同会对数据进行不同方式的拼接发送给后端，所以需要先对请求方式进行判断，再进行数据处理(下面的例子是调用封装的数据处理函数 toval())
 
@@ -49,11 +52,12 @@ if (obj.method.toLowerCase() === "get") {
 
 ```js
 xhr.send();
-//通过Ajax监听从后台发送过来的数据（通过绑定事件onreadystatechange，当ajax状态发生变化时触发该事件）
+
 ```
 
 4. 监听状态 onreadystatechange
 
+当ajax的状态发生改变时即xhr实例的状态发生改变时会触发 onreadystatechange 函数。所以我们通过监听这个状态就能做响应的处理。关于ajax的状态后面会讲到。
 ```js
 xhr.onreadystatechange = function () {
   // 判断Ajax是否已经是最后一个状态
@@ -62,7 +66,7 @@ xhr.onreadystatechange = function () {
     // xhr.statusText:状态字符串
     // xhr.getAllResponseHeaders():所有响应头
     // xhr.response:响应体
-    // 传输正确结束，判断服务器返回来的code码
+    // 传输正确结束，判断服务器返回来的code码。
     if ((xhr.status >= 200 && xhr.status <= 300) || xhr.status === 304) {
       // http的状态正确，判断登录是否过期
       if (JSON.parse(xhr.responseText).code === 201) {
@@ -82,13 +86,13 @@ xhr.onreadystatechange = function () {
 
 ## Ajax 进行数据传输的五个状态(xhr.readystate)
 
-- `0`: Ajax 刚开始创建(new xmlhttpRequest() 执行完)
-- `1`: Ajax 和后台服务器刚建立起联系(xhr.open()执行完)
-- `2`: Ajax 发送数据(xhr.send() 执行完)
-- `3`: Ajax 开始接收数据，已经接收部分数据，正在解析数据
-- `4`: Ajax 接收数据完毕，已经接收到全部的相应数据，解析也已经完成
+- `readyState = 0`: Ajax 刚开始创建(new xmlhttpRequest() 执行完)
+- `readyState = 1`: Ajax 和后台服务器刚建立起联系(xhr.open()执行完)
+- `readyState = 2`: Ajax 发送数据(xhr.send() 执行完)
+- `readyState = 3`: Ajax 开始接收数据。这里ajax已经接收了部分数据，并且正在解析数据
+- `readyState = 4`: Ajax 接收数据完毕，已经接收到全部的相应数据，解析也已经完成
 
-Ajax 接收服务器响应的数据(即 res.response)会以字符串格式存放在 xhr.responseText() 中。可以使用 JSON.parse() 转换成对象
+Ajax 接收服务器响应的数据(即 res.response)会以字符串格式存放在 xhr.responseText() 中。可以使用 JSON.parse() 转换成对象。
 
 ## nodemon 插件
 
@@ -103,7 +107,7 @@ nodemon [your node app]
 
 ## IE 浏览器 GET 请求缓存问题
 
-浏览器的第一次请求需要从服务器获得许多 css、img、js 等相关的文件，如果每次请求都把相关的资源文件加载一次，对 带宽、服务器资源、用户等待时间 都有严重的损耗，浏览器有做优化处理，其把 css、img、js 等文件在第一次请求成功后就在本地保留一个缓存备份，后续的每次请求就在本身获得相关的缓存资源文件读取就可以了，可以明显地加快用户的访问速度。css、img、js 等文件可以缓存，但是动态程序文件例如 php 文件不能缓存，即使缓存我们也不要其缓存效果。`仅有IE浏览器仅在get请求下会缓存动态程序文件,post请求不会缓存`
+浏览器的第一次请求需要从服务器获得许多 css、img、js 等相关的文件，如果每次请求都把相关的资源文件加载一次，对 带宽、服务器资源、用户等待时间 都有严重的损耗。浏览器有做优化处理：其把 css、img、js 等文件在第一次请求成功后就在本地保留一个缓存备份，后续的每次请求就在本身获得相关的缓存资源文件读取就可以了，可以明显地加快用户的访问速度。css、img、js 等文件可以缓存，但是动态程序文件 例如 php 文件不能缓存，即使缓存我们也不要其缓存效果。`仅有IE浏览器仅在get请求下会缓存动态程序文件,post请求不会缓存`
 
 一个简单的例子：
 
@@ -133,9 +137,11 @@ nodemon [your node app]
 </body>
 ```
 
-server.js
+
 
 ```js
+// server.js
+
 // 1.引入express模块
 import express from "express";
 // 2.创建应用对象
@@ -165,7 +171,7 @@ app.listen(8000, () => {
 });
 ```
 
-上面的例子当改变 ie 接口的响应体的时候，其他的浏览器都能够正常更新返回新的响应体。但是在 IE 浏览器中，返回值并不会更新到最新的响应体。
+上面的例子中：在第一次完成请求渲染之后，当改变 /ie 接口的响应体的时候，其他的浏览器都能够正常返回新的响应体。但是在 IE 浏览器中，返回值并不会更新到最新的响应体，而是从浏览器缓存当中取的缓存数据。
 
 ### 解决
 
@@ -257,32 +263,34 @@ app.get("/delay", (request, response) => {
 });
 ```
 
-
 :::tip
 Ajax 默认响应回来的数据(ResponseText)是文本类型，必须通过 JSON.parse()对数据进行处理，转成 JSON 对象.
 :::
 
-## jsonp发送请求
-  jsonp发送的请求，返回的数据必须是函数的执行结果或者是html标签才能被浏览器正常识别。
+## jsonp 发送请求
 
-  ```html
-  <body>
-    <div>
-        <button id="btn1">点击发送请求</button>
-        <div id="result"></div>
-    </div>
-    <script>
-        function handle(data) {
-            const result = document.getElementById("result");
-            result.innerHTML = data.name;
-        }
-    </script>
-    <script src="http://localhost:8000/jsonp-server"></script>
+jsonp 发送的请求，返回的数据必须是函数的执行结果或者是 html 标签才能被浏览器正常识别。
+
+```html
+<body>
+  <div>
+    <button id="btn1">点击发送请求</button>
+    <div id="result"></div>
+  </div>
+  <script>
+    function handle(data) {
+      const result = document.getElementById("result");
+      result.innerHTML = data.name;
+    }
+  </script>
+  <script src="http://localhost:8000/jsonp-server"></script>
 </body>
-  ```
-  server.js
-  ```js
-  // jsonp服务
+```
+
+server.js
+
+```js
+// jsonp服务
 app.all("/jsonp-server", (request, response) => {
   // 设置响应
   const data = {
@@ -290,9 +298,7 @@ app.all("/jsonp-server", (request, response) => {
   };
   response.end(`handle(${JSON.stringify(data)})`);
 });
-  ```
-
-
+```
 
 ## get 和 post 请求的区别
 
@@ -309,28 +315,59 @@ app.all("/jsonp-server", (request, response) => {
 
 ## 请求头信息设置
 
-请求头信息可以设置预定义的头，也可以设置自定义头信息，自定义头需要服务端设置进行配合
+请求头信息可以设置预定义的头，也可以设置自定义头信息，自定义头需要服务端设置进行配合。
+
+设置方式
 
 ```js
 xhr.setRequestHeader("", "");
 ```
 
+常见的预定义头
+
+1. Content-Type:指定请求体的媒体类型，常见的值有：
+
+- application/json：用于指定发送 JSON 格式的数据
+- application/x-www-form-urlencoded：用于发送表单数据(默认值)
+- multipart/form-data：用于发送包含文件上传的表单数据
+
+2. Accept：指定客户端可以接受的响应内容的媒体类型，常见的值有：
+
+- application/json：表示客户端希望接收 JSON 格式的响应
+- text/html：标识客户端希望接收 HTMl 格式的响应
+- /：表示客户端可以接收任意类型的响应
+
+3. Authorization：身份验证凭证，常见的值有：
+
+- Basic+Base64 编码的用户名和密码：用于基本身份验证
+- Bearer + 访问令牌：用于 OAuth 和令牌身份验证
+
+4. X-Requested-With：表示请求是否为 AJAX 请求，常见的值有：
+
+- XMLHttpRequest：通常由 JavaScript 库自动设置
+
+5. User-Agent：指示发起请求的用户代理信息，常见的值有：
+
+- Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)
+- Chrome/93.0.4577.63 Safari/537.36：Chrome 浏览器的用户代理信息。
+
 ## Ajax 跨域
 
 ### 域
 
-指的是一个请求地址的协议、域名、端口这三部分，判断两个域是否相同，需要比较这三部分是否一致。
+指的是一个请求地址的协议、域名、端口这三部分，判断两个域是否相同，需要比较这三部分是否一致，只要有一个不满足那么就是两个不同的域。
 
 ### 跨域
 
-在前后端分离的模式下，当前端调用后台接口的时候，由于是在非同一个域下面的请求，从而会触发浏览器的自我安全保护机制（同源策略），最终的结果是接口成功请求并响应，但是前端不能正常处理返回的数据。跨域指的是访问请求的协议、域名、端口与所请求的资源的协议、域名、端口不一致。
+跨域指的是访问请求的协议、域名、端口与所请求的资源的协议、域名、端口不一致。
 
-### 跨域出现的原因
+在前后端分离的模式下，当前端调用后台接口的时候，由于是在非同一个域下面的请求，从而会触发浏览器的自我安全保护机制（同源策略），最终的结果是接口成功请求并响应，但是前端不能正常处理返回的数据。
+
+### 跨域出现的原因：同源策略
 
 跨域是浏览器里面同源策略的安全限制，如果没有这个策略，那么所有的地址都可以访问任何一台服务器文件。
 
 ### 如何解决 Ajax 跨域
-
 
 ## HTTP
 
@@ -383,15 +420,14 @@ HTTP 状态码(HTTP Status Code)，是用以表示网页服务器超文本传输
 - 504（网关超时）：服务器作为网关或代理，但是没有及时从上游服务器收到请求
 - 505（http 版本不支持）：服务器不支持请求中所用到的 HTTP 协议版本
 
-:::tip
+:::tip 总结
 以 2 开头的状态码代表请求是成功的（304 也是成功的，重定向走缓存）
 
 以 3 和 4 开头的状态码基本上都是前端的问题；
 
 以 5 和 6 开头的状态码，基本上都是后端的问题。
 :::
-:::tip
-304 重定向
+:::tip 304 重定向
 
 当第一次发送 get 请求成功后，浏览器会有缓存。第二次 get 请求如果与第一次 get 请求的参数都是一样的并且服务器返回的数据也是一样的，那么浏览器不会再去请求服务器，而是走浏览器缓存返回数据。
 

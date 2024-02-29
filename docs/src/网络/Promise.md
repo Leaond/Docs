@@ -1,31 +1,51 @@
 # Promise
 
+Promise 是 异步编程 的一种解决方案，比传统的解决方案 `回调函数和事件` 更加的合理和强大。ES6将其写进了标准语言，统一了用法，原生提供了promise对象。简单来说，promise就像是一个容器，里面保存着某个未来才会结束的事件的结果。
+
 ## 什么叫做异步编程
 
 异步编程是一种编程范式，旨在`通过优化任务调度和资源利用，提高程序的吞吐量和响应速度`。与传统的同步编程方式相比，异步编程通过非阻塞的方式处理任务，使得一个任务的执行不会阻碍其他任务的进行。
 
-在同步编程中，当一个任务执行时间较长时，整个程序会被阻塞，无法继续执行其他任务，直到该任务完成。而在异步编程中，任务的执行不会阻塞程序的进行，可以同时处理多个任务，提高了系统的并发性能。
+在同步编程中，当一个任务执行时间较长时，整个程序会被阻塞，无法继续执行其他任务，直到该任务完成; 而在异步编程中，任务的执行不会阻塞程序的进行，可以同时处理多个任务，提高了系统的并发性能。
 
-# promise 封装读取文件模块
+## promise对象的特点
 
-# promise 封装 AJAX 请求
+  promise主要有以下两个特点：
 
-promise 的状态 promiseState
-promise 的结果 promiseResult，只有 resolve 和 reject 这两个函数才能改变这个结果的值
+1. promise对象的状态不受外界影响。promise对象代表一个异步操作，有3种状态：pending(进行中)、fullfilled(已成功)、rejected(已失败)。只有异步操作的结果才能决定当前是哪一种状态，任何其他操作都无法改变这个状态。在Promise对象身上我们可以通过 promiseState 看到Promise的状态，promiseResult 来得到Promise对象得到的结果
+2. 一旦状态改变，就不会再发生改变，任何时候都可以得到这个结果。Promise对象的状态改变，只有两种可能：从 `pending变为fullfilled` 和 从 `pending变为rejected`。只要这两种情况发生，状态就凝固了，不会再发生改变，这个时候就称为 resolved (已定型)。
 
-# 如何使用 Promise
+有了Promise对象之后，就可以将异步操作以同步操作的流程表达出来，避免了层层嵌套的回调函数。此外，Promise对象还提供了统一的接口，使得控制异步操作更加的容易。
+
+:::tip Promise缺点
+首先，无法取消Promise，一旦新建他就会立即执行，无法中途取消。其次，如果不设置回调函数，Promise内部抛出的错误，不会反映到外部。其三，当处于pending状态时，无法得知当前的状态是刚刚开始还是即将完成。
+:::
 
 ## promise 的 API
+  Promise对象提供了众多的API供我们使用。
 
-### Promise 的构造函数：Promise(excutor){}
+### Promise 的构造函数：Promise(excutor){ }
+  Promise函数接受一个函数excutor作为参数，这个excutor函数又接收两个函数作为参数：resolve 和 reject。
 
-- executor 函数：执行器(resolve,reject)=>{};
-- resolve 函数：内部定义成功时我们调用的函数；
-- reject 函数：内部定义失败时我们调用的函数；
+  resolve函数的作用是，将Promise的状态从 pending变为fullfilled。在异步操作成功时调用，并将异步操作的结果，作为参数传递出去。
+
+  reject函数的作用是，将Promise的状态从 pending变为rejected。在异步操作失败时调用，并将异步操作报出的错误，作为参数传递出去。
+
+```js
+const promise = new Promise(function(resolve, reject) {
+  // ... some code
+
+  if (/* 异步操作成功 */){
+    resolve(value);
+  } else {
+    reject(error);
+  }
+});
+```
 
 :::tip
 
-执行器函数是指在执行 new Promise((resolve,reject)=>{}) 的时候的这个参数函数。exector 会在 Promise 内部`立即同步调用`，不会放入队列中。异步操作在执行器中执行。
+执行器函数是指在执行 `new Promise((resolve,reject)=>{ })` 的时候的这个参数函数。exector 会在 Promise 内部`立即同步调用`，不会放入队列中。异步操作在执行器中执行。
 
 ```js
 let p = new Promise((resolve, reject) => {
@@ -37,15 +57,31 @@ console.log(222); //打印顺序:111,222
 :::
 
 ### Promise.prototype.then 方法(onResolved,onRejected)=>{}
+promise 的实例身上有 then 方法，也就是说，then 方法是定义在原型对象(Promise.prototype)上的。then 方法的作用是为Promise实例添加状态改变时的回调函数。then 方法 接收两个`可选参数`：第一个是resolved状态的回调函数，第二个是rejected状态的回调函数.
 
-- onResolved 函数：成功的回调函数
-- onRejected 函数：失败的回调函数
+then() 方法返回的是一个新的Promise实例，因此我们可以采用链式调用的方式。
 
-指定用于得到成功 value 的成功回调和用于得到失败 reason 的回调返回一个 Promise 对象.
+```js
+getJSON("/posts.json").then(function(json) {
+  return json.post;
+}).then(function(post) {
+  // ...
+});
+// 依次指定了两个回调函数。第一个回调函数完成以后，会将返回结果作为参数，传入第二个回调函数
+```
 
 ### Promise.prototype.catch 方法(onRejected)=>{}
+Promise的实力身上还有一个catch方法，他也是定义在Promise的原型上的。可以将catch方法理解为：`.then(null, rejection)`或`.then(undefined, rejection)`的别名。catch方法是专门用来捕获错误的。
 
-- onRejected 函数：失败的回调函数(reason)=>{}
+```js
+getJSON('/posts.json').then(function(posts) {
+  // ...
+}).catch(function(error) {
+  // 处理 getJSON 和 前一个回调函数运行时发生的错误
+  console.log('发生错误！', error);
+});
+```
+上面的getJSON()方法会返回一个Promise对象，如果该对象的状态变为 resolved，则会调用 then() 方法指定的回调函数，如果异步操作抛出错误，那么状态就会变为 rejected，就会调用 catch() 方法指定的回调函数，处理这个错误。此外，then() 方法指定的回调函数，如果运行中抛出错误也会被 catch() 方法捕获。
 
 ### Promise.resolve()方法：(value)=>{}
 
@@ -218,486 +254,3 @@ p.then((value) => {
 ```
 
 :::
-
-## 手写 Promise 对象
-
-### 准备工作
-
-新建一个 promise.js 文件，并且初始化相关变量函数,捕获异常改变 promise 状态
-
-```js
-// promise.js
-// 申明构造函数
-function Promise(excutor) {
-  // 添加属性
-  this.PromiseState = "pending";
-  this.PromiseResult = null;
-  const self = this; //_this that self
-  // resolve函数
-  function resolve(data) {
-    // 1.修改对象的状态
-    self.PromiseState = "fullfilled";
-    // 2.设置对象的结果值
-    self.PromiseResult = data;
-  }
-  // reject函数
-  function reject(data) {
-    // 1.修改对象的状态
-    self.PromiseState = "rejected";
-    // 2.设置对象的结果值
-    self.PromiseResult = data;
-  }
-  //   捕获异常，改变promise状态
-  try {
-    // 同步调用执行器函数
-    excutor(resolve, reject);
-  } catch (error) {
-    reject(error);
-  }
-}
-
-// 原型上添加then方法
-Promise.prototype.then = function (onResolved, onRejected) {};
-```
-
-### 支持仅可以改变一次 promise 状态
-
-    在resolve和reject函数中添加判断，PromiseState是否已经改变
-
-```js
-// 不等于pending代表promise状态已经改变过一次，则不进行任何处理直接返回
-if (self.PromiseState !== "pending") return;
-```
-
-### 完善 then() 方法
-
-    then方法支持接受两个函数形参，并且可以根据PromiseState调用不同的方法
-
-```js
-Promise.prototype.then = function (onResolved, onRejected) {
-  // 调用回调函数，根据PromiseState的值调用不同的回调函数
-  if (this.PromiseState === "fullfilled") {
-    onResolved(this.PromiseResult); //注入promise的结果
-  }
-  if (this.PromiseState === "rejected") {
-    onRejected(this.PromiseResult);
-  }
-};
-```
-
-### 实现异步操作
-
-    在原生的Promise对象中支持以下面的这样方式改变状态后再调用回调函数
-
-```js
-let p = new Promise((resolve, reject) => {
-  setTimeout(() => {
-    resolve("ok");
-  }, 1000);
-});
-p.then((value) => {
-  console.log(value); //OK
-});
-```
-
-因此我们上面的实现还需要做进一步的完善：这里我们需要对判断 promise 的状态来处理回调函数，当 promise 的状态还没有进行改变的时候，在 then 方法中我们需要保存回调函数。当 promise 的状态改变的时候我们就可以根据 promise 的状态来调用保存的回调函数。
-
-根据上面的描述添加下面的语句：
-
-```js
-// promise.js
-// 保存回调函数
-this.callback = {};
-
-function resolve(data) {
-  if (self.callback.onResolved) {
-    self.callback.onResolved(data);
-  }
-}
-// reject函数
-function reject(data) {
-  if (self.callback.onRejected) {
-    self.callback.onRejected(data);
-  }
-}
-
-Promise.prototype.then = function (onResolved, onRejected) {
-  // 保存回调函数
-  if (this.PromiseState === "pending")
-    this.callback = {
-      onResolved,
-      onRejected,
-    };
-};
-```
-
-上面的实现只能支持单个的回调函数，多个回调函数会被覆盖掉，因此还需要进行优化
-
-### 支持多个 then() 回调
-
-这里我们需要对callback的结构进行修改，将所有的then的回调函数都保存在callback中，并且在状态发生改变的时候遍历执行所有的回调。
-
-```js
-this.callbacks = [];
-// resolve函数
-function resolve(data) {
-  if (self.callbacks.length > 0) {
-    self.callbacks.forEach((item) => {
-      item.onResolved(data);
-    });
-  }
-}
-// reject函数
-function reject(data) {
-  if (self.callbacks.length > 0) {
-    self.callbacks.forEach((item) => {
-      item.onRejected(data);
-    });
-  }
-}
-
-// 原型上添加then方法
-Promise.prototype.then = function (onResolved, onRejected) {
-  // 保存回调函数
-  if (this.PromiseState === "pending")
-    this.callbacks.push({
-      onResolved,
-      onRejected,
-    });
-};
-```
-
-:::tip
-完成上面的步骤，promise.js 如下：
-
-```js
-// 申明构造函数
-function Promise(excutor) {
-  // 添加属性
-  this.PromiseState = "pending";
-  this.PromiseResult = null;
-  // 保存回调函数
-  this.callbacks = [];
-  const self = this; //_this that self
-  // resolve函数
-  function resolve(data) {
-    // 判断promise的状态是否已经改变
-    if (self.PromiseState !== "pending") return;
-    // 1.修改对象的状态
-    self.PromiseState = "fullfilled";
-    // 2.设置对象的结果值
-    self.PromiseResult = data;
-    //
-    if (self.callbacks.length > 0) {
-      self.callbacks.forEach((item) => {
-        item.onResolved(data);
-      });
-    }
-  }
-  // reject函数
-  function reject(data) {
-    if (self.PromiseState !== "pending") return;
-    // 1.修改对象的状态
-    self.PromiseState = "rejected";
-    // 2.设置对象的结果值
-    self.PromiseResult = data;
-
-    if (self.callbacks.length > 0) {
-      self.callbacks.forEach((item) => {
-        item.onRejected(data);
-      });
-    }
-  }
-  //   捕获异常，改变promise状态
-  try {
-    // 同步调用执行器函数
-    excutor(resolve, reject);
-  } catch (error) {
-    reject(error);
-  }
-}
-
-// 原型上添加then方法
-Promise.prototype.then = function (onResolved, onRejected) {
-  // 调用回调函数，根据PromiseState的值调用不同的回调函数
-  if (this.PromiseState === "fullfilled") {
-    onResolved(this.PromiseResult);
-  }
-  if (this.PromiseState === "rejected") {
-    onRejected(this.PromiseResult);
-  }
-  // 保存回调函数
-  if (this.PromiseState === "pending")
-    this.callbacks.push({
-      onResolved,
-      onRejected,
-    });
-};
-```
-
-:::
-
-### 实现同步任务 then 返回结果
-
-下面我们来实现同步任务下 Promise.then()返回结果。then 方法返回一个 Promise 对象，这个对象的状态由 then 方法中参数的 return 的值来决定：如果返回的是一个 Promise 对象，那么 then 方法返回的状态就由 then 里面的这个 Promise 对象的状态决定；如果返回的是一个非 Promise 值，则 then 方法返回的 Promise 的状态就变为 fullfilled，返回的结果就是这个 return 值,如果没有返回值，那么 then 方法返回的 result 就是 undefined。同时，当 then 方法中抛出错误的时候(throw Error)，then()方法返回的 Promise 的状态应该变为 reject，返回的结果应该是抛出错误的值。
-具体实现：
-
-```js
-Promise.prototype.then = function (onResolved, onRejected) {
-  return new Promise((resolve, reject) => {
-    // 调用回调函数，根据PromiseState的值调用不同的回调函数
-    if (this.PromiseState === "fullfilled") {
-      try {
-        let result = onResolved(this.PromiseResult);
-        // 判断返回结果是否是promise实例
-        if (result instanceof Promise) {
-          // 是Promise实例，则结果的状态由promise实例的转改决定
-          result.then(
-            (value) => {
-              resolve(value);
-            },
-            (reason) => {
-              reject(reason);
-            }
-          );
-        } else {
-          // 非 Promise实例，则结果的状态应为 成功
-          resolve(result);
-        }
-      } catch (e) {
-        reject(e);
-      }
-    }
-    if (this.PromiseState === "rejected") {
-      onRejected(this.PromiseResult);
-    }
-    // 保存回调函数
-    if (this.PromiseState === "pending")
-      this.callbacks.push({
-        onResolved,
-        onRejected,
-      });
-  });
-};
-```
-
-### 实现异步任务 then 返回结果
-
-在上面我们实现了同步状态下 then 的返回结果，当 Promise 中有异步任务的时候，这个时候我们就需要先保存 then 的回调函数，当 Promise 的状态发生改变的时候再去调用 then 的回调函数。
-
-```js
-let p1 = new Promise((resolve, reject) => {
-  setTimeout(() => {
-    // resolve('OK!!!')
-    reject("Error!!");
-  }, 1000);
-});
-// console.log("********",p1);
-let res = p1.then(
-  (value) => {
-    console.log("********", 111);
-    return "oh yeah!";
-  },
-  (reason) => {
-    console.warn(222);
-    // return 'oh No!'
-    throw "throw Error!";
-  }
-);
-console.log("****res****", res);
-```
-
-then 方法的改造
-
-```js
-Promise.prototype.then = function (onResolved, onRejected) {
-  let self = this;
-  return new Promise((resolve, reject) => {
-    // 调用回调函数，根据PromiseState的值调用不同的回调函数
-    if (this.PromiseState === "fullfilled") {
-      try {
-        let result = onResolved(this.PromiseResult);
-        // 判断返回结果是否是promise实例
-        if (result instanceof Promise) {
-          // 是Promise实例，则结果的状态由promise实例的转改决定
-          result.then(
-            (value) => {
-              resolve(value);
-            },
-            (reason) => {
-              reject(reason);
-            }
-          );
-        } else {
-          // 非 Promise实例，则结果的状态应为 成功
-          resolve(result);
-        }
-      } catch (e) {
-        reject(e);
-      }
-    }
-    if (this.PromiseState === "rejected") {
-      onRejected(this.PromiseResult);
-    }
-    // 保存回调函数
-    if (this.PromiseState === "pending") {
-      this.callbacks.push({
-        onResolved: function () {
-          try {
-            let result = onResolved(self.PromiseResult);
-            if (result instanceof Promise) {
-              result.then(
-                (v) => {
-                  resolve(v);
-                },
-                (r) => {
-                  reject(r);
-                }
-              );
-            } else {
-              resolve(result);
-            }
-          } catch (error) {
-            reject(error);
-          }
-        },
-        onRejected: function () {
-          try {
-            let result = onRejected(self.PromiseResult);
-            if (result instanceof Promise) {
-              result.then(
-                (v) => {
-                  resolve(v);
-                },
-                (r) => {
-                  reject(r);
-                }
-              );
-            } else {
-              reject(result);
-            }
-          } catch (error) {
-            reject(error);
-          }
-        },
-      });
-    }
-  });
-};
-```
-
-### then 方法中 rejected 状态的补充
-
-上面的 then 方法只处理了 fullfilled 和 pending 状态下的情况，当怕 Promise 的状态变为 reject 的时候就会出现问题。
-
-```js
-let p1 = new Promise((resolve, reject) => {
-  reject("Error!!");
-});
-let res = p1.then(
-  (value) => {
-    console.log("********", 111);
-  },
-  (reason) => {
-    console.log("********", 222);
-  }
-);
-console.log("****res****", res);
-```
-
-上面的 p1 同步任务变为 reject 状态，因此 then 方法执行第二个回调函数，但是失败的回调函数中并没有返回任何的值，因此这个 res 打印的结果会一直是 pending 状态。 所以我们同样参照之前的方式需要给 reject 状态加上返回处理
-
-### 封装回调
-
-经过上面的步骤，我们的 then 方法已经逐渐完善，但是在 then 方法中的 3 个状态里面，我们写了很多的重复的代码：只有里面的回调方法不一样，所以我们将进行封装一个 callback 函数来简化代码
-
-```js
-Promise.prototype.then = function (onResolved, onRejected) {
-  let self = this;
-  return new Promise((resolve, reject) => {
-    // type为回调函数类型
-    function callback(type) {
-      try {
-        let result = type(self.PromiseResult);
-        // 判断返回结果是否是promise实例
-        if (result instanceof Promise) {
-          // 是Promise实例，则结果的状态由promise实例的转改决定
-          result.then(
-            (value) => {
-              resolve(value);
-            },
-            (reason) => {
-              reject(reason);
-            }
-          );
-        } else {
-          // 非 Promise实例，则结果的状态应为 成功
-          resolve(result);
-        }
-      } catch (e) {
-        reject(e);
-      }
-    }
-    // 调用回调函数，根据PromiseState的值调用不同的回调函数
-    if (this.PromiseState === "fullfilled") {
-      callback(onResolved);
-    }
-    if (this.PromiseState === "rejected") {
-      callback(onRejected);
-    }
-    // 保存回调函数
-    if (this.PromiseState === "pending") {
-      this.callbacks.push({
-        onResolved: function () {
-          callback(onResolved);
-        },
-        onRejected: function () {
-          callback(onRejected);
-        },
-      });
-    }
-  });
-};
-```
-
-### catch 方法与异常穿透
-
-原生的 Promise 中还有 catch 方法，因此我们还需要定义 catch 方法用来捕获异常
-
-```js
-// 添加catch方法
-Promise.prototype.catch = function (onRejected) {
-  return this.then(undefined, onRejected);
-};
-```
-
-原生的 then 方法中的两个参数是可以不传的，所以我们还需要再我们自己的 then 方法中去判断是否有参数:如果有就执行后面的代码；如果没有参数，那么我们就需要定义默认的相关的参数，保证程序能正常的执行。
-
-```js
-Promise.prototype.then = function (onResolved, onRejected) {
-  let self = this;
-  // 判断回调函数参数
-  if (typeof onRejected !== "function") {
-    onRejected = (reson) => {
-      throw reason;
-    };
-  }
-  if (typeof onResolved !== "function") {
-    onResolved = (v) => {
-      return v;
-    };
-  }
-};
-```
-
-### Promise 的 API 的封装
-
-#### Promise.resolve()
-
-#### Promise.reject()
-
-#### Promise.all()
-
-#### Promise.race()
-#### 回调函数异步执行
-### class版本

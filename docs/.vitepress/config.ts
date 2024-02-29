@@ -2,7 +2,7 @@
 import { defineConfig } from "vitepress";
 export default defineConfig({
   lang: "zh",
-  title: "于晏的个人文档",
+  title: "Docs",
   description: "Vite & Vue powered static site generator.",
   base:"/LancerDocs",
   // base:"/LancerDocs/docs",
@@ -97,11 +97,26 @@ export default defineConfig({
         ],
       },
       {
-        text: "手搓",
+        text: "DIY",
         collapsed: true,
         items: [
-          { text: "手搓axios", link: "/src/网络/AJAX.md" },
-          { text: "手搓Promise", link: "/src/网络/Promise.md" },
+          { text: "axios", link: "/src/DIY/Axios.md" },
+          { text: "Promise", link: "/src/DIY/Promise.md" },
+        ],
+      },
+      {
+        text: "node",
+        collapsed: true,
+        items: [
+          { text: "node", link: "/src/nodejs/node.md" },
+        ],
+      },
+      {
+        text: "工程化",
+        collapsed: true,
+        items: [
+          { text: "Vite", link: "/src/工程化/vite/vite.md" },
+          { text: "Webpack", link: "/src/工程化/webpack/webpack.md" },
         ],
       },
     ],
