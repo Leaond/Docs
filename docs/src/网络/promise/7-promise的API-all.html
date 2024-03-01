@@ -18,8 +18,12 @@
         let p3 = new Promise((resolve, reject) => {
             resolve('error')
         })
+        // p1,p2,p3都是promise实例对象
         let result = Promise.all([p1, p2, p3])
+        // 当all方法中有非promise对象的情况
+        let result1 = Promise.all([2,1])
         console.log("***result*****", result);
+        console.log("***result1*****", result1);
     </script>
 </body>
 

@@ -102,15 +102,15 @@ http://localhost:3000/profile
 
 ::: code-group
 
-```npm
+``` npm
 npm install axios
 ```
 
-```yarn
+``` yarn
 yarn add axios
 ```
-
-```bower
+ 
+``` bower
 bower install axios
 ```
 

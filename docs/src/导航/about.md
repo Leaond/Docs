@@ -4,7 +4,7 @@ vue2监听多个数据源
 nodejs
 webpack
 http原理
-前段缓存：浏览器缓存、强缓存
+前端缓存：浏览器缓存、强缓存
 gsap
 threejs
 性能优化
@@ -16,6 +16,7 @@ web socket
 复制插件：clipbord2
 css布局：flex（https://cssgridgarden.com/）、grid（http://flexboxfroggy.com/），
 常见的布局方式： 圣杯布局、双飞翼布局
+tcp协议：3次握手、4次挥手、udp协议、http协议、7层网络架构
 
 ```vue-html
 <div id="app">
