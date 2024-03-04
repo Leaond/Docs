@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>模拟创建Axios的过程</title>
+</head>
+
+<body>
+    <script>
+        function Axios(config) {
+            this.defaults = config; //为了创建defaults默认属性
+            // 添加拦截器属性
+            this.interceptors = {
+                request: {},
+                response: {},
+            }
+
+        }
+        // 原型上添加方法
+        Axios.prototype.request = function (config) {
+            console.log("发送Ajax请求=====>>> ", config.method);
+        }
+        Axios.prototype.get = function (config) {
+            return this.request({ method: 'get' })
+        }
+        Axios.prototype.post = function (config) {
+            return this.request({ method: 'post' })
+        }
+        // 申明实例化对象函数
+        function createInstance(config) {
+            // 实例化一个对象
+            // 完成这一步之后，context身上就有了上面定义的相关属性和函数。
+            let context = new Axios(config)
+            // 完成上面的步骤之后，context身上的方法是可以当做对象身上的方法使用的：context.get()，但是不能当做函数去使用:context()
+
+            // 创建请求函数
+            let instance = Axios.prototype.request.bind(context)//此时instance是一个函数，并且可以调用：instance({})
+            // 完成上面的步骤，instance可以当做函数使用，但是不能当做对象使用
+
+            // 所以，下面我们将Axios.prototype对象中的方法人添加到instance函数对象中
+            Object.keys(Axios.prototype).forEach(key => {
+                // instance[key] = Axios.prototype[key]
+                instance[key] = Axios.prototype[key].bind(context)//this.defaults
+            })
+            // 为instance函数对象身上添加default和interceptors
+            Object.keys(context).forEach(key => {
+                instance[key] = context[key]
+            })
+            // console.dir("context=====>>> ", context);
+            return instance
+        }
+
+        // 创建对象
+        let axios = createInstance()
+        // 发送请求
+        // 1.对象属性调用
+        // axios.get()
+        // 2.函数调用
+        axios({ method: 'get' })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/1.5.0/axios.min.js"></script>
+    
+    <title>Document</title>
+</head>
+<body>
+    <script>
+         axios({
+                method: 'GET',
+                url: 'http://localhost:3000/posts',
+            }).then(res => {
+                console.log("(˶ᵔ ᵕ ᵔ˶) =====>",res);
+            })
+    </script>
+</body>
+</html>
