@@ -98,3 +98,49 @@ app.listen('8080', () => {
 
 ProxyServer
  同源策略主要是限制浏览器和服务器之间的请求，服务器与服务器之间并不存在跨域问题。所以根据这样的问题，前端就可以将请求发送给同源或者设置好跨域的代理服务器，代理服务器收到代理请求后，将真正的请求转发到目标服务器，并接受真正服务器的响应，再把收到的结果响应给前端。
+
+console对象身上的方法
+console.assert()
+如果第一个参数为false, 则将消息和堆栈跟踪记录到控制台
+console.clear()
+清空控制台, 并输出console was cleared.
+console.count()
+以参数为标记记录调用的次数, 调用时在控制台打印标识以及调用次数
+console.countReset()
+重置指定标签的计数器值。
+console.debug()
+在控制台打印一条debug级别的消息。
+console.dir()
+显示一个由特定的 Javascript 对象列表组成的可交互列表。这个列表可以使用三角形隐藏和显示来审查子对象的内容.
+console.dirxml()
+打印 XML/HTML 元素表示的指定对象，否则显示 JavaScript 对象视图.
+console.error()
+打印一条错误信息
+console.exception()
+error()方法的别称
+console.group()
+创建一个新的内联 group, 后续所有打印内容将会以子层级的形式展示。调用 groupEnd()来闭合组。
+console.groupCollapsed()
+创建一个新的内联 group。使用方法和 group() 相同，不同的是，groupCollapsed() 方法打印出来的内容默认是折叠的。调用groupEnd()来闭合组。
+console.groupEnd()
+闭合当前内联 group。
+console.info()
+打印资讯类说明信息.
+console.log()
+打印内容的通用方法
+console.profile()
+console.profileEnd()
+console.table()
+将列表型的数据打印成表格。
+console.time()
+启动一个以入参作为特定名称的计时器，在显示页面中可同时运行的计时器上限为10,000.
+console.timeEnd()
+结束特定的 计时器 并以豪秒打印其从开始到结束所用的时间。
+console.timeLog()
+打印特定 计时器 所运行的时间。
+console.timeStamp()
+添加一个标记到浏览器的 Timeline 或 Waterfall 工具。
+console.trace()
+输出一个 stack trace。
+console.warn()
+打印一个警告信息，可以使用 string substitution 和额外的参数。

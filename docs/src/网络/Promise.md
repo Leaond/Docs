@@ -1,8 +1,8 @@
 # Promise
 
-Promise 是 异步编程 的一种解决方案，比传统的解决方案 `回调函数和事件` 更加的合理和强大。ES6 将其写进了标准语言，统一了用法，原生提供了 promise 对象。简单来说，promise 就像是一个容器，里面保存着某个未来才会结束的事件的结果。
+Promise 是 `异步编程` 的一种解决方案，比传统的解决方案 `回调函数和事件` 更加的合理和强大。ES6 将其写进了标准语言，统一了用法，原生提供了 promise 对象。简单来说，promise 就像是一个容器，里面保存着某个未来才会结束的事件的结果。
 
-## 什么叫做异步编程
+## 异步编程
 
 异步编程是一种编程范式，旨在`通过优化任务调度和资源利用，提高程序的吞吐量和响应速度`。与传统的同步编程方式相比，异步编程通过非阻塞的方式处理任务，使得一个任务的执行不会阻碍其他任务的进行。
 
@@ -20,7 +20,6 @@ promise 主要有以下两个特点：
 :::tip Promise 缺点
 首先，无法取消 Promise，一旦新建他就会立即执行，无法中途取消。其次，如果不设置回调函数，Promise 内部抛出的错误，不会反映到外部。其三，当处于 pending 状态时，无法得知当前的状态是刚刚开始还是即将完成。
 :::
-
 
 ## Promise 的构造函数：Promise(excutor){ }
 
@@ -152,10 +151,48 @@ promise
 ```
 
 ## Promise.resolve()方法：(value)=>{}
-resolve方法
 
+Promise.resolve()方法可以将接收的参数转成 Promise 对象。
 
-    value:返回的是一个成功的结果promise对象
+Promise.resolve()等价于下面的写法。
+
+```js
+Promise.resolve("foo");
+// 等价于
+new Promise((resolve) => resolve("foo"));
+```
+
+Promise.resolve()接收的参数分成 4 种情况：
+
+1. 参数是 Promise 实例。接收的参数是 Promise 实例的时候，Promise.resolve()将不做任何修改，原封不动的返回这个实例。
+2. 参数是 thnable 对象。Promise.resolve()方法会将这个对象转为 Promise 对象，然后就立即执行 thenable 对象的 then()方法.
+   `thenable对象指的是具有then方法的对象`
+
+```js
+let thenable = {
+  then: function (resolve, reject) {
+    resolve(42);
+  },
+};
+```
+
+下面代码中，thenable 对象的 then()方法执行后，对象 p1 的状态就变为 resolved，从而立即执行最后那个 then()方法指定的回调函数，输出 42。
+
+```js
+let thenable = {
+  then: function (resolve, reject) {
+    resolve(42);
+  },
+};
+
+let p1 = Promise.resolve(thenable);
+p1.then(function (value) {
+  console.log(value); // 42
+});
+```
+
+3. 参数不具有 then()方法的对象，或者不是对象。Promise.resolve()方法会返回一个新的 Promise 对象，状态为 fullfilled，结果是这个参数值。
+4. 不带有任何的参数。当 resolve()方法不带有任何的参数的时候，会直接返回一个 resolved 状态的 Promise 对象，结果是 undefined。
 
 ```js
 // 如果传入的参数为 非Promise类型的对象，则返回的结果为成功Promise对象
@@ -172,6 +209,28 @@ let p3 = Promise.resolve(
   })
 );
 ```
+
+:::tip 注意
+立即 resolved()的 Promise 对象，是在本轮事件循环的结束的时候执行，而不是在下一轮事件循环开始的时候执行。
+
+```js
+setTimeout(function () {
+  console.log("three");
+}, 0);
+
+Promise.resolve().then(function () {
+  console.log("two");
+});
+
+console.log("one");
+
+// one
+// two
+// three
+```
+
+上面的代码中，setTimeout(fn, 0)在下一轮“事件循环”开始时执行，Promise.resolve()在本轮“事件循环”结束时执行，console.log('one')则是立即执行，因此最先输出。
+:::
 
 ## Promise.reject()方法：(reason)=>{}
 
@@ -195,7 +254,7 @@ let p3 = Promise.reject(
 
 ## Promise.all()方法：(promises)=>{}
 
-promise.all() 方法用于将多个 promise 实例包装成一个新的 promise 实例。参数 promises 是一个包含 n 个 promise 实例 的数组,如果参数中有不是 promise 实例对象的数据，那么就会调用 promise.resolve() 转成 promise 对象 再调用 all 方法。promise.all() 方法返回一个新的 promise 对象，只有参数中所有的 promise 的结果都成功，all()方法返回的 promise 对象才成功，只要有一个失败了那么 all()方法就直接失败。
+promise.all() 方法用于将多个 promise 实例包装成一个`新的 promise 实例`。参数 promises 是一个包含 n 个 promise 实例 的数组,如果参数中有不是 promise 实例对象的数据，那么就会调用 promise.resolve() 转成 promise 对象 再调用 all 方法。promise.all() 方法返回一个新的 promise 对象，只有参数中所有的 promise 的结果都成功，all()方法返回的 promise 对象才成功，只要有一个失败了那么 all()方法就直接失败。
 
 ```js
 let p1 = new Promise((resolve, reject) => {
@@ -236,7 +295,31 @@ Promise.all([p1, p2])
 
 ## Promise.race()方法：(promises)=>{}
 
-Promise.race()方法接受的参数跟 all()方法接收的参数是一样的。但是 race()方法执行的结果不一样：race()的结果和状态由参数里面第一个改变状态的 Promise 结果和状态来决定。
+Promise.race()方法接受的参数跟 Promise.all() 方法接收的参数是一样的。但是 Promise.race()方法执行的结果不一样：Promise.race()的结果和状态由参数里面 第一个 改变状态的 Promise 结果和状态来决定，如果不是 Promise 实例，就会先调用到 Promise.resolve() 方法，将参数转成 Promise 实例，再做进一步的处理。
+
+```js
+// 1. 参数都是Promise实例的情况
+let p1 = new Promise((resolve, reject) => {
+  resolve("ok");
+});
+let p2 = new Promise((resolve, reject) => {
+  resolve("ok");
+});
+let p3 = new Promise((resolve, reject) => {
+  resolve("error");
+});
+let result = Promise.race([p1, p2, p3]);
+console.log("***result*****", result);
+// 2.参数不是Promise实例的情况：先调用Promise.resolve()将参数转成promise实例
+let result1 = Promise.race([1]);
+console.log("=====>>> ", result1);
+```
+
+## Promise.any()方法：(promises)=>{}
+
+Promise.any()接收的参数跟 Promise.any()和 Promise.any()参数也是一样的，也会将参数包装成一个新的 Promise 实例返回，只要有一个实例的状态变为 fullfilled，那么包装的实例结果就是 fullfilled，如果所有的参数实例都是 rejected，那么包装的实例结果就是 rejected。
+
+ES2021 新增
 
 :::tip 注意
 

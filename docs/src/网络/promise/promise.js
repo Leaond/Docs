@@ -247,3 +247,5 @@ Promise.race = function (promises) {
     }
   });
 };
+
+// 回调函数异步执行

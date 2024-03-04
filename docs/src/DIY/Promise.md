@@ -475,12 +475,73 @@ Promise.prototype.then = function (onResolved, onRejected) {
 
 ### Promise.resolve()
 
+```js
+Promise.resolve = function (value) {
+  return new Promise((resolve, reject) => {
+    resolve(value);
+  });
+};
+```
+
 ### Promise.reject()
+
+```js
+Promise.reject = function (reason) {
+  return new Promise((resolve, reject) => {
+    reject(reason);
+  });
+};
+```
 
 ### Promise.all()
 
+```js
+Promise.all = function (promises) {
+  return new Promise((resolve, reject) => {
+    let count = 0;
+    let array = [];
+    // 遍历所有的promise
+    for (let i = 0; i < promises.length; i++) {
+      promises[i].then(
+        (v) => {
+          count++;
+          // array.push(v);//使用push不能保证顺序一致
+          // 采用下标的方式赋值
+          array[i] = v;
+          if (count == promises.length) {
+            resolve(array);
+          }
+        },
+        (r) => {
+          reject(r);
+        }
+      );
+    }
+  });
+};
+```
+
 ### Promise.race()
+
+```js
+Promise.race = function (promises) {
+  return new Promise((resolve, reject) => {
+    // 遍历所有的promise
+    for (let i = 0; i < promises.length; i++) {
+      promises[i].then(
+        (v) => {
+          resolve(v);
+        },
+        (r) => {
+          reject(r);
+        }
+      );
+    }
+  });
+};
+```
 
 ## 回调函数异步执行
 
 ## class 版本
+  完成上面的步骤，Promise对象的封装已经基本完成了。下面我们将进封装的Promise对象完善为class版本。

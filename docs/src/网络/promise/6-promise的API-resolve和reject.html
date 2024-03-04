@@ -9,19 +9,29 @@
 
 <body>
     <script>
+        // Promise.resolve()方法
+        // 传入一个非Promise参数
         let p1 = Promise.resolve(521)
+        // 不传参
+        let p2 = Promise.resolve()
         // 如果传入的参数为 非Promise类型的对象，则返回的结果为成功Promise对象
         // 如果传入的参数为 Promise对象，则参数的结果决定了resolve的结果
-        let p2 = Promise.resolve(new Promise((resolve, reject) => {
+        let p3 = Promise.resolve(new Promise((resolve, reject) => {
             resolve('ok')
-        }))
-
-        let p3 = Promise.reject(521)
-        let p4 = Promise.reject(new Promise((resolve, reject) => {
-            reject('error')//Uncaught (in promise) error,这里需要使用catch来处理错误，这样浏览器就不会报错了
         }))
         console.log("********", p1);
         console.log("********", p2);
+        console.log("********", p3);
+
+        // Promise.reject()方法
+        let p4 = Promise.reject(521)
+        let p5 = Promise.reject()
+        let p6 = Promise.reject(new Promise((resolve, reject) => {
+            reject('error')//Uncaught (in promise) error,这里需要使用catch来处理错误，这样浏览器就不会报错了
+        }))
+        console.log("********", p4);
+        console.log("********", p5);
+        console.log("********", p6);
     </script>
 </body>
 
