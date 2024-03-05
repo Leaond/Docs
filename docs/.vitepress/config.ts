@@ -47,7 +47,7 @@ export default defineConfig({
         text: "Guide",
         collapsed: true,
         items: [
-          { text: "Introduction", link: "/introduction" },
+          { text: "Introduction", link: "/src/文件上传.md" },
           { text: "Getting Started", link: "/getting-started" },
         ],
       },
