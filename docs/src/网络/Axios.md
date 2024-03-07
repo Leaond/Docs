@@ -723,3 +723,8 @@ source.cancel("Operation canceled by the user.");
 当我们使用上面的方式取消axios的请求时，取消请求也算是请求失败的一种，所以也会被响应拦截器进行捕获到。
 ![./image/Axios/cancle.png]
 :::
+
+## 模拟axios的创建过程
+
+## 模拟axios发送请求
+

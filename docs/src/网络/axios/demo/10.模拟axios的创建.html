@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/1.5.0/axios.min.js"></script>
+
+    <title>axios的由来</title>
+</head>
+
+<body>
+    <script>
+        function Axios(config) {
+            this.defaults = config//初始化默认配置
+            // 创建拦截器对象
+            this, interceptors = {
+                request: {},
+                response: {},
+            }
+        }
+        // 添加原型上的相关方法
+        Axios.prototype.request = function (config) {
+            console.log("=====>>> ", config.method);
+        }
+        Axios.prototype.post = function (config) {
+            return this.request(config)
+        }
+        Axios.prototype.get = function (config) {
+            return this.request(config)
+        }
+        // 声明函数
+        function createInstance(config) {
+            // 实例化一个对象
+
+            let context = new Axios(config)
+            //完成上面的步骤context可以实现对象调用方法：context.get(config),但是不能使用函数的形式调用方法context({}) 
+
+            // 创建请求函数
+            let instance = Axios.prototype.request.bind(context)
+            //完成上面的步骤instance是一个函数，并且可以实现instance({}),但是不能使用对象的形式调用方法context.get() 
+
+            // 将Axios.prototype对象中的方法添加到instance函数对象中
+            Object.keys(Axios.prototype).forEach(key => {
+                instance[key] = Axios.prototype[key].bind(context)
+                // 使用bind方法改变this指向，使得可以再内部使用this.defaults这种格式使用方法
+                // console.log("=====>>> ",key);
+                console.dir("=====>>> ", key);
+            })
+
+            // 为instance函数对象添加属性defaults和interceptor
+            Object.keys(context).forEach(key => {
+                instance[key] = context[key]
+                console.dir("=====>>> ", key);
+            })
+            return instance
+        }
+        let axios = createInstance()
+        axios({method:'get'})//对象的方式使用
+        // axios.get({method:'POST'})//函数的方式使用
+    </script>
+</body>
+
+</html>
