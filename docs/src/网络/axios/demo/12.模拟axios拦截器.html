@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>模拟axios拦截器</title>
+</head>
+
+<body>
+    <script>
+        // 创建axios构造函数
+        function Axios(config) {
+            this.config = config
+            this.interceptors = {
+                request: new interceptorManager(),
+                response: new interceptorManager(),
+            }
+
+        }
+        // 模拟request发送请求成功并返回数据
+        Axios.prototype.request = function (config) {
+            // 创建一个pronise对象
+            let promise = Promise.resolve(config)
+            // 创建一个数组,这里为什么放一个undefined？？？
+            const chains = [dispatchRequest, undefined]
+            // 处理拦截器
+            // 将请求拦截器的方法按顺序压入chains数组的前面
+            this.interceptors.request.handlers.forEach(value=>{
+                chains.unshift(value.fullfilled,value.rejected)
+            })
+            // 将响应拦截器的方法放入chains的后面
+            this.interceptors.response.handlers.forEach(value=>{
+                chains.push(value.fullfilled,value.rejected)
+            })
+            // 执行完上面的代码之后，chains数组：[two,one,dispatchRequest,undefined,one,two]
+            console.log("chains=====>>> ",chains);
+            while(chains.length){
+                promise = promise.then(chains.shift(),chains.shift())
+            }
+
+        }
+        // dispatchRequest函数
+        function dispatchRequest(config) {
+            return new Promise((resolve, reject) => {
+                resolve({
+                    status: 200,
+                    statusText: 'OK'
+                })
+            })
+        }
+        
+        // 创建实例
+        let context = new Axios({})
+        // 创建axios 函数
+        let axios = Axios.prototype.request.bind(context)
+        // 将context属性添加至axios函数对象身上去
+        Object.keys(context).forEach(key => {
+            axios[key] = context[key]
+        })
+        // 拦截器构造函数
+        function interceptorManager() {
+            this.handlers = []
+        }
+        // 拦截器构造函数的原型上有use方法
+        interceptorManager.prototype.use = function (fullfilled, rejected) {
+            this.handlers.push({
+                fullfilled,
+                rejected
+            })
+        }
+
+        axios.interceptors.request.use(function one(config) {
+            console.log("❥❥❥❥", 111);
+            return config
+        },function one(config) {
+            console.log("❥❥❥❥", 111);
+            return config
+        })
+        axios.interceptors.request.use(function two(config) {
+            console.log("❥❥❥❥", 222);
+            return config
+        },function two(config) {
+            console.log("❥❥❥❥", 222);
+            return config
+        })
+        axios.interceptors.response.use(function three(response) {
+            console.log("❥❥❥❥", 444);
+            return response
+        },function three(response) {
+            console.log("❥❥❥❥", 444);
+            return response
+        })
+        axios.interceptors.response.use(function four(response) {
+            console.log("❥❥❥❥", 555);
+            return response
+        },function four(response) {
+            console.log("❥❥❥❥", 555);
+            return response
+        })
+        console.dir("=====>>> ", axios);
+
+        axios({
+            method: 'post',
+            url: 'http://localhost:3000/posts'
+        }).then(res => {
+            console.log("res=====>>> ", res);
+        })
+        axios.interceptors
+    </script>
+</body>
+
+</html>

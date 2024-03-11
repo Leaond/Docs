@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./axios.css">
+    <title>模拟axios取消请求</title>
+</head>
+
+<body>
+    <button class="btn1">axios.request发送请求</button>
+    <button class="btn2">axios.post发送请求</button>
+    <script>
+        // 创建axios构造函数
+        function Axios(config) {
+            this.config = config
+        }
+        // 模拟request发送请求成功并返回数据
+        Axios.prototype.request = function (config) {
+            return dispatchRequest(config)
+
+        }
+        // dispatchRequest函数
+        function dispatchRequest(config) {
+            return xhrAdapter(config)
+        }
+
+        function xhrAdapter(config) {
+            return new Promise((resolve, reject) => {
+                let xhr = new XMLHttpRequest()
+                xhr.open(config.method, config.url)
+                xhr.send()
+                xhr.onreadyState = function () {
+                    if (xhr.readyState == 4) {
+                        resolve({
+                            ststus: xhr.ststus,
+                            statusText: 'OK'
+                        })
+                    }
+                }
+                // 关于取消请求的处理
+                if (config.cancelToken) {
+                    // 对cancelToken对象身上的promise指定成功的回调
+                    config.cancelToken.promise.then(value => {
+                        xhr.abort()
+                        reject()
+                    })
+
+                }
+            })
+
+        }
+        // 
+        let context = new Axios()
+        let axios = Axios.prototype.request.bind(context)
+
+        // cancelToken构造函数
+        function CancelToken(exector) {
+            // 声明一个变量
+            var resolvePromise
+            // 为实例对象添加属性
+            this.promise = new Promise((resolve) => {
+                // 将resolve赋值给resolvePromise，并且暴露出去
+                resolvePromise = resolve
+            })
+            // 执行器函数
+            exector(function () {
+                //执行resolvePromise()， 返回一个成功的promise
+                resolvePromise()
+            })
+        }
+        // 声明一个全局变量
+        let cancel = null
+        let btns = document.querySelectorAll('button')
+        btns[0].onclick = function () {
+
+            // 创建cancelToken值
+            let cancelToken = new CancelToken(function (c) {
+                cancel = c
+            })
+            axios({
+                method: 'post',
+                url: 'http://localhost:3000/posts',
+                cancelToken,
+            }).then(res => {
+                console.log("res=====>>> ", res);
+                cancel = null
+            })
+        }
+        btns[1].onclick = function () {
+            cancel()
+        }
+
+
+    </script>
+</body>
+
+</html>
