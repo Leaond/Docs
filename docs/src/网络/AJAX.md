@@ -17,20 +17,70 @@ Ajax 出现的原因：在 Ajax 之前只有 form 中的表单能向后端提交
 - 存在跨域问题
 - SEO 不友好
 
+## Ajax 和 fetch 的区别
+
+ajax 是最早出现的发送后端请求的技术，它依赖于 xmlhttpRequest 对象。fetch 是基于 Promise 设计的，fetch 不是 ajax 的进一步封装，而是原生的 JavaScript。
+
+- fetch 只对网络请求才会报错，对于 400、500 都当做成功请求，服务器返回 400,500 错误码的时候并不会 rejected。
+
+针对这个问题，我们可以用 catch() 来进行捕获这类错误：
+
+```js
+fetch("http://localhost:3000/posts", { method: "GET" })
+  .then((response) => {
+    if (response.ok) {
+      return response.json();
+    }
+    throw new Error("Network response was not ok.");
+  })
+  .then((json) => console.log(json))
+  .catch((error) => console.error("error:", error));
+```
+
+- 默认情况下，fetch 不会携带 cookie 信息。但是我们可以添加配置项来解决这个问题：`fetch(url, {credentials: 'include'})`
+- fetch 不能取消请求，也没有直接设置超时时间的属性。可以通过封装 Promise 然后使用 setTimeout()来设置一个超时时间。
+- fetch 没有办法原生监测请求的进度，但是 XHR 可以。
+
+```js
+function getData() {
+  return new Promise((resolve, reject) => {
+    fetch("http://localhost:3000/posts", { method: "get" })
+      .then((response) => {
+        return response.json();
+      })
+      .then((r) => {
+        resolve(r);
+      });
+    setTimeout(() => {
+      reject("请求超时");
+    }, 1000 * 10);
+  });
+}
+getData()
+  .then((res) => {
+    console.log("=====>>> ", res);
+  })
+  .catch((error) => {
+    console.log("=====>>> ", error);
+  });
+
+// fetch会和setTimeout同时执行，因为fetch是异步的，不会堵塞后面setTimeout的执行。
+```
+
 ## 创建原生 Ajax 的 4 个步骤
 
 1.  创建一个 Ajax 对象
 
 ```js
-const xhr = new xmlhttpRequest(); 
+const xhr = new xmlhttpRequest();
 ```
 
 2.  初始化 设置请求方式和请求地址
+
 ```js
 //获取后台的地址，并且使用open方法与服务器建立连接
 xhr.open(请求方式，请求地址，是否异步)
 ```
-
 
 Ajax 根据前端请求方式的不同会对数据进行不同方式的拼接发送给后端，所以需要先对请求方式进行判断，再进行数据处理(下面的例子是调用封装的数据处理函数 toval())
 
@@ -52,12 +102,12 @@ if (obj.method.toLowerCase() === "get") {
 
 ```js
 xhr.send();
-
 ```
 
 4. 监听状态 onreadystatechange
 
-当ajax的状态发生改变时即xhr实例的状态发生改变时会触发 onreadystatechange 函数。所以我们通过监听这个状态就能做响应的处理。关于ajax的状态后面会讲到。
+当 ajax 的状态发生改变时即 xhr 实例的状态发生改变时会触发 onreadystatechange 函数。所以我们通过监听这个状态就能做响应的处理。关于 ajax 的状态后面会讲到。
+
 ```js
 xhr.onreadystatechange = function () {
   // 判断Ajax是否已经是最后一个状态
@@ -89,7 +139,7 @@ xhr.onreadystatechange = function () {
 - `readyState = 0`: Ajax 刚开始创建(new xmlhttpRequest() 执行完)
 - `readyState = 1`: Ajax 和后台服务器刚建立起联系(xhr.open()执行完)
 - `readyState = 2`: Ajax 发送数据(xhr.send() 执行完)
-- `readyState = 3`: Ajax 开始接收数据。这里ajax已经接收了部分数据，并且正在解析数据
+- `readyState = 3`: Ajax 开始接收数据。这里 ajax 已经接收了部分数据，并且正在解析数据
 - `readyState = 4`: Ajax 接收数据完毕，已经接收到全部的相应数据，解析也已经完成
 
 Ajax 接收服务器响应的数据(即 res.response)会以字符串格式存放在 xhr.responseText() 中。可以使用 JSON.parse() 转换成对象。
@@ -136,8 +186,6 @@ nodemon [your node app]
   </script>
 </body>
 ```
-
-
 
 ```js
 // server.js
@@ -325,11 +373,12 @@ xhr.setRequestHeader("", "");
 
 常见的预定义头
 
-1. Content-Type:指定请求体的媒体类型，常见的值有：
+1. Content-Type:指定请求体的媒体类型，浏览器会根据这个响应的媒体类型，进行相关的解析。常见的值有：
 
 - application/json：用于指定发送 JSON 格式的数据
 - application/x-www-form-urlencoded：用于发送表单数据(默认值)
 - multipart/form-data：用于发送包含文件上传的表单数据
+- application/octet-stream：显示数据是字节流类型的，浏览器会按照下载类型来处理该请求。
 
 2. Accept：指定客户端可以接受的响应内容的媒体类型，常见的值有：
 
