@@ -542,6 +542,7 @@ Promise.race = function (promises) {
 ```
 
 ## 回调函数异步执行
+在回调函数中加个定时器0s后执行
 
 ## class 版本
   完成上面的步骤，Promise对象的封装已经基本完成了。下面我们将进封装的Promise对象完善为class版本。

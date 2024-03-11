@@ -727,4 +727,9 @@ source.cancel("Operation canceled by the user.");
 ## 模拟axios的创建过程
 
 ## 模拟axios发送请求
+## 模拟axios拦截器
+  use的作用就是将use接收到的函数参数放到request这个方法的hanlder属性身上，请求拦截器放入的方式是unshift 相应拦截器函数放入的方式是push
+  ## 模拟取消axios请求
+  ## axios总结
+  
 
