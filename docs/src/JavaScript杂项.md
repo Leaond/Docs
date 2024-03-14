@@ -86,12 +86,10 @@ encodeURI()和 encodeURIComponent()的区别是：encodeRUIComponent()用于对 
 - console.timeEnd()。结束特定的 计时器 并以豪秒打印其从开始到结束所用的时间。
 - console.timeLog()。打印特定 计时器 所运行的时间。
 - console.timeStamp()。添加一个标记到浏览器的 Timeline 或 Waterfall 工具。
-- console.trace()。输出一个 stack trace。
+- console.trace()。输出一个 stack trace,输出函数调用关系。
 - console.warn()。打印一个警告信息，可以使用 string substitution 和额外的参数。
 
 ## BFC
-
-
 
 项目优化 1.首屏速度优化-体积体积重点
 异步引入把一些不需要在首页中渲染的 js 代码，延后加载
