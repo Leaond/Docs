@@ -16,17 +16,15 @@
         // 2.创建request方法
         Axios.prototype.request = function (config) {
             // 发送请求
-            // 1.对config进行合并处理
+            // 1.对config进行合并处理:包括默认配置参数和请求的配置参数；请求头参数等等。
             // ...
             // 2.创建peomise对象
             let promise = Promise.resolve(config)
             // 申明数组
             let chains = [dispatchRequest, undefined]//undefined占位
             // 遍历数组处理数据
-            while (true) {
-                let result = promise.then(chains[0], chains[1])//必定执行第一个回调
-                return result
-            }
+            let result = promise.then(chains[0], chains[1])//必定执行第一个回调
+            return result
 
         }
         // 3. dispatchrequest函数
@@ -45,16 +43,16 @@
         }
         // 4.adapter适配器
         function adapter(config) {
-            console.log("=====>>>adapter ",config);
+            console.log("=====>>>adapter ", config);
             return new Promise((resolve, reject) => {
                 // 发送ajax请求
                 let xhr = new XMLHttpRequest()
                 xhr.open(config.method, config.url)
                 xhr.send()
                 xhr.onreadystatechange = function () {
-                    console.log("=====>>> xhr",xhr);
+                    console.log("=====>>> xhr", xhr);
                     if (xhr.readyState === 4) {
-                        if (xhr.status == 200 && xhr.status < 300)
+                        if (xhr.status == 200 && xhr.status < 300) {
                             // 请求成功，返回成功的promise，并且封装响应体返回
                             resolve({
                                 config,//配置对象
@@ -64,10 +62,11 @@
                                 status: xhr.status,//响应状态码
                                 statusText: xhr.statusText,//响应状态字符串
                             })
-                    } else {
-                        console.log("==失败===>>> ",);
-                        // 请求失败
-                        reject(new Error('请求失败'))
+                        } else {
+                            console.log("==失败===>>> ",);
+                            // 请求失败
+                            reject(new Error('请求失败'))
+                        }
                     }
                 }
             })
@@ -75,8 +74,8 @@
 
         // 5.创建aixos函数
         let axios = Axios.prototype.request.bind(null)
-        axios({ method: 'get',url:'http://localhost:3000/posts' }).then(response=>{
-            console.log("=====>>> axios",response);
+        axios({ method: 'get', url: 'http://localhost:3000/posts' }).then(response => {
+            console.log("=====>>> axios",JSON.parse(response.data) );
         })
     </script>
 </body>
