@@ -1,4 +1,4 @@
-# TypeScript 相关
+# TypeScript
 
 ## keyof
 

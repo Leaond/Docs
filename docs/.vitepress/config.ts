@@ -4,7 +4,7 @@ export default defineConfig({
   lang: "zh",
   title: "Docs",
   description: "Vite & Vue powered static site generator.",
-  base:"/LancerDocs",
+  base: "/LancerDocs",
   // base:"/LancerDocs/docs",
   themeConfig: {
     logo: "/docs/public/look.svg",
@@ -29,12 +29,12 @@ export default defineConfig({
     // 搜索
     search: {
       // provider: 'algolia',
-      provider: 'local',
+      provider: "local",
       options: {
-        appId: '',
-        apiKey: '',
-        indexName: ''
-      }
+        // appId: '',
+        // apiKey: '',
+        // indexName: ''
+      },
     },
     // 社交链接
     socialLinks: [
@@ -44,10 +44,75 @@ export default defineConfig({
     // 侧边栏
     sidebar: [
       {
-        text: "Guide",
+        text: "算法",
+        collapsed: false,
+        items: [
+          { text: "动态规划", link: "/src/算法/动态规划.md" },
+          { text: "双指针", link: "/src/算法/双指针.md" },
+        ],
+      },
+      {
+        text: "网络",
+        collapsed: false,
+        items: [
+          { text: "AJAX", link: "/src/网络/AJAX.md" },
+          { text: "Axios", link: "/src/网络/Axios.md" },
+          { text: "Promise", link: "/src/网络/Promise.md" },
+          { text: "实现axios", link: "/src/DIY/Axios.md" },
+          { text: "实现Promise", link: "/src/DIY/Promise.md" },
+        ],
+      },
+      {
+        text: "node",
+        collapsed: false,
+        items: [
+          { text: "Buffer", link: "/src/nodejs/Buffer/buffer.md" },
+          { text: "fileSystem", link: "/src/nodejs/fs/fs.md" },
+          { text: "path", link: "/src/nodejs/path/path.md" },
+          { text: "HTTP", link: "/src/nodejs/http/http.md" },
+          { text: "express", link: "/src/nodejs/express/express.md" },
+        ],
+      },
+      {
+        text: "浏览器",
+        collapsed: false,
+        items: [
+          { text: "文件上传", link: "/src/浏览器/文件上传.md" },
+          { text: "浏览器", link: "/src/浏览器/浏览器.md" },
+          { text: "Web缓存", link: "/src/网络/web缓存.md" },
+        ],
+      },
+
+      {
+        text: "工程化",
+        collapsed: false,
+        items: [
+          { text: "Vite", link: "/src/工程化/vite/vite.md" },
+          { text: "Webpack", link: "/src/工程化/webpack/webpack.md" },
+        ],
+      },
+      {
+        text: "TypeScript",
+        collapsed: false,
+        items: [
+          { text: "TypeScript", link: "/src/TypeScript/TypeScript.md" },
+          { text: "JavaScript", link: "/src/TypeScript/JS.md" },
+        ],
+      },
+      {
+        text: "项目及文档搭建",
+        collapsed: false,
+        items: [
+          { text: "VitePress搭建", link: "/src/项目搭建/vitepress搭建记录.md" },
+          { text: "vue3项目搭建", link: "/src/项目搭建/vue3项目搭建.md" },
+          { text: "路由", link: "/src/项目搭建/路由.md" },
+        ],
+      },
+      {
+        text: "css",
         collapsed: true,
         items: [
-          { text: "Introduction", link: "/src/文件上传.md" },
+          { text: "Introduction", link: "/introduction" },
           { text: "Getting Started", link: "/getting-started" },
         ],
       },
@@ -60,66 +125,6 @@ export default defineConfig({
           { text: "Timeline", link: "/src/gsap/timeline.md" },
           { text: "Easing", link: "/src/gsap/ease.md" },
           { text: "Plugins", link: "/src/gsap/scrolltrigger.md" },
-        ],
-      },
-      {
-        text: "css",
-        collapsed: true,
-        items: [
-          { text: "Introduction", link: "/introduction" },
-          { text: "Getting Started", link: "/getting-started" },
-        ],
-      },
-      {
-        text: "算法",
-        collapsed: true,
-        items: [
-          { text: "动态规划", link: "/introduction" },
-          { text: "双指针", link: "/getting-started" },
-          { text: "ts", link: "/src/TypeScript.md" },
-        ],
-      },
-      {
-        text: "项目及文档搭建",
-        collapsed: true,
-        items: [
-          { text: "VitePress搭建", link: "/src/项目搭建/vitepress搭建记录.md" },
-          { text: "vue3项目搭建", link: "/src/项目搭建/vue3项目搭建.md" },
-          { text: "路由", link: "/src/项目搭建/路由.md" },
-        ],
-      },
-      {
-        text: "网络",
-        collapsed: true,
-        items: [
-          { text: "AJAX", link: "/src/网络/AJAX.md" },
-          { text: "Axios", link: "/src/网络/Axios.md" },
-          { text: "Promise", link: "/src/网络/Promise.md" },
-          { text: "Web缓存", link: "/src/网络/web缓存.md" },
-        ],
-      },
-      {
-        text: "DIY",
-        collapsed: true,
-        items: [
-          { text: "axios", link: "/src/DIY/Axios.md" },
-          { text: "Promise", link: "/src/DIY/Promise.md" },
-        ],
-      },
-      {
-        text: "node",
-        collapsed: true,
-        items: [
-          { text: "node", link: "/src/nodejs/node.md" },
-          { text: "浏览器", link: "/src/nodejs/浏览器API.md" },
-        ],
-      },
-      {
-        text: "工程化",
-        collapsed: true,
-        items: [
-          { text: "Vite", link: "/src/工程化/vite/vite.md" },
-          { text: "Webpack", link: "/src/工程化/webpack/webpack.md" },
         ],
       },
     ],
