@@ -438,10 +438,48 @@ xhr.setRequestHeader("", "");
 在前后端分离的模式下，当前端调用后台接口的时候，由于是在非同一个域下面的请求，从而会触发浏览器的自我安全保护机制（同源策略），最终的结果是接口成功请求并响应，但是前端不能正常处理返回的数据。
 
 ### 跨域出现的原因：同源策略
+同源策略：他用于限制 Origin 的文档或者它加载的脚本如何能与另一个源的资源进行交互，其中 Origin 指 Web 文档的来源，Web 内容的来源取决于访问的 URL 方案（协议）、主机（域名、IP 地址）和端口定义。
 
 跨域是浏览器里面同源策略的安全限制，如果没有这个策略，那么所有的地址都可以访问任何一台服务器文件。
 
 ### 如何解决 Ajax 跨域
+```js
+//前端
+<script>
+   window.callback = function (res) {
+     console.log(res)
+   }
+ </script>
+ <script src =' http://127.0.0.1:8080/jsonp?username=111&callback=callback'> </script>
+```
+
+```js
+//后端
+const express = require("express");
+
+const router = express.Router();
+const app = express();
+router.get("/jsonp", (req, res) => {
+  const { callback, username } = req.query;
+
+  if (username === "111") {
+    const requestData = {
+      code: 200,
+      status: "登录成功",
+    };
+    res.send(`${callback}(${JSON.stringify(requestData)})`);
+  }
+});
+
+app.use(router);
+
+app.listen("8080", () => {
+  console.log("api server running at http://127.0.0.1:8080");
+});
+```
+
+ProxyServer
+同源策略主要是限制浏览器和服务器之间的请求，服务器与服务器之间并不存在跨域问题。所以根据这样的问题，前端就可以将请求发送给同源或者设置好跨域的代理服务器，代理服务器收到代理请求后，将真正的请求转发到目标服务器，并接受真正服务器的响应，再把收到的结果响应给前端。
 
 ## HTTP
 
