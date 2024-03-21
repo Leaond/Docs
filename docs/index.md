@@ -29,15 +29,13 @@ hero:
   actions:
     - theme: brand
       text: 进入主页
-      link: src/gsap/gsap.md
-    - theme: alt
-      text: 个人成长
-      link: /learndocs/vue3学习
+      link: src/浏览器/浏览器.md
+
 # 按钮下方的描述
 features:
   - icon: 🤹
-    title: Web前端
-    details: 大厂程序媛，国内某互联网厂搬砖。
+    title: 前端
+    details: 搬砖。
     link: /column/views/guide
   - icon: 👩
     title: 喜欢美学

@@ -4,7 +4,7 @@ export default defineConfig({
   lang: "zh",
   title: "Docs",
   description: "Vite & Vue powered static site generator.",
-  base: "/LancerDocs",
+  base: "/",
   // base:"/LancerDocs/docs",
   themeConfig: {
     logo: "/docs/public/look.svg",
