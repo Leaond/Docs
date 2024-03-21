@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntersectionObserver</title>
+    <style>
+        body{
+            height: 2000px;
+        }
+        .box {
+            width: 400px;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            border: 1px solid #D4E5FF;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="box" class="box">IntersectionObserver</div>
+    <script>
+        const io = new IntersectionObserver(()=>{
+            console.log("=====>>> ",);
+        }, {});
+        // 获取元素
+        const target = document.getElementById("box");
+        // 开始观察
+        io.observe(target);
+    </script>
+</body>
+
+</html>

@@ -76,6 +76,7 @@ export default defineConfig({
         items: [
           { text: "动态规划", link: "/introduction" },
           { text: "双指针", link: "/getting-started" },
+          { text: "ts", link: "/src/TypeScript.md" },
         ],
       },
       {
@@ -94,6 +95,7 @@ export default defineConfig({
           { text: "AJAX", link: "/src/网络/AJAX.md" },
           { text: "Axios", link: "/src/网络/Axios.md" },
           { text: "Promise", link: "/src/网络/Promise.md" },
+          { text: "Web缓存", link: "/src/网络/web缓存.md" },
         ],
       },
       {
@@ -109,6 +111,7 @@ export default defineConfig({
         collapsed: true,
         items: [
           { text: "node", link: "/src/nodejs/node.md" },
+          { text: "浏览器", link: "/src/nodejs/浏览器API.md" },
         ],
       },
       {

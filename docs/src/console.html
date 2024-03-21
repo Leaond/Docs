@@ -10,16 +10,24 @@
 
 <body>
     <script>
-        function Point(x, y) {
-            this.x = x;
-            this.y = y;
+        function get() {
+            const formdata = new FormData()
+            formdata.append('test', 1)
+            formdata.append('test1', 1222)
+            axios({
+                url: 'http://localhost:3000/posts',
+                method: 'post',
+                Headers: {
+                    "Content-Type": 'multipart/form-data'
+                },
+                data: {
+                    formdata
+                }
+            }).then(res => {
+
+            })
         }
-
-        Point.prototype.toString = function () {
-            return '(' + this.x + ', ' + this.y + ')';
-        };
-
-        var p = new Point(1, 2);
+        get()
     </script>
 </body>
 
