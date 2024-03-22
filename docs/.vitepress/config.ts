@@ -4,7 +4,7 @@ export default defineConfig({
   lang: "zh",
   title: "Docs",
   description: "Vite & Vue powered static site generator.",
-  // base: "/LancerDocs",
+  base: "/docs",
   // base:"/LancerDocs/docs",
   themeConfig: {
     logo: "/docs/public/look.svg",
@@ -79,7 +79,7 @@ export default defineConfig({
         items: [
           { text: "文件上传", link: "/src/浏览器/文件上传.md" },
           { text: "浏览器", link: "/src/浏览器/浏览器.md" },
-          { text: "Web缓存", link: "/src/网络/web缓存.md" },
+          { text: "Web缓存", link: "/src/浏览器/web缓存.md" },
         ],
       },
 
@@ -87,8 +87,8 @@ export default defineConfig({
         text: "工程化",
         collapsed: false,
         items: [
-          { text: "Vite", link: "/src/工程化/vite/vite.md" },
           { text: "Webpack", link: "/src/工程化/webpack/webpack.md" },
+          { text: "Vite", link: "/src/工程化/vite/vite.md" },
         ],
       },
       {

@@ -1,39 +1,91 @@
 # webpack
 
-webpack 是一个用于现代 JavaScript 应用程序的 `静态模块打包工具`。当 webpack 处理应用程序时，他会在内部从 一个或多个入口构建 依赖图。然后将你在项目里面所需的每一个模块组合成一个或多个 bundles，他们均是静态资源，用于展示你的内容。
+[webpack](https://www.webpackjs.com/) 是一个用于现代 JavaScript 应用程序的 `静态模块打包工具`。当 webpack 处理应用程序时，他会在内部从 一个或多个入口构建 依赖图。然后将你在项目里面所需的每一个模块组合成一个或多个 bundles，他们均是静态资源，用于展示你的内容。
 
-:::tip 依赖图 dependency graph
+:::tip 依赖图 (dependency graph)
 每当一个文件依赖另一个文件时，webpack 都会将文件视为直接存在 依赖关系。这使得 webpack 可以获取非代码资源，如 images 或 web 字体等。并会把他们作为 依赖 提供给应用程序。
 
-当 webpack 处理应用程序时，它会根据命令行参数中或配置文件中定义的模块列表开始处理。从 入口 开始，webpack 会递归的构建一个 依赖关系图，这个依赖图包含着应用程序中所需的每个模块，然后将所有模块打包为少量的 bundle， 通常只有一个 ，可由浏览器加载。
+当 webpack 处理应用程序时，它会根据 命令行参数中 或 配置文件中 定义的模块列表开始处理。从 入口 开始，webpack 会递归的构建一个 依赖关系图，这个依赖图包含着应用程序中所需的每个模块，然后将所有模块打包为少量的 bundle(通常只有一个),可由浏览器加载。
 :::
 
-## 为什么需要打包工具
+## 为什么需要打包工具?
 
 解决开发与生产的矛盾
 
-1. 开发的时候我们为了方便以及解耦或者其他原因呢，我们会使用模块化的思想进行开发，将代码拆分成一个个模块。但是浏览器自身是无法解析模块化的，所以就需要使用打包工具将我们的在开发阶段的写代码合成一个或多个浏览器能解析的文件。
+1. 开发的时候为了方便以及解耦或者其他原因，我们会使用模块化的思想进行开发，将代码拆分成一个个模块。但是浏览器自身是无法解析模块化的，所以就需要使用打包工具将我们的在开发阶段的写代码合成一个或多个浏览器能解析的文件。
 2. 我们在开发的时候会使用很多的框架 vue、react 或者新的语法(es6 之类的)，但是浏览器并不认识这些语法也不能识别这些后缀的文件，浏览器只能够解析 js 文件，这时候就需要打包工具将我们的代码打包成浏览器认识的语法。
 
 ## webpack 的相关概念
 
-### 入口(entry)
+下面将对 webpack 的一些核心概念进行梳理。
+
+## 入口(entry)
 
 入口起点(entry point)指示 webpack 应该使用哪个模块，来作为 webpack 构建其内部关系依赖图的开始。进入入口起点后，webpack 会找出有哪些模块或库是入口起点依赖的。
 
-默认值是`./src/index.js`,我们也可以在 webpack configuration 中配置 entry 属性，来指定一个或多个起点。
+入口起点的默认值是 `./src/index.js`,我们也可以在` webpack configuration` 中配置 entry 属性，来指定一个或多个起点。
+
+### 简写语法
 
 ```js
 // webpack.config.js
+const path = require("path");
+
 module.exports = {
+  // 修改入口文件
   entry: "./path/to/my/entry/file.js",
+
+  // 配置多个入口文件
+  entry: ["./src/js/index.js", "./src/js/add.js"],
+
+  output: {
+    path: path.resolve(__dirname, "dist"),
+    filename: "my-first-webpack.bundle.js",
+  },
 };
 ```
 
-### 输出(output)
+### 对象语法
+
+```js
+entry: `{ <entryChunkName> string | [string] } | {}`;
+
+// 例子
+// webpack.config.js
+module.exports = {
+  entry: {
+    app: "./src/app.js",
+    adminApp: "./src/adminApp.js",
+  },
+};
+```
+
+### 对象语法的配置属性
+
+用于描述入口的对象。你可以使用如下属性：
+
+- `dependOn`: 当前入口所依赖的入口。它们必须在该入口被加载前被加载。
+
+- `filename`: 指定要输出的文件名称。
+
+- `import`: 启动时需加载的模块。
+
+- `library`: 指定 library 选项，为当前 entry 构建一个 library。
+
+- `runtime`: 运行时 chunk 的名字。如果设置了，就会创建一个新的运行时 chunk。在 webpack 5.43.0 之后可将其设为 false 以避免一个新的运行时 chunk。
+
+- `publicPath`: 当该入口的输出文件在浏览器中被引用时，为它们指定一个公共 URL 地址。请查看 output.publicPath。
+
+### 应用场景
+
+我们可以使用多入口配置对象，分离我们应用程序和第三方库的入口，也可以配置多页面应用。
+
+## 输出(output)
 
 output 属性可以告诉 webpack 在哪里输出他所创建的 bundle，以及如何命名这些文件。主要输出文件的默认值是 `./dist/main.js`,其他生成文件默认放置在`./dist`文件夹中。
 我们也可以通过配置来指定 output 字段。
+
+可以通过配置 output 选项，告知 webpack 如何向硬盘写入编译文件。注意，即使可以存在多个 entry 起点，但只能指定一个 output 配置。
 
 ```js
 // webpack.config.js
@@ -48,14 +100,42 @@ module.exports = {
 };
 ```
 
+上面的代码中，我们通过 output.filename 和 output.path 属性，来告诉 webpack bundle 的名称，以及我们想要 bundle 生成(emit)到哪里。
+
 ### loader
 
-webpack 只能理解 JavaScript 和 JSON 文件，这是 webpack 开箱自用的自带能力。loader 能够去处理其他类型的文件，并将他们转换为有效 模块。以提供应用程序使用，以及被添加到依赖图中。
+webpack 只能理解 JavaScript 和 JSON 文件，这是 webpack 开箱自用的自带能力。loader 能够去处理其他类型的文件，并将他们转换为有效 `模块`。以提供应用程序使用，以及被添加到依赖图中。
+
+:::tip 模块
+在模块化编程中，开发者将程序分解为功能离散的 chunk，并称之为 模块。
+
+每个模块都拥有小于完整程序的体积，使得验证、调试及测试变得轻而易举。 精心编写的 模块 提供了可靠的抽象和封装界限，使得应用程序中每个模块都具备了条理清晰的设计和明确的目的。
+:::
+
+loader 用于对模块的源代码进行转换。loader 可以使我们在 import 或 "load(加载)" 模块时 预处理文件。因此，loader 类似于其他构建工具中 任务(task)，并提供了处理前端构建步骤的得力方式。loader 可以将文件从不同的语言（如 TypeScript）转换为 JavaScript 或将内联图像转换为 data URL。loader 甚至允许我们直接在 JavaScript 模块中 import CSS 文件！
+
+例如：我们需要使用 loader 告诉 webpack 需要加载 css 文件，或者将 TS 转为 JS。
+
+```js
+// 1.首先安装相应的loader。
+npm install --save-dev css-loader ts-loader
+
+// 2.然后配置，告诉webpack对每个.css文件使用css-loader，对所有的.ts文件使用ts-loader
+// webpack.config.js
+module.exports = {
+  module: {
+    rules: [
+      { test: /\.css$/, use: 'css-loader' },
+      { test: /\.ts$/, use: 'ts-loader' },
+    ],
+  },
+};
+```
 
 在 webpack 的配置中，loader 有两个属性：
 
-- test 属性，识别出那些文件会被转换
-- use 属性，定义在进行转换时，应该使用哪个 loader。
+- `test`:识别出那些文件会被转换
+- `use`:定义在进行转换时，应该使用哪个 loader。
 
 ```js
 // webpack.config.js
@@ -65,19 +145,24 @@ module.exports = {
   output: {
     filename: "my-first-webpack.bundle.js",
   },
+  // loader配置
   // 下面对一个单独的module对象定义了 rules 属性，里面包含两个必须属性：test 和 use。
   module: {
-    // 这句话的意思是，当碰到 在require或者import语句中被解析为 '.txt'的路径时，在打包之前，先使用 raw-loader 转换一下。
+    // 这句话的意思是，当碰到 在require或者import语句中被解析为 '.txt'的路径时，在打包之前，先 使用 raw-loader 转换一下。
     rules: [{ test: /\.txt$/, use: "raw-loader" }],
   },
 };
 ```
 
+::: warning
+使用正则表达式匹配文件时，你不要为它添加引号。也就是说，/\.txt$/ 与 '/\.txt$/' 或 "/\.txt$/" 不一样。前者指示 webpack 匹配任何以 .txt 结尾的文件，后者指示 webpack 匹配具有绝对路径 '.txt' 的单个文件; 这可能不符合你的意图。
+:::
+
 ### 插件(plugin)
 
-loader 用于转换某些类型的模块，而插件则可以用于执行范围更广的任务。包括：打包优化，资源管理，注入环境变量。
+loader 用于转换某些类型的模块，插件目的在于解决 loader 无法实现的其他事。插件可以用于执行范围更广的任务。包括：打包优化，资源管理，注入环境变量。
 
-如果想要使用一个插件，我们只需要`require()`它，然后把他添加到`plugins`数组中。多数插件可以通过选项(option)自定义。我们也可以在一个配置文件中多次使用同一个插件，这个时候就需要使用 `new` 操作符来创建一个插件实例。
+如果想要使用一个插件，我们只需要使用`require()`引入，然后把他添加到`plugins`数组中。大多数的插件可以通过选项(option)自定义。我们也可以在一个配置文件中多次使用同一个插件，这个时候就需要使用 `new` 操作符来创建一个插件实例。
 
 ```js
 // webpack.config.js
@@ -86,6 +171,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const webpack = require("webpack"); // 用于访问内置插件
 
 module.exports = {
+  // 配置loader
   module: {
     rules: [{ test: /\.txt$/, use: "raw-loader" }],
   },
@@ -94,19 +180,34 @@ module.exports = {
 };
 ```
 
+在上面的代码中，html-webpack-plugin 为应用程序生成一个 HTML 文件，并自动将生成的所有 bundle 注入到此文件中。
+
 ### 模式(mode)
 
 通过选择 `development`，`production` 或 `none` 之中的一个，可以来设置 mode 参数，我们可以启用 webpack 内置在相应环境下的优化。默认值是 development。
+
+语法
+
+```js
+string = 'production': 'none' | 'development' | 'production'
+```
+
+- `development`：会将 DefinePlugin 中 process.env.NODE_ENV 的值设置为 development. 为模块和 chunk 启用有效的名。
+- `development`：会将 DefinePlugin 中 process.env.NODE_ENV 的值设置为 production。为模块和 chunk 启用确定性的混淆名称，FlagDependencyUsagePlugin，FlagIncludedChunksPlugin，ModuleConcatenationPlugin，NoEmitOnErrorsPlugin 和 TerserPlugin 。
+- `none`：不使用任何默认优化选项。
 
 ```js
 module.exports = {
   mode: "production",
 };
+
+// 或者从CLI参数中传递
+webpack --mode=development
 ```
 
 以上就是针对 webpack 的各项基本配置的一个简单介绍。更多详细的配置请参考[webpack 中文网](https://www.webpackjs.com)
 
-## 一个简单的例子
+## webpack 项目实战
 
 1. 新建一个空的项目文件夹，运行 `npm init -y` 生成 `package.json` 文件
 

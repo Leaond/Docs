@@ -26,7 +26,8 @@ ajax 是最早出现的发送后端请求的技术，它依赖于 xmlhttpRequest
 针对这个问题，我们可以用 catch() 来进行捕获这类错误：
 
 ```js
-fetch("http://localhost:3000/posts", { method: "GET" })
+// get请求
+fetch("http://localhost:3000/posts?test=111", { method: "GET" })
   .then((response) => {
     if (response.ok) {
       return response.json();
@@ -35,6 +36,26 @@ fetch("http://localhost:3000/posts", { method: "GET" })
   })
   .then((json) => console.log(json))
   .catch((error) => console.error("error:", error));
+
+// post请求
+// 要发送的数据
+const data = {
+  key1: "value1",
+  key2: "value2",
+};
+
+// 将数据转换为查询字符串
+const body = new URLSearchParams(data);
+
+// 发送POST请求
+fetch("https://example.com/api", {
+  method: "POST",
+  headers: { "Content-Type": "application/x-www-form-urlencoded" },
+  body: body.toString(),
+})
+  .then((response) => response.json())
+  .then((data) => console.log(data))
+  .catch((error) => console.error("Error:", error));
 ```
 
 - 默认情况下，fetch 不会携带 cookie 信息。但是我们可以添加配置项来解决这个问题：`fetch(url, {credentials: 'include'})`
@@ -438,11 +459,13 @@ xhr.setRequestHeader("", "");
 在前后端分离的模式下，当前端调用后台接口的时候，由于是在非同一个域下面的请求，从而会触发浏览器的自我安全保护机制（同源策略），最终的结果是接口成功请求并响应，但是前端不能正常处理返回的数据。
 
 ### 跨域出现的原因：同源策略
+
 同源策略：他用于限制 Origin 的文档或者它加载的脚本如何能与另一个源的资源进行交互，其中 Origin 指 Web 文档的来源，Web 内容的来源取决于访问的 URL 方案（协议）、主机（域名、IP 地址）和端口定义。
 
 跨域是浏览器里面同源策略的安全限制，如果没有这个策略，那么所有的地址都可以访问任何一台服务器文件。
 
 ### 如何解决 Ajax 跨域
+
 ```js
 //前端
 <script>

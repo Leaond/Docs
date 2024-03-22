@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试await后面不跟返回值的执行情况</title>
+</head>
+
+<body>
+    <script>
+        let test1 = 1
+        function a() {
+           while(test1<10000000000){
+            test1 ++
+           }
+        }
+        async function b() {
+            console.log("=====>>> ",111);
+            a()
+            await c()
+            console.log("=====>>> ",333);
+        }
+        function c(){
+            console.log("=====>>> ",222);
+            fetch(`http://localhost:3000/posts?test=${test1}`, { method: "GET" }).then(res=>{
+                console.log("=====>>> ",res);
+            })
+        }
+        b()
+    </script>
+</body>
+
+</html>
