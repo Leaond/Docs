@@ -1,5 +1,6 @@
 # webpack
 
+npm install webpack webpack-cli -g
 [webpack](https://www.webpackjs.com/) 是一个用于现代 JavaScript 应用程序的 `静态模块打包工具`。当 webpack 处理应用程序时，他会在内部从 一个或多个入口构建 依赖图。然后将你在项目里面所需的每一个模块组合成一个或多个 bundles，他们均是静态资源，用于展示你的内容。
 
 :::tip 依赖图 (dependency graph)
@@ -47,11 +48,11 @@ module.exports = {
 
 ### 对象语法
 
-```js
 entry: `{ <entryChunkName> string | [string] } | {}`;
 
-// 例子
-// webpack.config.js
+webpack.config.js
+
+```js
 module.exports = {
   entry: {
     app: "./src/app.js",
@@ -102,9 +103,9 @@ module.exports = {
 
 上面的代码中，我们通过 output.filename 和 output.path 属性，来告诉 webpack bundle 的名称，以及我们想要 bundle 生成(emit)到哪里。
 
-### loader
+## loader
 
-webpack 只能理解 JavaScript 和 JSON 文件，这是 webpack 开箱自用的自带能力。loader 能够去处理其他类型的文件，并将他们转换为有效 `模块`。以提供应用程序使用，以及被添加到依赖图中。
+webpack 只能理解 JavaScript 和 JSON 文件，这是 webpack 开箱自用的自带能力。loader 能够去处理其他类型的文件，并将他们转换为有效 `模块`,即 告诉 webpack 某种类型的文件应该使用什么 loader 转换成什么样子。以提供应用程序使用，以及被添加到依赖图中。
 
 :::tip 模块
 在模块化编程中，开发者将程序分解为功能离散的 chunk，并称之为 模块。
@@ -136,6 +137,34 @@ module.exports = {
 
 - `test`:识别出那些文件会被转换
 - `use`:定义在进行转换时，应该使用哪个 loader。
+- `loader`:loader 和 use 是同一个意思，但是 loader 后面只能跟字符串，而 use 后面可以跟配置对象。
+
+use 属性后面可以跟简单的字符串，也可以跟一个配置对象，进行更多的自定义配置，同时也可以跟一个数组，表示针对某一类文件需要用到多个 loader，多个 loader 的执行顺序是 从右到左，从下到上。
+
+```js
+// 官方示例
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [
+          { loader: "style-loader" },
+          {
+            loader: "css-loader",
+            options: {
+              modules: true,
+            },
+          },
+          { loader: "sass-loader" },
+        ],
+      },
+    ],
+  },
+};
+```
+
+上面的代码中，从 sass-loader 开始执行，然后继续执行 css-loader，最后以 style-loader 为结束。
 
 ```js
 // webpack.config.js
@@ -158,7 +187,7 @@ module.exports = {
 使用正则表达式匹配文件时，你不要为它添加引号。也就是说，/\.txt$/ 与 '/\.txt$/' 或 "/\.txt$/" 不一样。前者指示 webpack 匹配任何以 .txt 结尾的文件，后者指示 webpack 匹配具有绝对路径 '.txt' 的单个文件; 这可能不符合你的意图。
 :::
 
-### 插件(plugin)
+## 插件(plugin)
 
 loader 用于转换某些类型的模块，插件目的在于解决 loader 无法实现的其他事。插件可以用于执行范围更广的任务。包括：打包优化，资源管理，注入环境变量。
 
@@ -182,7 +211,7 @@ module.exports = {
 
 在上面的代码中，html-webpack-plugin 为应用程序生成一个 HTML 文件，并自动将生成的所有 bundle 注入到此文件中。
 
-### 模式(mode)
+## 模式(mode)
 
 通过选择 `development`，`production` 或 `none` 之中的一个，可以来设置 mode 参数，我们可以启用 webpack 内置在相应环境下的优化。默认值是 development。
 
@@ -221,7 +250,7 @@ webpack.config.js
 // 一定要使用commonjs语法
 module.exports = {
   // webpack4之后需要指定开发模式mode:"development" | "production" | "none"
-  mode: "production",
+  mode: "development",
   // entry指定入口文件、名字
   // entery:'./app.js',
   // entery:['./app.js',...],多入口
@@ -241,22 +270,7 @@ module.exports = {
   //   压缩相关
   optimization: {},
   //   loader的写法：module对象黄总，使用rules数组包裹，里面一个对象就是一个loader
-  module: {
-    rules: [
-      // loader格式，test表示匹配什么文件，loader表示使用那个loader
-      {
-        test: /\.js$/,
-        // loader:"babel-loader",
-        // use:[],
-        use: {
-          loader: "babel-loader",
-          options: {
-            // presets:
-          },
-        },
-      },
-    ],
-  },
+  module: {},
   //   插件:用数组装，所有的插件都要用new plugins注册
   plugins: [
     // new plugins(),
@@ -266,242 +280,470 @@ module.exports = {
 
 4. 上面对 webpack 进行了简单的配置，配置完成之后我们就可以进行打包了。运行`webpack`命令就能打包成功了。
 
-下面将对上面介绍的每个配置项进行语法介绍
+现在在项目里面分别创建几个 js 文件用来做测试
 
-## 入口起点(entry points)
-
-### 单个入口语法
-
-用法：`entry: string | [string]`
+app.js
 
 ```js
-// webpack.config.js
-module.exports = {
-  entry: "./path/to/my/entry/file.js",
-};
-
-// 下面是上面写法的完整语法
-module.exports = {
-  entry: {
-    main: "./path/to/my/entry/file.js",
-  },
+import b from "./a";
+() => {
+  let a = 23;
+  console.log("=====>>> ", b);
+  console.log("=====>>> ", a);
 };
 ```
 
-entry 也可以接受一个文件路径数组，这将创建一个所谓的 "multi-main entry".如果我们想要一次注入多个依赖文件，并且将他们的依赖关系绘制在一个 "chunk" 中时，就可以选择这种配置方式。
+a.js
 
 ```js
-// webpack.config.js
-module.exports = {
-  entry: ["./src/file_1.js", "./src/file_2.js"],
-  output: {
-    filename: "bundle.js",
-  },
-};
+let b = 3;
+console.log("=====>>> ", b);
+export default b + 1;
 ```
 
-### 对象语法
+### babel-loader 的安装配置
 
-用法：`entry: { <entryChunkName> string | [string] } | {}`
+babel-loader 是用来将 ES6 的语法转换成 ES5 的一个 loader。babel-loader 本身是不会做编译的，它相当于是个接口，去调用 babel/core 这个核心进行编译
 
-```js
-// webpack.config.js
-module.exports = {
-  entry: {
-    app: "./src/app.js",
-    adminApp: "./src/adminApp.js",
-  },
-};
-```
+安装：`npm install babel-loader @babel/core --save-dev`
 
-对象语法相比较单个入口的语法要繁琐一些，但是却是最可扩展的方式。
-:::tip
-`webpack 配置的可扩展`是指，这些配置可以重复使用，并且可以与其他配置组合使用。这是一种流行的技术，用于将关注点从环境(environment)、构建目标(build target)、运行时(runtime)中分离。然后使用专门的工具（如 webpack-merge）将它们合并起来。
-:::
-
-### 描述入口的对象
-
-通常可以使用下面的属性来描述入口文件对象：
-
-- `dependOn`: 当前入口所依赖的入口。它们必须在该入口被加载前被加载。
-
-- `filename`: 指定要输出的文件名称。
-
-- `import`: 启动时需加载的模块。
-
-- `library`: 指定 library 选项，为当前 entry 构建一个 library。
-
-- `runtime`: 运行时 chunk 的名字。如果设置了，就会创建一个新的运行时 chunk。在 webpack 5.43.0 之后可将其设为 false 以避免一个新的运行时 chunk。
-
-- `publicPath`: 当该入口的输出文件在浏览器中被引用时，为它们指定一个公共 URL 地址。请查看 output.publicPath。
-
-## 输出(output)
-
-可以通过配置 output 选项，告知 webpack 如何向硬盘写入编译文件。即使可以存在多个 entry 起点，但是只能指定一个 output 配置。
-
-在 webpack 配置中，output 属性的最低要求是，将他的值设置为一个对象，然后为将输出文件的文件名配置为一个`output.filename`:
+配置
 
 ```js
-module.exports = {
-  output: {
-    // 将一个单独的 bundle.js，文件输出到dist目录中
-    filename: "bundle.js",
-  },
-};
-```
-
-多个入口起点
-
-如果配置中创建出多于一个 "chunk"（例如，使用多个入口起点或使用像 CommonsChunkPlugin 这样的插件），则应该使用 占位符(substitutions) 来确保每个文件具有唯一的名称。
-
-```js
-module.exports = {
-  entry: {
-    app: "./src/app.js",
-    search: "./src/search.js",
-  },
-  output: {
-    filename: "[name].js",
-    path: __dirname + "/dist",
-  },
-};
-
-// 写入到硬盘：./dist/app.js, ./dist/search.js
-```
-
-## loader
-
-loader 用于对模块的源代码进行转换。loader 可以让我们在 import 或者 load 模块时预处理文件。因此，loader 类似于其他构建工具中的 task，并提供了处理前端构建步骤的得力方式。loader 可以将文件从不同的语言 转换为 JavaScript 或将 内联图像 转换为 data URL。
-
-一个栗子：
-
-```js
-// 安装css loader
-npm install --save-dev css-loader ts-loader
-
-// 在webpack中对loader进行配置
-module.exports = {
-  module: {
-    //指示 webpack 对每个 .css 使用 css-loader，以及对所有 .ts 文件使用 ts-loader
-    rules: [
-      { test: /\.css$/, use: 'css-loader' },
-      { test: /\.ts$/, use: 'ts-loader' },
-    ],
-  },
-};
-
-```
-
-### 使用 loader
-
-在应用程序中，有两种方式使用 loader：
-
-- 配置方式。在 webpack.config.js 文件中指定 loader。
-- 内敛方式。在每个 import 语句中显式指定 loader。
-
-#### 配置方式
-
-`module.rules`允许我们在 webpack 配置中指定多个 loader。loader 从`右到左 | 从下到上`的取值/执行。
-
-在下面的示例中，从 sass-loader 开始执行，然后继续执行 css-loader，最后以 style-loader 为结束。
-
-```js
-module.exports = {
-  module: {
-    rules: [
+ rules: [
+      // loader格式，test表示匹配什么文件，loader表示使用那个loader
       {
-        test: /\.css$/,
-        use: [
-          { loader: "style-loader" },
-          {
-            loader: "css-loader",
-            options: {
-              modules: true,
-            },
+        test: /\.js$/,
+        // loader:"babel-loader",
+        // use:[],
+        use: {
+          loader: "babel-loader",
+          // loader的配置
+          options: {
+            // presets:
           },
-          { loader: "sass-loader" },
-        ],
+        },
       },
     ],
-  },
-};
 ```
 
-#### 内联方式
+完成上面的配置之后，我们可以打包测试一下：发现打包结果并没有将 ES6 语法转换成 ES5 的语法。原因是 这个转换的语法规则有很多，然而这个 loader 并不知道使用哪种规范，所以我们还需要指定使用哪一种规范进行转换。
 
-### loader 特性
+安装 babel/preset-env: `npm install @babel/preset-env --save-dev`
 
-- loader 支持链式调用。链中的每个 loader 会将转换应用在已处理过的资源上。一组链式的 loader 将按照相反的顺序执行。链中的第一个 loader 将其结果（也就是应用过转换后的资源）传递给下一个 loader，依此类推。最后，链中的最后一个 loader，返回 webpack 所期望的 JavaScript。
-- loader 可以是同步的，也可以是异步的。
-- loader 运行在 Node.js 中，并且能够执行任何操作。
-- loader 可以通过 `options` 对象配置（仍然支持使用 `query` 参数来设置选项，但是这种方式已被废弃）。
-- 除了常见的通过 `package.json` 的 `main` 来将一个 npm 模块导出为 loader，还可以在 module.rules 中使用 loader 字段直接引用一个模块。
-- 插件(plugin)可以为 loader 带来更多特性。
-- loader 能够产生额外的任意文件。
-
-### 解析 loader
-
-loader 遵循标准 模块解析 规则。多数情况下，loader 将从 模块路径 加载。通常是从 npm install node_modules 进行加载。
-
-预期 loader 模块导出为一个函数，并且编写为 Node.js 兼容的 JavaScript。通常使用 npm 进行管理 loader，但是也可以将应用程序中的文件作为自定义 loader。按照约定，loader 通常被命名为 xxx-loader（例如 json-loader）。
-
-## plugin
-
-插件是 webpack 的`支柱功能`。插件目的在于解决 loader 无法实现的其他事。webpacck 提供了很多开箱即用的插件。
-
-### 剖析
-
-`webpack插件`是一个具有`apply()`方法的 js 对象。apply 方法会被 webpack compiler 调用，并且在整个编译生命周期都可以访问 compiler 对象。
+配置
 
 ```js
-// ConsoleLogOnBuildWebpackPlugin.js
-const pluginName = "ConsoleLogOnBuildWebpackPlugin";
+    rules: [
+      // loader格式，test表示匹配什么文件，loader表示使用那个loader
+      {
+        test: /\.js$/,
+        // loader:"babel-loader",
+        // use:[],
+        use: {
+          loader: "babel-loader",
+          // loader的配置
+          options: {
+            presets: [
+              [
+                "@babel/preset-env",
+                {
+                  targets: {
+                    browsers: [">1%", "last 2 versions", "not ie<=8"],//告诉loader，处理规则： 要支持占有率大于1%的浏览器，支持所有浏览器最近的两个版本，不支持ie8
+                  },
+                },
+              ],
+            ],
+          },
+        },
+      },
+    ],
+```
 
-class ConsoleLogOnBuildWebpackPlugin {
-  apply(compiler) {
-    compiler.hooks.run.tap(pluginName, (compilation) => {
-      console.log("webpack 构建正在启动！");
-    });
-  }
+配置完后进行打包，可以发现 打包后的文件里面没有 箭头函数和 let 语句了。ES6 转成了 ES5 的语法。
+
+正常情况下，我们不会直接在 webpack.coinfig.js 这个文件里面去写这么多的 loader 配置项，这样会显得很繁琐，通常情况下，我们会在项目的根目录下面新建一个 babelrc 文件，表示 loader 的配置文件
+JSON 格式
+.babelrc
+
+```js
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "browsers": [">1%", "last 2 versions", "not ie<=8"] //告诉loader，处理规则： 要支持占有率大于1%的浏览器，支持所有浏览器最近的两个版本，不支持ie8
+        }
+      }
+    ]
+  ]
 }
 
-module.exports = ConsoleLogOnBuildWebpackPlugin;
 ```
 
-### 用法
+### Eslint 使用
 
-由于插件可以携带参数/选项，必须在 webpack 配置中，向 plugins 属性传入一个 new 实例。取决于 webpack 的写法，对应有多种使用插件的方式。
+在 webapck 3,4 中使用 Eslint-loader 进行配置，但是在 5 中已经废弃，使用 Eslint-webpack-plugin.然后定义相关配置，定义规范。eslint 本身是不做代码规范的，他是根据项目里个位成员的习惯自己定义的.
 
-### 配置方式
+安装：npm install eslint eslint-webpack-plugin --save-dev
+引入和使用：webpack.comfig.js
 
 ```js
-// webpack.config.js
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const webpack = require("webpack"); // 访问内置的插件
-const path = require("path");
+// 引入eslint插件
+require('eslint-webpack-plugin')
 
-module.exports = {
-  entry: "./path/to/my/entry/file.js",
-  output: {
-    filename: "my-first-webpack.bundle.js",
-    path: path.resolve(__dirname, "dist"),
-  },
-  module: {
-    rules: [
-      {
-        test: /\.(js|jsx)$/,
-        use: "babel-loader",
-      },
-    ],
-  },
   plugins: [
-    new webpack.ProgressPlugin(),
-    new HtmlWebpackPlugin({ template: "./src/index.html" }),
+    // new plugins(),
+    new ESLintWebpackPlugin(),
   ],
+```
+
+注册插件，关于 eslint 的配置我们可以传入一个对象进行配置，但是一般的做法是新建一个 eslintrc.js 文件作为 eslint 的配置文件
+
+```js
+module.exports = {
+  // 配置环境
+  env: {
+    // 因为我们的代码实在浏览器上面去运行的，所以需要配置为true，这样我们就可以使用一些浏览器的全局环境，比如window，document等，
+    browser: true,
+    node: true, //如果设置为node为true，则表示在node环境下运行，那么我们就不能使用window和等浏览器的全局变量了
+    es2021: true, //表示当前项目的es环境是一个2021的语法
+  },
+  // 继承：如果我们不想一条条的写配置，我们就可以使用继承的方式，使用一些已经配置好了的规则
+  //
+  extends: [],
+  // 插件：
+  plugins: [],
+  // 语法解析的配置
+  parserOptions: {
+    ecmaVerson: 6, //ecma的版本是ecma 6
+    sourceType: "module", //模块化的语法是module
+    // 一些ecma的特性
+    ecmaFeature: {
+      jsx: true, //如果项目里面使用了jsx语法，则设置为true，那么就会去检查jsx的语法
+    },
+  },
+  // 重中之重，定义eslint的具体检查细节，需要的时候去官网查看规则
+  rules: {
+    // "no-console": 2,
+  },
 };
 ```
 
-ProgressPlugin 用于自定义编译过程中的进度报告，HtmlWebpackPlugin 将生成一个 HTML 文件，并在其中使用 script 引入一个名为 my-first-webpack.bundle.js 的 JS 文件。
+比如我们在 rules 中设置了不能使用 console，如果使用的话就会报错。完成上面的配置我们可以使用 webpack-dev-server 来打包检查一下。
+
+比如比较推荐的两个现成的规范：eslint-config-standard eslint-cionfig-airbnb，我们只需要安装后，继承就可以使用配置了
+
+安装：npm install eslint-config-standard --save-dev
+
+配置
+
+```js
+  extends: [
+    "standard"
+  ],
+  ...
+    rules: {
+      // 如果对现成的配置不满意的，我们还可以再这里重新配置，他会覆盖掉上面插件的配置
+    },
+```
+
+这样即使我们不写任何的规则，我们也可以继承 config-standard 的配置进行检查
+
+安装 ：npm install eslint-plugin-vue --save-dev
+配置
+
+```js
+  extends: [
+    "standard",
+    "plugin:vue/strongly-recommended"
+  ],
+  plugins: [
+"vue"
+  ],
+```
+
+### CSS 与资源文件处理
+
+在 js 中引入 css 文件，webpack 并不认识 css 文件也肯定会报错，所以我们就需要 css-loader 来让 webpack 识别 css 文件，然后使用 style-loader（把 css 写入 js，执行后作为 style 标签插入 html），mini-css-extra-plugin，提取 css 作为单独文件.
+
+例如：我们此时在项目里面新建一个 css 文件，并引入到 app.js 中进行打包，这个时候项目会报错，不能识别到
+css 格式的文件
+
+安装 ：npm install css-loader style-loader mini-css-extract-plugin --save-dev
+
+配置:注册 css-loader
+
+```js
+{
+        test: /\.css/,
+        use: ['css-loader']
+      }
+```
+
+完成上面的配置之后 webpack 能够识别到 css 文件了，因此打包不会报错，也能够将 css 文件进行打包。但是此时我们并没有告诉 webpack 如何去处理 css 文件，，所以打包后的文件里面并没有对 css 文件进行处理。
+这个时候就需要配置 style-loader
+
+告诉 webopack 先用 css-loader 识别 css 文件，然后在使用 style-loader 处理 css 文件
+
+```js
+{
+        test: /\.css/,
+        use: ['style-loader', 'css-loader']
+      }
+```
+
+这个时候进行打包，webpack 就能够正确识别到 css 文件，并且也能够将 css 文件进行打包处理了，这个时候打包后的文件会比之前打了很多。
+
+但是在我们常规的项目配置文件中，我们一般会将 css 文件单独打包成 css 文件，然后引入。而不是上面的使用 scrpit 标签引入。
+所以我们还需要使用 mini-css-extract-plugin 这个插件进行配置.
+
+// 引入 mini-css-extract-plugin
+const minicssplugin = require('mini-css-extract-plugin')
+
+注册
+plugins: [
+// new plugins(),
+new minicssplugin({
+filename: 'text.bundle.css'
+})
+// new ESLintWebpackPlugin() // 注册插件，关于 eslint 的配置我们可以传入一个对象进行配置，但是一般的做法是新建一个 eslintrc.js 文件作为 eslint 的配置文件
+]
+
+使用
+{
+test: /\.css/,
+use: [minicssplugin.loader, 'css-loader']
+}
+
+完成上面的配置之后，我们在进行打包，这个时候我们的 css 文件就不会使用 scrpit 标签在 html 中引入了，而是打包成开了一个单独的 css 文件，叫做 text.bundle.css。
+
+如果我们在项目里面使用的是 css 预处理语言 less sass，那么根据同样的道理，我们需要使用 less 或者 sass 相关的 loader 将 sass 和 less 文件转成 css 文件，然后在使用上面的 loader 或者插件进行配置，那么就能够进行正仓储的打包了
+安装 npm install less less-loader --save-dev
+使用
+{
+test: /\.less/,
+use: [minicssplugin.loader, 'css-loader','less-loader']
+}
+
+这个时候我们就能够对 less 文件进行打包处理了，
+但是我们打包后的文件并没有对 css 文件进行压缩，所以这个时候还需要配置压缩插件
+安装 npm installl css-minimizer-webpack-plugin --save-dev
+
+注册
+plugins: [
+// new plugins(),
+new minimizer(),
+new minicssplugin({
+filename: 'text.bundle.css'
+})
+// new ESLintWebpackPlugin() // 注册插件，关于 eslint 的配置我们可以传入一个对象进行配置，但是一般的做法是新建一个 eslintrc.js 文件作为 eslint 的配置文件
+]
+
+完成上面的配置后我们再打包这个时候 css 文件就会被压缩成一行了。
+
+### 资源文件的处理
+
+为了让 webpoak 能够识别到资源文件，在 webapck3,4 中我们还需要使用 file-loader 和 url-loader 来进行处理，file-loader 能够识别处理文件，url-loader 是对 file-loader 的继承，他提供了额外的功能，例如转 base64 或者 hash 等。但是在 webpack 5 中就已经自带了相关的处理方式，我们就不需要再需要单独的 loader 来处理了。
+
+使用 loader 插件处理
+
+安装：npm install file-loader url-loader --save-dev
+
+配置:例如我们配置图片文件
+{
+test: /\.(png|gif|svg|jpeg|jpe)$/,
+use: 'url-loader',
+options: {
+limit: 5000,
+name: '[name].[hash].[ext]'
+}
+}
+上面的代码告诉 webpack，遇到上面配置的文件的后缀的时候使用 url-loader 进行处理，同时配置，小于 5000kb 的文件进行转 base64，文件的名字是文件名加哈希值
+
+webpack5 自带的 loader 处理
+配置
+{
+test: /\.(png|gif|svg|jpeg|jpe)$/,
+type: 'asset/inline',
+}
+asset/inline:表示所有的图片都打包成 base64
+asset/resource:表示所有的静态文件都单独打包成文件，
+
+      一般为了自定义写法，都会按照下面的方式写
+            {
+        test: /\.(png|gif|svg|jpeg|jpe)$/,
+        type: 'asset',
+        parser: {
+          dataUrlCondition: {
+            maxSize: 5000  
+          }
+        },
+        generator: {
+          filename: '[name].[hash].[ext]'
+        }
+      }
+
+## loader的本质
+loader本质是一个方法，该方法接受到需要处理的资源的内容，处理完后返回内容作为打包后的文件
+
+## html的处理
+
+## 代码分割
+单入口文件我们怎么处理
+
+单入口意味着所有代码在一个文件里面，这样会导致代码过大，所以我们需要把一些不是马上用到的代码拆分出来，这样可以加快首屏速度。
+
+例如我们在项目中 将上面的a.js采用异步引入的方式
+```js
+// import b from './a'
+import './test.css'
+setTimeout(() => {
+  // res就是b里面的内容对象
+  import('./a').then(res => {
+    console.log(res)
+    console.log(res.default)
+  })
+}, 3000)
+// () => {
+//   const a = 23
+//   console.log('=====>>> ', b)
+//   console.log('=====>>> ', a)
+// }
+```
+这个时候我们的b文件就是一个异步引入的文件，他会在页面加载后的3s后才开始加载，并且在加载完之后会打印相关内容。这里打包之后我们的a文件会被单独打包成一个文件，比如我在测试的时候名字叫做：a_js.989f.bundle.js，这个时候打包后的文件名字我们也可以使用 魔法注释 来配置 
+```js
+// import b from './a'
+import './test.css'
+setTimeout(() => {
+  import(/* webpackChunkName: "a" */'./a').then(res => {
+    console.log(res)
+    console.log(res.default)
+  })
+}, 3000)
+// () => {
+//   const a = 23
+//   console.log('=====>>> ', b)
+//   console.log('=====>>> ', a)
+// }
+
+```
+这样打包后的a的名字就会没哟前面的js样式了：a.ee2c.bundle.js。
+
+另外一种异步引入的方式是 require.ensure
+
+```js
+// 第一个参数为，后面回调函数中需要的依赖，第二个参数是回调，第三个参数是打包的名字。
+  require.ensure([], () => {
+    const b = require('./a')
+    console.log(b)
+    console.log(b.default)
+  },"a")
+}, 3000)
+```
+
+### 多入口处理
+多入口的问题主要是重复加载同一段逻辑代码，比如在app.js中使用了b。js，在app2.js中也是用了b。js，那么在执行两个app的时候，会加载两次b，这个时候我们就需要进行配置，将重复的代码单独进行打包.
+```js
+import b from './a'
+import './test.css'
+() => {
+  const a = 23
+  console.log('=====>>> ', b)
+  console.log('=====>>> ', a)
+}
+
+```
+```js
+import b from './a'
+import './test.css'
+() => {
+  const a = 23
+  console.log('=====>>> ', b)
+  console.log('=====>>> ', a)
+}
+
+```
+
+上面的代码进行打包后，两个打包后的入口文件都会引入ajs，会造成多次引入。
+
+拆分的配置我们是在 中完成的
+
+配置
+```js
+  //   压缩相关
+  optimization: {
+    splitChunks: {
+      chunks: 'all', // all,sync,initial
+      minChunks: 2,//出现次数至少2次就进行单独打包
+      minSize: 0,//文件最小大小为0就单独打包,这里我们做测试就设置成 0
+      name:"a"，//打包后的名字
+    }
+  },
+```
+完成上面的代码之后，a就会被单独打包成一个文件，在第一次加载之后就会缓存，第二次使用会直接使用缓存数据，不会在此进行加载
+
+不论是单文件入口还是多文件入口，有的时候我们需要将第三方库vendor，和一些运行时的代码runtime，单独进行打包，这个时候我们还需要进行进一步的配置
+
+分割第三方库和业务代码，分别打包：
+```js
+ optimization: {
+    splitChunks: {
+      chunks: 'all', // all,sync,initial
+      cacheGroups: {
+        // 第三方库的打包规则
+        vendor: {
+          // 匹配nodemodules下面的文件
+          test: /[\\/]node_modules[\\/]/,
+          // 打包名字
+          filename: 'vendor.js',
+          // 打包文件
+          chunks: 'all',
+          // 最小出现次数，设置为1次，因为第三方库一般情况下只会引入一次
+          minChunks: 1
+        },
+        // 除了第三方库的业务代码打包规则，比如之前用到的a ，c js都会打包到common.js职中
+        common: {
+          filename: 'common.js',
+          chunks: 'all', // all,sync,initial
+          minChunks: 2,
+          minSize: 0
+        }
+      }
+    }
+  },
+```
+
+runtime代码分割
+
+## webpack相关杂项
+
+hash值的作用
+
+在我们使用webpack打包之后，打包后的文件名都会出现hash值，并且每次都不一样，这样的作用是当文件内容更改了之后，打包后的hash值不一样，名字也就不一样，浏览器就不会使用缓存，而是去加载新的文件。使用hash值的时候，一般是一次打包生成一个hash值，每个打包后的文件hash值都一样的，这样就会导致一个问题，当只改动了 一个文件的时候，会导致整个打包的hash值发生改变，也就会导致别的文件名字也会更改，所以所有的文件都会重新加载使用新的文件，这个时候我们就需要使用chunkhash了，这个chunkhash是跟文件绑定的，每个文件都会生成一个hash值，只有改变的文件hash值才会改变，这样在请求的时候只会请求改变的文件，
+
+resolve的作用
+
+配置路径别名
+
+require。context 批量引入指定文件夹下的所有文件.
+
+例如我们要引入mode文件夹下面的所有文件，按照es6的语法我们需要一个一个使用imoirt引入，但是我们可以色会用这个方法进行引入
+
+```js
+// 第一个参数表示要让引入的文件加名字，第二个参数表示目标文件夹下如果有文件夹是否递归引入，但3个参数表示引入的匹配规则，这里定义的是引入西面的js文件
+const r = require.context('./mode', false, /.js/)
+r.keys().forEach(item => {
+  console.log(r(item).default)
+});
+```
+
+有的时候我们希望我们打包后的文件按照文件类型放到不同的文件夹下面，比如css文件放到css文件夹下面，而不是统一的放到dist文件夹下面，这个时候我们只需要在所有的filename后面文件名前面加上文件夹名字就好了，webpack会自动创建这个文件夹，并且会把对应的文件放到文件夹下面。
+
+
+
+
 
 ## 模块热替换(HMR - hot module replacement)
 
