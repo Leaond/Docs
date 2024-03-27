@@ -55,7 +55,7 @@ response.write("测试");
 response.end("登录页面");
 ```
 
-![示例]('./src/images/node/http设置响应信息.png')
+![示例](../../images/node/http设置响应信息.png)
 更多的属性，参考[官方文档](https://nodejs.org/docs/latest/api/http.html)
 
 :::tip

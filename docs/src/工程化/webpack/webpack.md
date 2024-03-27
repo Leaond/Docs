@@ -863,7 +863,7 @@ app.listen(3000, () => {
 });
 ```
 
-最后我们运行 `node mydev.js`，这样 webpack 就在本地开启了一个服务：http://localhost:3000/.
+最后我们运行 `node mydev.js`，这样 webpack 就在本地的3000端口上开启了一个服务.
 
 ### devServer
 
