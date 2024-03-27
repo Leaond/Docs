@@ -757,6 +757,7 @@ runtime 代码分割
 resolve()在项目中常用的配置就是配置路径别名和批量引入。
 
 resolve.alias：创建 import 或 require 的别名，来确保模块引入变得更简单。
+
 ```js
 resolve: {
     alias: {
@@ -779,6 +780,458 @@ r.keys().forEach((item) => {
 
 有的时候我们希望我们打包后的文件按照文件类型放到不同的文件夹下面(比如将 css 类型文件放到 css 文件夹下面，而不是统一的放到 dist 文件夹下面)，这个时候我们只需要在所有的 filename 后面文件名前面加上文件夹名字就好了，webpack 会自动创建这个文件夹，并且会把对应的文件放到文件夹下面，如：`filename:"./css/[name].[hash].css"`。
 :::
+
+## 开发模式
+
+开发模式的作用
+
+安装 `webpack-dev-server` : `npm install html-webpack-plugin --save-dev`
+
+### 模拟 webpack 打包流程
+
+1. 新建一个项目，初始化.
+
+webpack.config.js
+
+```js
+const htmlWebpackPlugin = require("html-webpack-plugin");
+module.exports = {
+  mode: "development",
+  entry: {
+    app: "./app.js",
+  },
+  output: {
+    path: __dirname + "/dist",
+    filename: "[name].[chunkhash:4].bundle.js",
+  },
+  plugins: [
+    new htmlWebpackPlugin({
+      filename: "index.html",
+      template: "./index.html",
+    }),
+  ],
+};
+```
+
+app.js
+
+```js
+console.log(123);
+```
+
+index.html
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>wenbpack-demo</h1>
+  </body>
+</html>
+```
+
+:::tip
+webpack-dev-middleware 是一个包装器，它可以把 webpack 处理过的文件发送到 server。这是 webpack-dev-server 内部的原理，但是它也可以作为一个单独的包使用，以便根据需求进行更多自定义设置。
+:::
+
+2. 服务启动配置文件：mydev.js
+
+```js
+// node框架，用来启动一个服务
+const express = require("express");
+// webpack打包中间件
+const webpackDevMiddleWare = require("webpack-dev-middleware");
+// 引入webpack方法，提供打包服务
+const webpack = require("webpack");
+// 引入配置文件
+const config = require("./webpack.config");
+// 生成打包后的目标文件
+const dist = webpack(config);
+
+// 创建一个服务，并且将打包后的文件部署到这个服务上面
+const app = express();
+app.use(webpackDevMiddleWare(dist));
+
+// 将服务挂载到3000端口
+app.listen(3000, () => {
+  console.log("服务已经启动");
+});
+```
+
+最后我们运行 `node mydev.js`，这样 webpack 就在本地开启了一个服务：http://localhost:3000/.
+
+### devServer
+
+`webpack-dev-server` 简写 `dev-server`,他提供了一个能够实时重新加载的基本 web server。
+
+安装依赖：`npm install --save-dev webpack-dev-server`
+
+webpack.config.js(修改配置文件，告诉 dev-server 应该从什么位置开始查找文件)
+
+```js
+const htmlWebpackPlugin = require("html-webpack-plugin");
+module.exports = {
+  mode: "development",
+  entry: {
+    app: "./app.js",
+  },
+  output: {
+    path: __dirname + "/dist",
+    filename: "[name].[chunkhash:4].bundle.js",
+  },
+  // 下面的配置告知 webpack-dev-server 将 dist 目录下的文件作为可访问资源部署在 localhost:1000。
+  devServer: {
+    port: 1000,
+    hot: true, //热更新
+    static: "./dist",
+  },
+  plugins: [
+    new htmlWebpackPlugin({
+      filename: "index.html",
+      template: "./index.html",
+    }),
+  ],
+};
+```
+
+使用 `webpack-dev-server` 启动这个服务。
+:::tip
+webpack-dev-server 在编译之后不会写入任何输出文件，而是将 bundle 文件保留在内存中，然后将它们作为可访问资源部署在 server 中，就像是挂载在 server 根路径上的真实文件一样。如果页面希望在不同路径中找到 bundle 文件，可以修改 dev server 配置中的 devMiddleware.publicPath 选项。
+:::
+
+::: tip 热更新和强制更新
+热更新在不刷新浏览器的情况下更新页面，可以保持页面的当前状态，一般来说 css 样式更新是热更新的。
+
+强制更新会自动刷新页面来更新页面，会重置页面状态,任何的 js 代码更新都是强制更新。
+:::
+
+### devServer.proxy
+
+proxy 就是由我们的 webpack-dev-server 开启 node 服务来代替我们请求接口，因为如果后端没有开启 cors，我们直接从前端请求就会跨域。我们可以利用 proxy 让请求从 node 服务发起请求，这样两个服务器之间发起请求就不会出现跨域的情况。
+
+```js
+  devServer: {
+    port: 1000,
+    hot: true, //热更新
+        // 代理
+    proxy: {
+      // 只要匹配上下面这条规则，就执行代理转发
+      // "http://localhost:3000":{
+      // target:"http://localhost:3000"
+      // },
+      "/": {
+        target: "http://localhost:3000",
+        // 路径重写：有时候我们请求的接口路径很长，我们就可以使用简写，当匹配到这个简写的时候，就用后面的完整地址重写我们的简写地址
+        pathRewrite:{
+            "^/num1":"/api/getnum1",
+            "^/num2":"/api/getnum2",
+        },
+        headers:{}
+      },
+      "/api2": {
+        target: "http://localhost:3000",
+        // 路径重写：有时候我们请求的接口路径很长，我们就可以使用简写，当匹配到这个简写的时候，就用后面的完整地址重写我们的简写地址
+        pathRewrite:{
+            "^/num1":"/api/getnum1",
+            "^/num2":"/api/getnum2",
+        },
+        headers:{}
+      },
+    },
+  },
+```
+
+## source map(资源映射)
+
+当 webpack 打包源代码时，可能会很难追踪到错误和警告在源代码中的原始位置。例如，如果将三个源文件（a.js，b.js 和 c.js）打包到一个 bundle（bundle.js）中，而其中一个源文件包含错误，那么堆栈跟踪就会直接指向到 bundle.js，却无法准确知道错误来自于哪个源文件，所以这种提示通常无法提供太多帮助。
+
+为了更容易地追踪错误与警告在源代码中的原始位置，JavaScript 提供了 source map 功能，可以帮助将编译后的代码映射回原始源代码。source map 会直接告诉开发者错误来源于哪一个源代码。
+
+在 webpack 中，我们使用 devtool 这个选项来配置资源映射的风格。不同的值会明显影响到构建和重新构建的速度。
+
+语法：`devtool:string = 'eval' false`
+
+常见的选项：
+
+- none：有更快的构建和重构速度，推荐在生产环境使用。
+- eval-cheap-source-map：不推荐在生产环境使用，这种构建方式会映射到源资源文件上面。
+  更多的配置，参考[官网](https://www.webpackjs.com/configuration/devtool)
+  :::tip
+  对于开发环境，通常希望更快速的 source map，需要添加到 bundle 中以增加体积为代价，但是对于生产环境，则希望更精准的 source map，需要从 bundle 中分离并独立存在。
+  :::
+  :::tip 官方推荐
+  我们鼓励你在生产环境中启用 source map，因为它们对 debug(调试源码) 和运行 benchmark tests(基准测试) 很有帮助。虽然有着如此强大的功能，然而还是应该针对生产环境用途，选择一个可以快速构建的推荐配置（更多选项请查看 devtool）。对于本指南，我们将在 生产环境 中使用 source-map 选项，而不是我们在开发环境中用到的 inline-source-map：
+
+  ```js
+  const { merge } = require("webpack-merge");
+  const common = require("./webpack.common.js");
+
+  module.exports = merge(common, {
+    mode: "production",
+    devtool: "source-map",
+  });
+  ```
+
+  :::
+
+## 实战配置技巧
+
+在实际的开发工作中，我们可能需要根据不同的环境使用不同的配置文件或者配置选项。比如，在生产环境我们需要压缩代码，使用 tree-shaking，关闭 source map。来提高我们生产环境的打包速度，压缩代码大小等；但是在开发环境，我们需要详细的 source map，也不需要 压缩代码 和 代码混淆 等，这样会降低打包速度，增大打包的体积，保留了代码的基本格式，这样方便我们在开发环境更好的调试.
+
+区分要点：
+
+- 根据不同的环境进行不同的打包，在 配置文件中，一般是在 process.env 中获取环境信息
+
+- 有的时候需要业务代码(js 等)中获取环境，我们需要借助插件完成。
+
+比如我们需要根据环境来使用不同的配置，我们可以把 webpack.config.js 拆分成不同环境的配置文件：webpack.baseconfig.js(基础配置) webpack.prodconfig.js(生产环境配置) webpack.devconfig.js(开发环境配置)，然后使用 node 提供的 `process.env` 来获取环境变量。
+
+webpack.baseconfig.js
+
+```js
+const htmlWebpackPlugin = require("html-webpack-plugin");
+const minicss = require("mini-css-extract-plugin");
+
+let pluginArr = [
+  new htmlWebpackPlugin({
+    filename: "index.html",
+    template: "./index.html",
+  }),
+];
+function hasMiniCss() {
+  if (process.env.NODE_ENV == "production") {
+    pluginArr.push(
+      new minicss({
+        filename: "test.bundle.css",
+      })
+    );
+  }
+}
+hasMiniCss();
+
+module.exports = {
+  entry: {
+    app: "./app.js",
+  },
+  output: {
+    path: __dirname + "/dist",
+    filename: "[name].[chunkhash:4].bundle.js",
+  },
+
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"],
+      },
+    ],
+  },
+  plugins: pluginArr,
+};
+```
+
+webpack.devconfig.js
+
+```js
+const base = require("./webpack.baseconfig");
+// webpack提供的merge合并的方法，合并两个配置，有重名的后面的配置会替换掉前面的配置
+const merge = require("webpack-merge").merge;
+
+const webpack = require("webpack");
+
+module.exports = merge(base, {
+  mode: "development",
+  //   设置source-map
+  devtool: "eval-cheap-source-map",
+  plugins: [
+    new webpack.DefinePlugin({
+      baseURL: "www.devxxxx.com",
+    }),
+  ],
+});
+```
+
+webpack.prodconfig.js
+
+```js
+const base = require("./webpack.baseconfig");
+// webpack提供的merge合并的方法，合并两个配置，有重名的后面的配置会替换掉前面的配置
+const merge = require("webpack-merge").merge;
+const webpack = require("webpack")
+
+module.exports = merge(base, {
+  mode: "production",
+  plugins:[
+    new webpack.DllReferencePlugin({
+      manifest:require(__dirname + "/vdendor-manifest.json")
+    }),
+      plugins:[
+    new webpack.DefinePlugin({
+      baseURL:"www.prodXXX.com"
+    })
+  ]
+  ],
+
+});
+
+```
+
+然后我们可以在 package.json 中配置打包命令
+
+```json
+  "scripts": {
+    "build:prod":"webpack --config ./webpack.prodconfig.js",
+    "build:dev":"webpack-dev-server --config ./webpack.devconfig.js"
+  },
+```
+
+通过上面的配置，我们就可以在不同的环境中使用各自的打包配置文件了。
+
+同时我们也可以使用 webpack CLI 的配置选项来获取环境 `webpack --config ./webpack.prodconfig.js --env/prod`
+
+同时需要将我们的配置文件 webpack.config.js 改成函数的形式，这个函数接收一个 env 参数。
+
+```js
+module.exports = function(env){
+  return merge(base(env),{
+    ...
+    // 配置项
+  })
+}
+```
+
+上面的方式是我们在配置文件中获取环境变量，但是有的时候我们想要在业务代码中也去获取环境变量，上面的方式就不支持了。这个时候我需要 webpack 自带的插件`webpack.DefinePlugin({})`来获取.
+
+比如我们在不同环境去不同的配置这个 baseURL 变量
+
+```js
+const webpack = require("webpack");
+
+// webpack.devconfig.js
+plugins: [
+  new webpack.DefinePlugin({
+    baseURL: "www.devconfig.com",
+  }),
+];
+
+// webpack.prodconfig.js
+plugins: [
+  new webpack.DefinePlugin({
+    baseURL: "www.prodconfig.com",
+  }),
+];
+```
+
+### 打包结果分析
+
+通过对打包结果分析，我们可以查看打包结果中的资源大小，包的引用情况等，可以方便我们更好地优化。
+
+常见的打包结果分析方法：
+
+- 官方方案，配置 cli 命令 `--json` 输出打包结果分析的 json 文件。
+  在 package.json 文件当中添加命令`"getJson": "webpack --config ./webpack.prodconfig.js --json>stats.json"`,这样就会把打包结果分析的结果生成一个文件 `stats.json`.
+  然后这个文件放到 webpack 提供的分析网站 `webpack.gethub.io.analyzer` 上进行分析。
+- 使用 `webpack-bundle-analyzer` 插件，可视化分析打包结果。
+
+安装：`npm install webpack-bundle-analyzer -dev`
+
+webpack.config.js
+
+```js
+// 引入打包分析插件
+const bundleanalyzer = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
+...
+plugins:[
+  new bundleanalyzer()
+]
+```
+
+完成上面的配置之后，执行打包命令就会自动打开浏览器，生成一个打包分析图，可以通过这个分析图查看打包结果的详细信息。
+![分析图](../../images/webpack/bundleanilizer.png)
+
+## dll 优化打包速度
+
+使用 webpack 官方提供的 DllPlugin 插件可以为更改不频繁的代码生成单独的编译结果。尽管这增加了构建过程的复杂度，但是可以提高应用程序的编译速度。DllPlugin 和 DllReferencePlugin 用某种方法实现了拆分 bundles，同时还大幅度提升了构建的速度。
+
+DllPlugin 配置选项：
+
+- `context(可选)`： manifest 文件中请求的 context (默认值为 webpack 的 context) -`format(boolean = false)`：如果为 true，则 manifest json 文件 (输出文件) 将被格式化。 -`name`：暴露出的 DLL 的函数名 -`path`：manifest.json 文件的 绝对路径（输出文件） -`entryOnly (boolean = true)`：如果为 true，则仅暴露入口 -`type`：dll bundle 的类型
+
+webpack.dll.config.js
+
+```js
+const Webpack = require("webpack");
+module.exports = {
+  mode: "development",
+  entry: {
+    vendor: ["axios", "lodash"],
+  },
+  output: {
+    path: __dirname + "/dist",
+    filename: "[name].dll.bundle.js",
+    library: "[name]_library",
+  },
+  plugins: [
+    new Webpack.DllPlugin({
+      path: __dirname + "/[name]-manifest.json",
+      name: "[name]_library",
+      context: __dirname,
+    }),
+  ],
+};
+```
+
+配置命令：`"dll": "webpack --config ./webpack.dll.config.js"`. 打包就会生成一些 vendor 的资源文件.
+
+这个时候我们在生产配置文件 `webpack.prodconfig.js` 中配置 DllReferencePlugin
+
+```js
+plugins:[
+  new webpack.DllReferencePlugin({
+    // 这里的manifest名字必须和 DLLPlugin中的一样
+   manifest:require(__dirname + "/vdendor-manifest.json")
+  })
+],
+```
+
+这样我们再去执行生产环境的打包命令，可以发现打包时间和打包体积已经得到大幅度的缩减。因为这次打包并没有将我们之前已经打包的 vendor 打入其中。
+
+但是这个时候我们去查看打包后的 index.html 并没有 引入我们提前打包后的文件，需要手动去使用在 index.html 中去添加 script 引入。
+
+## 压缩(Minification) 和 tree shaking
+代码压缩不仅仅会压缩js文件的格式，也会对代码进行分析，并压缩成最终的结果。
+```js
+let a = 1
+function t(){
+console.log(a)
+}
+t() 
+// 比如上面的一个js文件，压缩过后会直接变成下面的样子
+console.log(1)
+```
+同时，webpack还是实现 代码混淆，比如我们在编码的过程中会有一些语义化的变量或者特别复杂的变量(let antestdiv = "xxx")，但是在打包后变量会被改变名字 `_a、_b` 等等，这样走的好处是简化代码而且也可以防止有人通过控制台去查看源代码查看我们的明明规则去获取代码的寓意使得源码更难以阅读。
+
+### tree-shaking
+tree-shaking是一个术语，指的是移除掉项目中不会执行的死代码。这些代码可能来自于第三方库、或者因为重构、优化或者逻辑错误代码导致的。webpack打包能够自动的实现tree-shaking机制。
+```js
+function test(){
+this.a = a+b
+}
+test.prototype.f1 = function(){
+
+}
+test.prototype.f2 = function(){
+
+}
+export defualt test;
+```
+只使用了 f1 会发现 f2 也被打进包了
+
 
 ## 模块热替换(HMR - hot module replacement)
 
