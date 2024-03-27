@@ -1160,7 +1160,12 @@ plugins:[
 
 DllPlugin 配置选项：
 
-- `context(可选)`： manifest 文件中请求的 context (默认值为 webpack 的 context) -`format(boolean = false)`：如果为 true，则 manifest json 文件 (输出文件) 将被格式化。 -`name`：暴露出的 DLL 的函数名 -`path`：manifest.json 文件的 绝对路径（输出文件） -`entryOnly (boolean = true)`：如果为 true，则仅暴露入口 -`type`：dll bundle 的类型
+- `context(可选)`： manifest 文件中请求的 context (默认值为 webpack 的 context)
+- `format(boolean = false)`：如果为 true，则 manifest json 文件 (输出文件) 将被格式化。
+- `name`：暴露出的 DLL 的函数名
+- `path`：manifest.json 文件的 绝对路径（输出文件）
+- `entryOnly (boolean = true)`：如果为 true，则仅暴露入口
+- `type`：dll bundle 的类型
 
 webpack.dll.config.js
 
@@ -1204,20 +1209,25 @@ plugins:[
 但是这个时候我们去查看打包后的 index.html 并没有 引入我们提前打包后的文件，需要手动去使用在 index.html 中去添加 script 引入。
 
 ## 压缩(Minification) 和 tree shaking
-代码压缩不仅仅会压缩js文件的格式，也会对代码进行分析，并压缩成最终的结果。
+
+代码压缩不仅仅会压缩 js 文件的格式，也会对代码进行分析，并压缩成最终的结果。
+
 ```js
-let a = 1
-function t(){
-console.log(a)
+let a = 1;
+function t() {
+  console.log(a);
 }
-t() 
+t();
 // 比如上面的一个js文件，压缩过后会直接变成下面的样子
-console.log(1)
+console.log(1);
 ```
-同时，webpack还是实现 代码混淆，比如我们在编码的过程中会有一些语义化的变量或者特别复杂的变量(let antestdiv = "xxx")，但是在打包后变量会被改变名字 `_a、_b` 等等，这样走的好处是简化代码而且也可以防止有人通过控制台去查看源代码查看我们的明明规则去获取代码的寓意使得源码更难以阅读。
+
+同时，webpack 还是实现 代码混淆，比如我们在编码的过程中会有一些语义化的变量或者特别复杂的变量(let antestdiv = "xxx")，但是在打包后变量会被改变名字 `_a、_b` 等等，这样走的好处是简化代码而且也可以防止有人通过控制台去查看源代码查看我们的明明规则去获取代码的寓意使得源码更难以阅读。
 
 ### tree-shaking
-tree-shaking是一个术语，指的是移除掉项目中不会执行的死代码。这些代码可能来自于第三方库、或者因为重构、优化或者逻辑错误代码导致的。webpack打包能够自动的实现tree-shaking机制。
+
+tree-shaking 是一个术语，指的是移除掉项目中不会执行的死代码。这些代码可能来自于第三方库、或者因为重构、优化或者逻辑错误代码导致的。webpack 打包能够自动的实现 tree-shaking 机制。
+
 ```js
 function test(){
 this.a = a+b
@@ -1230,8 +1240,8 @@ test.prototype.f2 = function(){
 }
 export defualt test;
 ```
-只使用了 f1 会发现 f2 也被打进包了
 
+只使用了 f1 会发现 f2 也被打进包了
 
 ## 模块热替换(HMR - hot module replacement)
 
