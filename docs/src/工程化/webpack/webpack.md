@@ -1,5 +1,7 @@
 # webpack
 
+(DllPlugin 与 externals 的作用相似，都是将依赖抽离出去，节约打包时间。区别是 DllPlugin 是将依赖单独打包，这样以后每次只构建业务代码，而 externals 是将依赖转化为 CDN 的方式引入)
+
 [webpack](https://www.webpackjs.com/) 是一个用于现代 JavaScript 应用程序的 `静态模块打包工具`。当 webpack 处理应用程序时，他会在内部从 一个或多个入口构建 依赖图。然后将你在项目里面所需的每一个模块组合成一个或多个 bundles，他们均是静态资源，用于展示你的内容。
 
 :::tip 依赖图 (dependency graph)
@@ -1136,9 +1138,9 @@ plugins: [
 - 官方方案，配置 cli 命令 `--json` 输出打包结果分析的 json 文件。
   在 package.json 文件当中添加命令`"getJson": "webpack --config ./webpack.prodconfig.js --json>stats.json"`,这样就会把打包结果分析的结果生成一个文件 `stats.json`.
   然后这个文件放到 webpack 提供的分析网站 `webpack.gethub.io.analyzer` 上进行分析。
-- 使用 `webpack-bundle-analyzer` 插件，可视化分析打包结果。
+- 使用 `webpack-bundle-analyzer` 插件，可视化分析打包结果。同时我们可以使用`speed-measure-webpack-plugin`这个插件来分析打包各个环节的时间。
 
-安装：`npm install webpack-bundle-analyzer -dev`
+安装：`npm install webpack-bundle-analyzer speed-measure-webpack-plugin -dev`
 
 webpack.config.js
 

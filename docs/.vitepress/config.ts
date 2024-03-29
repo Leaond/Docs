@@ -67,7 +67,7 @@ export default defineConfig({
         text: "node",
         collapsed: false,
         items: [
-          { text: "Buffer", link: "/src/nodejs/Buffer/buffer.md" },
+          { text: "Buffer", link: "/src/nodejs/Buffer/Buffer.md" },
           { text: "fileSystem", link: "/src/nodejs/fs/fs.md" },
           { text: "path", link: "/src/nodejs/path/path.md" },
           { text: "HTTP", link: "/src/nodejs/http/http.md" },
