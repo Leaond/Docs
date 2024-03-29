@@ -8,7 +8,7 @@ export default defineConfig({
   // 网页标签图标
   head: [['link', { rel: 'icon', href: '../public/success.svg' }]],
   themeConfig: {
-    logo: "../public/success.svg",
+    logo: "/success.svg",
     // 导航链接
     // nav: [
     //   { text: '导航', link: '/guide' },
