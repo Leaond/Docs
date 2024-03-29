@@ -5,8 +5,10 @@ export default defineConfig({
   title: "Docs",
   description: "Vite & Vue powered static site generator.",
   base: "/Docs/",
+  // 网页标签图标
+  head: [['link', { rel: 'icon', href: '../public/success.svg' }]],
   themeConfig: {
-    logo: "../public/look.svg",
+    logo: "../public/success.svg",
     // 导航链接
     // nav: [
     //   { text: '导航', link: '/guide' },
