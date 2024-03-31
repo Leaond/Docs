@@ -4,10 +4,11 @@ export default defineConfig({
   lang: "zh",
   title: "Docs",
   description: "Vite & Vue powered static site generator.",
-  base: "/docs",
-  // base:"/LancerDocs/docs",
+  base: "/Docs/",
+  // 网页标签图标
+  head: [['link', { rel: 'icon', href: '../public/success.svg' }]],
   themeConfig: {
-    logo: "/docs/public/look.svg",
+    logo: "/success.svg",
     // 导航链接
     // nav: [
     //   { text: '导航', link: '/guide' },
@@ -66,7 +67,7 @@ export default defineConfig({
         text: "node",
         collapsed: false,
         items: [
-          { text: "Buffer", link: "/src/nodejs/Buffer/buffer.md" },
+          { text: "Buffer", link: "/src/nodejs/Buffer/Buffer.md" },
           { text: "fileSystem", link: "/src/nodejs/fs/fs.md" },
           { text: "path", link: "/src/nodejs/path/path.md" },
           { text: "HTTP", link: "/src/nodejs/http/http.md" },

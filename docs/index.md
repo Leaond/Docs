@@ -22,7 +22,7 @@ hero:
 
 # 首页右边的图片
   image:
-    src: /look.svg
+    src: /success.svg
     # 图片的描述
     alt: Lancer
   # 按钮相关
