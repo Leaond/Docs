@@ -19,6 +19,24 @@
 
 ## webpack 的相关概念
 
+webpack的主要模块分为5个，
+```js
+// webpack.config.js
+const path  = require('path')
+module.exports = {
+    entry:'./src/main.js',
+    output:{
+        path:path.resolve(__dirname,'wepack'),
+        filename:'main1.js'
+    },
+    module:{
+        rules:[]
+    },
+    plugins:[],
+    mode:'production'
+}
+```
+
 下面将对 webpack 的一些核心概念进行梳理。
 
 ## 入口(entry)
@@ -98,6 +116,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "my-first-webpack.bundle.js",
+    clean:true//在生成文件之前清空 output 目录
   },
 };
 ```
@@ -214,7 +233,7 @@ module.exports = {
 
 ## 模式(mode)
 
-通过选择 `development`，`production` 或 `none` 之中的一个，可以来设置 mode 参数，我们可以启用 webpack 内置在相应环境下的优化。默认值是 development。
+webpack主要有两种模式：`development(开发模式)`，`production(生产模式)` ，通过选择 `development`，`production` 或 `none` 之中的一个，可以来设置 mode 参数，我们可以启用 webpack 内置在相应环境下的优化。默认值是 development。
 
 语法
 
@@ -473,9 +492,9 @@ module.exports = {
 
 ### CSS 文件处理
 
-由于 webpack 也不认识 css 类型的文件，这个时候我们首先需要使用 `css-loader` 来让 webpack 识别 css 文件，然后使用 `style-loader`(这种方式是把 css 的内容写入到 js 文件中，然后再在 html 中使用 script 标签插入) 或者 `mini-css-extra-plugin`(将 css 文件作为单独文件进行打包)，这两种方案来处理 css 文件.
+由于 webpack 也不认识 css 类型(css、scss、less、styl等)的文件，这个时候可以去官方文档或者github中查找对应的loader来处理对应的文件。比如需要使用 `css-loader` 来让 webpack 识别 css 文件，然后使用 `style-loader`(这种方式是把 css 的内容写入到 js 文件中，然后再在 html 中使用 script 标签插入) 或者 `mini-css-extra-plugin`(将 css 文件作为单独文件进行打包)，这两种方案来处理 css 文件.
 
-例如：我们在项目里面新建一个 css 文件，并引入到 app.js 中，然后打包。这个时候项目会报错：不能识别到 css 格式的文件。
+例如：我们在项目里面新建一个 css 文件，并引入到入口文件中，然后进行打包。这个时候项目会报错：`不能识别到 css 格式的文件`。
 
 安装 ：`npm install css-loader style-loader mini-css-extract-plugin --save-dev`
 
@@ -484,12 +503,12 @@ webpack.config.js
 ```js
 // 配置 css-loader
 {
-        test: /\.css/,
-        use: ['css-loader']
+        test: /\.css/,//检测规则，以css结尾的文件
+        use: ['css-loader']//匹配规则：从右到左，从下到上
       }
 ```
 
-完成上面的配置之后 webpack 能够识别到 css 文件了，因此打包不会报错，也能够将 css 文件进行打包。但是此时我们并没有告诉 webpack 如何去处理 css 文件，，所以打包后的文件里面并没有对 css 文件进行处理。这个时候就需要配置 `style-loader`
+完成上面的配置之后， webpack 就能够识别 css 文件，因此打包不会报错，也能够将 css 文件进行打包。但是此时我们并没有告诉 webpack 如何去处理 css 文件，，所以打包后的文件里面并没有对 css 文件进行处理。这个时候就需要配置 `style-loader`
 
 ```js
 {
@@ -498,9 +517,9 @@ webpack.config.js
       }
 ```
 
-上面的代码是告诉 webopack 先用 css-loader 识别 css 文件，然后在使用 style-loader 处理 css 文件.这个时候进行打包，webpack 就能够正确识别到 css 文件，并且也能够将 css 文件进行打包处理了，通过对打包后的文件观察可以发现，由于加入了了 css 代码打包后的文件会比之前大了很多。
+上面的代码是告诉 webopack 先用 `css-loader` 将css文件资源编译成commonjs的模块到js中，然后再使用 `style-loader` 将js中的css代码通过创建`<style></style>`标签添加到html文件中生效。通过对打包后的文件观察可以发现，由于加入了了 css 代码打包后的文件会比之前大了很多。
 
-通常，在项目配置文件中，我们一般会将 css 文件单独打包成 css 文件，而不是向上面这样使用 scrpit 标签注入。所以我们还需要使用 `mini-css-extract-plugin` 这个插件进行配置.
+通常，在项目配置文件中，我们一般会将 css 文件单独打包成 css 文件，而不是像上面这样使用 style 标签注入。所以我们还需要使用 `mini-css-extract-plugin` 这个插件进行配置.
 
 webpack.config.js
 
@@ -555,6 +574,12 @@ plugins: [
 
 完成上面的配置后我们再打包这个时候 css 文件就是已经被压缩过后的代码了。
 
+### less文件处理
+同样，对于less文件的处理，webpack同样是不能识别less文件的。因此我们也需要在项目中使用less-loader来对less文件进行处理。
+```js
+npm install less less-loader --save-dev
+```
+
 ### 资源文件的处理
 
 为了让 webpoak 能够识别到资源文件，如 MP3，MP4，img 等，在 webapck3 和 webapck4 中我们还需要使用 `file-loader` 和 `url-loader` 来进行处理，file-loader 能够识别处理文件，url-loader 是对 file-loader 的继承，他提供了额外的功能，例如:转 base64 或者 hash 等。但是在 webpack 5 中就已经自带了相关的处理方式，我们就不需要再需要单独使用别的 loader 来处理了。
@@ -599,10 +624,14 @@ plugins: [
        type: 'asset',//通用
        parser: {
          dataUrlCondition: {
+          // 对于大于5000kb的文件进行打包，小于5000kb的文件转成base64进行
+          // 使用base64的文件，体积会变大，但是相应的也会减少静态资源的请求，项目中可以根据自己的实际情况进行选择
            maxSize: 5000
          }
        },
        generator: {
+        // 输出配置：输出文件名设置 name:文件名 hash生成的hash值，ext拓展名 query携带的参数
+        // 如果觉得hash过长，可以使用[hash:10]来取前10位的hash值
          filename: '[name].[hash].[ext]'
        }
      }
@@ -948,7 +977,13 @@ proxy 就是由我们的 webpack-dev-server 开启 node 服务来代替我们请
   },
 ```
 
-## source map(资源映射)
+## source map(资源映射) 
+
+```js
+1.手动试一下并贴出结果图片？？？
+2.前端监控sentry ?????
+3.打包优化？？？？
+```
 
 当 webpack 打包源代码时，可能会很难追踪到错误和警告在源代码中的原始位置。例如，如果将三个源文件（a.js，b.js 和 c.js）打包到一个 bundle（bundle.js）中，而其中一个源文件包含错误，那么堆栈跟踪就会直接指向到 bundle.js，却无法准确知道错误来自于哪个源文件，所以这种提示通常无法提供太多帮助。
 
