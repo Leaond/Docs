@@ -2,7 +2,7 @@
 
 (DllPlugin 与 externals 的作用相似，都是将依赖抽离出去，节约打包时间。区别是 DllPlugin 是将依赖单独打包，这样以后每次只构建业务代码，而 externals 是将依赖转化为 CDN 的方式引入)
 
-[webpack](https://www.webpackjs.com/) 是一个用于现代 JavaScript 应用程序的 `静态模块打包工具`。当 webpack 处理应用程序时，他会在内部从 一个或多个入口构建 依赖图。然后将你在项目里面所需的每一个模块组合成一个或多个 bundles，他们均是静态资源，用于展示你的内容。
+[webpack](https://www.webpackjs.com/) 是一个用于现代 JavaScript 应用程序的 `静态模块打包工具`。当 webpack 处理应用程序时，他会在内部从 一个或多个入口构建 依赖图。然后将 在项目里面所需的每一个模块组合成一个或多个 bundles(通常将webpack编译后的文件叫做bundles)，输出的文件就是编译好的文件，他们均是静态资源，就可以在浏览器段运行用于展示我们所以写的内容。
 
 :::tip 依赖图 (dependency graph)
 每当一个文件依赖另一个文件时，webpack 都会将文件视为直接存在 依赖关系。这使得 webpack 可以获取非代码资源，如 images 或 web 字体等。并会把他们作为 依赖 提供给应用程序。
@@ -10,34 +10,55 @@
 当 webpack 处理应用程序时，它会根据 命令行参数中 或 配置文件中 定义的模块列表开始处理。从 入口 开始，webpack 会递归的构建一个 依赖关系图，这个依赖图包含着应用程序中所需的每个模块，然后将所有模块打包为少量的 bundle(通常只有一个),可由浏览器加载。
 :::
 
-## 为什么需要打包工具?
+## 为什么需要打包工具?(解决开发与生产的矛盾)
 
-解决开发与生产的矛盾
-
-1. 开发的时候为了方便以及解耦或者其他原因，我们会使用模块化的思想进行开发，将代码拆分成一个个模块。但是浏览器自身是无法解析模块化的，所以就需要使用打包工具将我们的在开发阶段的写代码合成一个或多个浏览器能解析的文件。
-2. 我们在开发的时候会使用很多的框架 vue、react 或者新的语法(es6 之类的)，但是浏览器并不认识这些语法也不能识别这些后缀的文件，浏览器只能够解析 js 文件，这时候就需要打包工具将我们的代码打包成浏览器认识的语法。
+- 在进行开发的时候为了开发方便、代码解耦或者其他原因，我们会使用模块化的思想进行开发，将代码拆分成一个个模块(很多个单独的文件)。但是浏览器自身是无法解析模块化的，所以就需要使用打包工具将我们在开发阶段的写代码合成一个或多个浏览器能解析的文件。
+- 在开发的时候会使用JS框架 vue、react 或者 ES6+ 新的语法或者是css预处理器：Less/Sass 等 ，但是浏览器并不认识这些语法也不能识别这些后缀的文件，浏览器只能够解析 js 文件，这时候就需要打包工具将我们的代码编译成浏览器认识的语法，实现我们的功能。
+- 常见的打包工具包括 Grunt、Gulp、Webpack、Rollup、Vite等。目前市面上最流行的是 Webpack，所以本文主要以 Webpack 来介绍使用打包工具。
 
 ## webpack 的相关概念
 
-webpack的主要模块分为5个，
-```js
-// webpack.config.js
-const path  = require('path')
-module.exports = {
-    entry:'./src/main.js',
-    output:{
-        path:path.resolve(__dirname,'wepack'),
-        filename:'main1.js'
-    },
-    module:{
-        rules:[]
-    },
-    plugins:[],
-    mode:'production'
-}
-```
+在使用webpack之前我们需要先下载webpack以及对应的脚手架，以下以一个项目创建为例：
 
-下面将对 webpack 的一些核心概念进行梳理。
+在一个空文件夹中初始化生成package.json
+```js
+npm init -y
+
+```
+安装webpack以及webpack脚手架
+```js
+npm i webpack webpack-cli -D
+
+```
+在根目录下面新建webpack的配置文件
+```js
+```
+新建一个入口文件:main.js，并且创建两个单独的js文件，并在main.js中引入
+```js
+// main.js
+import {sum} from './js/sum.js'
+
+// sum.js
+
+export const sum = (x,y)=>{
+  return x+y
+}
+
+```
+使用webpack编译整个项目
+
+```js
+// 开发环境
+npx webpack ./src/main.js --mode=development
+// 生产环境
+npx webpack ./src/main.js --mode=production
+
+```
+通过观察webpack打包后输出的文件dist，我们可以发现：
+
+
+
+webpack的基本配置分为5大核心：entry、output、module、plugins、mode。下面将对这些核心概念进行介绍。
 
 ## 入口(entry)
 
@@ -125,6 +146,8 @@ module.exports = {
 
 ## loader
 
+css-loader的作用 ：https://www.cnblogs.com/goloving/p/14793201.html
+
 webpack 只能理解 JavaScript 和 JSON 文件，这是 webpack 开箱自用的自带能力。loader 能够去处理其他类型的文件，并将他们转换为有效 `模块`,即 告诉 webpack 某种类型的文件应该使用什么 loader 转换成什么样子。以提供应用程序使用，以及被添加到依赖图中。
 
 :::tip 模块
@@ -133,12 +156,14 @@ webpack 只能理解 JavaScript 和 JSON 文件，这是 webpack 开箱自用的
 每个模块都拥有小于完整程序的体积，使得验证、调试及测试变得轻而易举。 精心编写的 模块 提供了可靠的抽象和封装界限，使得应用程序中每个模块都具备了条理清晰的设计和明确的目的。
 :::
 
-loader 用于对模块的源代码进行转换。loader 可以使我们在 import 或 "load(加载)" 模块时 预处理文件。因此，loader 类似于其他构建工具中 任务(task)，并提供了处理前端构建步骤的得力方式。loader 可以将文件从不同的语言（如 TypeScript）转换为 JavaScript 或将内联图像转换为 data URL。loader 甚至允许我们直接在 JavaScript 模块中 import CSS 文件！
+loader 用于对模块的源代码进行转换。loader 可以使我们在 import 或 "load(加载)" 模块时 预处理文件。因此，loader 类似于其他构建工具中 任务(task)，并提供了处理前端构建步骤的得力方式。loader 可以将文件从不同的语言（如 TypeScript）转换为 JavaScript 或将内联图像转换为 data URL。loader 甚至允许我们直接在 JavaScript 模块中 import CSS 文件！所有的loader我们都可以在webpack官网或者github上面获取。
 
 例如：我们需要使用 loader 告诉 webpack 需要加载 css 文件，或者将 TS 转为 JS。
 
 ```js
 // 1.首先安装相应的loader。
+// css-loader 会对 @import 和 url() 进行处理，就像 js 解析 import/require() 一样。
+//ts-loader 像加载 JavaScript 一样加载 TypeScript 2.0+
 npm install --save-dev css-loader ts-loader
 
 // 2.然后配置，告诉webpack对每个.css文件使用css-loader，对所有的.ts文件使用ts-loader
@@ -159,7 +184,7 @@ module.exports = {
 - `use`:定义在进行转换时，应该使用哪个 loader。
 - `loader`:loader 和 use 是同一个意思，但是 loader 后面只能跟字符串，而 use 后面可以跟配置对象。
 
-use 属性后面可以跟简单的字符串，也可以跟一个配置对象，进行更多的自定义配置，同时也可以跟一个数组，表示针对某一类文件需要用到多个 loader，多个 loader 的执行顺序是 从右到左，从下到上。
+use 属性后面可以跟简单的字符串，也可以跟一个配置对象，进行更多的自定义配置，同时也可以跟一个数组，表示针对某一类文件需要用到多个 loader，`多个 loader 的执行顺序是 从右到左，从下到上`。
 
 ```js
 // 官方示例
@@ -241,8 +266,8 @@ webpack主要有两种模式：`development(开发模式)`，`production(生产�
 string = 'production': 'none' | 'development' | 'production'
 ```
 
-- `development`：会将 DefinePlugin 中 process.env.NODE_ENV 的值设置为 development. 为模块和 chunk 启用有效的名。
-- `development`：会将 DefinePlugin 中 process.env.NODE_ENV 的值设置为 production。为模块和 chunk 启用确定性的混淆名称，FlagDependencyUsagePlugin，FlagIncludedChunksPlugin，ModuleConcatenationPlugin，NoEmitOnErrorsPlugin 和 TerserPlugin 。
+- `development`：仅能编译 JS 中的 `ES Module` 语法。会将 DefinePlugin 中 process.env.NODE_ENV 的值设置为 development. 为模块和 chunk 启用有效的名。
+- `production`：能编译 JS 中的 `ES Module` 语法，还能压缩 JS 代码。会将 DefinePlugin 中 process.env.NODE_ENV 的值设置为 production。为模块和 chunk 启用确定性的混淆名称，FlagDependencyUsagePlugin，FlagIncludedChunksPlugin，ModuleConcatenationPlugin，NoEmitOnErrorsPlugin 和 TerserPlugin 。
 - `none`：不使用任何默认优化选项。
 
 ```js
@@ -258,9 +283,11 @@ webpack --mode=development
 
 ## webpack 项目实战
 
+在完成webpack核心模块的介绍之后，我们来尝试一下在项目中使用webpack构建项目。
+
 1. 新建一个空的项目文件夹，运行 `npm init -y` 生成 `package.json` 文件
 
-2. 全局安装 webpack 以及 webpack 脚手架 , `npm install webpack webpack-cli -g`.安装完成后我们可以使用 `webpack -v`来查看 webpack 的版本。
+2. 全局安装 webpack 以及 webpack-cli , `npm install webpack webpack-cli -g`.安装完成后我们可以使用 `webpack -v`来查看 webpack 的版本。
 
 3. 在项目中新建一个文件：`webpack.config.js` 作为 webpack 的打包配置文件，默认打包是根目录下的这个文件。我们也可以命名为其他的文件。但是打包的时候需要用命令指定配置文件，如：`webpack --config webpack.config1111.js`
 
@@ -287,9 +314,9 @@ module.exports = {
   },
   resolve: {},
   devServer: {},
-  //   压缩相关
+  //   压缩相关，通常我们把跟压缩相关的插件写在这里面
   optimization: {},
-  //   loader的写法：module对象黄总，使用rules数组包裹，里面一个对象就是一个loader
+  //   loader的写法：module对象，使用rules数组包裹，里面一个对象就是一个loader
   module: {},
   //   插件:用数组装，所有的插件都要用new plugins注册
   plugins: [
@@ -319,11 +346,11 @@ console.log("=====>>> ", b);
 export default b + 1;
 ```
 
-4. 上面对 webpack 进行了简单的配置，包含了 webpack 的主要配置项，配置完成之后我们就可以进行打包了。运行`webpack`命令就能打包成功了。
+4. 上面包含了 webpack 的主要配置项，配置完成之后我们就可以进行编译了。运行 `webpack` 命令就能打包成功了。
 
 ## babel-loader 的使用
 
-babel-loader 是用来将 ES6 的语法转换成 ES5 的一个 loader，但是其 babel-loader 本身是不会做编译的，它仅仅是相当于一个接口，实际上去调用 `@babel/core` 这个核心进行编译的。
+`babel-loader` 是用来将 ES6 的语法转换成 ES5 的一个 loader，但是其 `babel-loader` 本身是不会做编译的，它仅仅是相当于一个接口，实际上去调用 `@babel/core` 这个核心进行编译。
 
 安装：`npm install babel-loader @babel/core --save-dev`
 
