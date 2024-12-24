@@ -283,7 +283,7 @@ webpack --mode=development
 
 ## webpack 项目实战
 
-在完成webpack核心模块的介绍之后，我们来尝试一下在项目中使用webpack构建项目。
+上面仅仅是对webpack的概念以及核心模块进行了介绍，但是在实际的运用过程中，我们还会遇到诸如资源压缩、代码分割、异步加载等性能优化的问题，所以下面将通过一个完整的项目来解决这些问题。
 
 1. 新建一个空的项目文件夹，运行 `npm init -y` 生成 `package.json` 文件
 
@@ -346,7 +346,7 @@ console.log("=====>>> ", b);
 export default b + 1;
 ```
 
-4. 上面包含了 webpack 的主要配置项，配置完成之后我们就可以进行编译了。运行 `webpack` 命令就能打包成功了。
+4. 上面的webpack.config.js仅仅包含了 webpack 的基本配置，配置完成之后我们就可以运行 `webpack` 命令进行打包。
 
 ## babel-loader 的使用
 
