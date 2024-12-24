@@ -95,6 +95,7 @@ webpack.config.js
 ```js
 module.exports = {
   entry: {
+    // 多入口，前面可以任意命名
     app: "./src/app.js",
     adminApp: "./src/adminApp.js",
   },
@@ -136,6 +137,7 @@ module.exports = {
   entry: "./path/to/my/entry/file.js",
   output: {
     path: path.resolve(__dirname, "dist"),
+    // filename可以使用匹配模式，如：filenam:[name].js，这里的name会以入口的key作为名字。
     filename: "my-first-webpack.bundle.js",
     clean:true//在生成文件之前清空 output 目录
   },
