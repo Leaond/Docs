@@ -88,10 +88,21 @@ export default defineConfig({
         text: "工程化",
         collapsed: false,
         items: [
-          { text: "Webpack", link: "/src/工程化/webpack/webpack.md" },
+          
           { text: "Vite", link: "/src/工程化/vite/vite.md" },
         ],
       },
+      {
+        text: "webpack",
+        collapsed: false,
+        items: [
+          { text: "介绍以及核心", link: "/src/工程化/webpack/核心概念.md" },
+          { text: "资源文件处理", link: "/src/工程化/webpack/资源文件的处理.md" },
+          { text: "项目实战", link: "/src/工程化/webpack/项目实战.md" },
+         
+        ],
+      },
+
       {
         text: "TypeScript",
         collapsed: false,
