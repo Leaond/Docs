@@ -6,7 +6,7 @@ export default defineConfig({
   description: "Vite & Vue powered static site generator.",
   base: "/Docs/",
   // 网页标签图标
-  head: [['link', { rel: 'icon', href: '../public/success.svg' }]],
+  head: [["link", { rel: "icon", href: "../public/success.svg" }]],
   themeConfig: {
     logo: "/success.svg",
     // 导航链接
@@ -50,6 +50,8 @@ export default defineConfig({
         items: [
           { text: "动态规划", link: "/src/算法/动态规划.md" },
           { text: "双指针", link: "/src/算法/双指针.md" },
+          { text: "面试", link: "/src/算法/面试.md" },
+          { text: "面试", link: "/src/算法/面试总结.md" },
         ],
       },
       {
@@ -87,19 +89,22 @@ export default defineConfig({
       {
         text: "工程化",
         collapsed: false,
-        items: [
-          
-          { text: "Vite", link: "/src/工程化/vite/vite.md" },
-        ],
+        items: [{ text: "Vite", link: "/src/工程化/vite/vite.md" }],
       },
       {
         text: "webpack",
         collapsed: false,
         items: [
           { text: "介绍以及核心", link: "/src/工程化/webpack/核心概念.md" },
-          { text: "资源文件处理", link: "/src/工程化/webpack/资源文件的处理.md" },
+          {
+            text: "资源文件处理",
+            link: "/src/工程化/webpack/资源文件的处理.md",
+          },
           { text: "项目实战", link: "/src/工程化/webpack/项目实战.md" },
-         
+          {
+            text: "常见的性能指标",
+            link: "/src/工程化/webpack/常见的性能分析指标.md",
+          },
         ],
       },
 
