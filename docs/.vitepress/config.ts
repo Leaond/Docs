@@ -91,22 +91,22 @@ export default defineConfig({
         collapsed: false,
         items: [{ text: "Vite", link: "/src/工程化/vite/vite.md" }],
       },
-      {
-        text: "webpack",
-        collapsed: false,
-        items: [
-          { text: "介绍以及核心", link: "/src/工程化/webpack/核心概念.md" },
-          {
-            text: "资源文件处理",
-            link: "/src/工程化/webpack/资源文件的处理.md",
-          },
-          { text: "项目实战", link: "/src/工程化/webpack/项目实战.md" },
-          {
-            text: "常见的性能指标",
-            link: "/src/工程化/webpack/常见的性能分析指标.md",
-          },
-        ],
-      },
+      // {
+      //   text: "webpack",
+      //   collapsed: false,
+      //   items: [
+      //     { text: "介绍以及核心", link: "/src/工程化/webpack/核心概念.md" },
+      //     {
+      //       text: "资源文件处理",
+      //       link: "/src/工程化/webpack/资源文件的处理.md",
+      //     },
+      //     { text: "项目实战", link: "/src/工程化/webpack/项目实战.md" },
+      //     {
+      //       text: "常见的性能指标",
+      //       link: "/src/工程化/webpack/常见的性能分析指标.md",
+      //     },
+      //   ],
+      // },
 
       {
         text: "TypeScript",

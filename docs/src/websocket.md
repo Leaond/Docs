@@ -18,7 +18,7 @@ websocket 是`基于 TCP` 的一种新的`应用层`的进行`全双工通信`�
 ## websocket 的使用
 
 我们可以通过 WebSocket() 这个构造函数创建一个实例对象，通过实例对象身上的属性和方法来完成。
-当我们完成`let websocket = new WebSocket(XXXX)`之后,websocket 实例身上有如下属性：
+当我们完成`let websocket = new WebSocket(URL)`之后,websocket 实例身上有如下属性：
 
 - `binaryType`：使用二进制的数据类型连接；
 - `bufferedAmount(只读)`：未发送至服务器的字节数；
