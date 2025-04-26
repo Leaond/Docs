@@ -45,9 +45,20 @@ export default defineConfig({
     // 侧边栏
     sidebar: [
       {
+        text: "WebGIS",
+        collapsed: false,
+        items: [
+          { text: "WebGIS", link: "/src/webgis/index.md" },
+          { text: "投影坐标系", link: "/src/webgis/坐标系.md" },
+          { text: "GIS数据结构", link: "/src/webgis/GIS数据结构.md" },
+          { text: "DEM", link: "/src/webgis/DEM.md" },
+        ],
+      },
+      {
         text: "算法",
         collapsed: false,
         items: [
+          { text: "动态规划", link: "/src/算法/动态规划.md" },
           { text: "动态规划", link: "/src/算法/动态规划.md" },
           { text: "双指针", link: "/src/算法/双指针.md" },
           { text: "面试", link: "/src/算法/面试.md" },
