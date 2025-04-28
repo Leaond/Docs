@@ -1,4 +1,7 @@
 官网[https://cn.vuejs.org/]
+
+<!-- 在 Vue 3 的<script setup>语法中，直接使用 name 属性而不报错的原因是项目配置了第三方插件（如 vite-plugin-vue-setup-extend 或 unplugin-vue-define-options）。 -->
+
 TS 与组合式 API
 为模板引用标注类型
 注意为了严格的类型安全，有必要在访问 el.value 时使用可选链或类型守卫
@@ -359,4 +362,3 @@ while 循环主要处理了以下五种情景：
 patchVnode 做了以下操作：找到对应的真实 dom，称为 el 如果都有都有文本节点且不相等，将 el 文本节点设置为 Vnode 的文本节点如果 oldVnode 有子节点而 VNode 没有，则删除 el 子节点如果 oldVnode 没有子节点而 VNode 有，则将 VNode 的子节点真实化后添加到 el 如果两者都有子节点，则执行 updateChildren 函数比较子节点
 updateChildren 主要做了以下操作：设置新旧 VNode 的头尾指针新旧头尾指针进行比较，循环向中间靠拢，根据情况调用 patchVnode 进行 patch 重复流程、调用 createElem 创建一个新节点，从哈希表寻找 key 一致的 VNode 节点再分情况操作
 参考：https://zhuanlan.zhihu.com/p/522337207
-
