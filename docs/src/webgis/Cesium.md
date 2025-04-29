@@ -554,3 +554,229 @@ const array = Cesium.Cartesian3.toArray(cartesian3);
 // Cartesian2转数组
 const array2 = Cesium.Cartesian2.toArray(cartesian2);
 ```
+
+## viewer.scene
+
+在 Cesium 中，Viewer 的实例身上的 scene 是 Scene 类的实例，它是 Cesium 3D 的核心对象，负责管理场景中所有图形元素、相机和视觉效果。
+
+### Scene 的基本职责
+
+1. 管理 3D 场景中所有的图元（Primitives）和实体（Entities）
+2. 控制场景渲染
+3. 处理相机和视图
+4. 管理光照和视觉效果
+5. 处理场景的拾取和碰撞检测
+
+### Scene 常用方法
+
+渲染相关
+
+- render() - 手动触发场景渲染。
+- requestRender() - 请求下一帧
+- pick(position) - 在屏幕坐标中拾取场景中的对象
+- pickPosition(position) - 获取屏幕坐标对应的世界坐标
+
+相机控制
+
+- screenSpaceCameraController - 获取屏幕空间相机控制器
+- camera - 获取当前相机实例
+- preUpdate/postUpdate - 渲染前/后的回调
+
+场景状态
+
+- mode - 获取或设置场景模式 (3D, 2D, Columbus View)
+- globe - 获取地球实例
+- groundPrimitives - 获取地面图元集合
+- primitives - 获取场景中的图元集合
+
+视觉效果
+
+- skyBox - 设置天空盒
+- sun - 控制太阳位置和外观
+- moon - 控制月亮
+- skyAtmosphere - 控制大气效果
+- fog - 控制雾效
+- backgroundColor - 设置背景色
+
+实用方法
+
+- canvas - 获取渲染画布
+- frameState - 获取当前帧状态
+- debugShowFramesPerSecond - 显示帧率
+- completeMorph() - 完成场景模式转换
+
+### 示例
+
+```js
+const viewer = new Cesium.Viewer("cesiumContainer");
+
+// 获取scene实例
+const scene = viewer.scene;
+
+// 示例1：设置背景色
+scene.backgroundColor = Cesium.Color.LIGHTBLUE;
+
+// 示例2：拾取对象
+const handler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
+handler.setInputAction(function (movement) {
+  const pickedObject = scene.pick(movement.endPosition);
+  if (Cesium.defined(pickedObject)) {
+    console.log("Picked object:", pickedObject.id);
+  }
+}, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+
+// 示例3：控制相机
+scene.camera.flyTo({
+  destination: Cesium.Cartesian3.fromDegrees(116.4, 39.9, 10000),
+  orientation: {
+    heading: Cesium.Math.toRadians(0),
+    pitch: Cesium.Math.toRadians(-45),
+    roll: 0,
+  },
+});
+```
+
+## Cesium.konckout
+
+Cesium.konckout 是 Cesium 对流行的 MVVM 框架 Knockoutjs 的集成封装，主要用于实现数据的双向绑定功能，特别是在 Cesium 的界面控件和数据可视化方面。
+
+### 主要作用
+
+- 实现数据双向绑定：将 Cesium 实体属性与 UI 元素绑定 -自动更新视图：当 Cesium 实体属性发生变化的时候自动更新界面
+- 创建动态界面：用于构建 Cesium 的交互式控制面板
+- 简化 UI 开发：减少手动 DOM 操作代码
+
+### 核心方法和属性
+
+1. 绑定方法
+
+- Cesium.knockout.track(viewModel, propertyNames) 使普通对象可观察(observable)
+
+```js
+const viewModel = { alpha: 0.5 };
+Cesium.knockout.track(viewModel, ["alpha"]);
+```
+
+- Cesium.knockout.defineProperty(viewModel, name, descriptor) 定义可观察属性
+
+```js
+Cesium.knockout.defineProperty(viewModel, "beta", {
+  get: function () {
+    /*...*/
+  },
+  set: function (value) {
+    /*...*/
+  },
+});
+```
+
+2. 绑定应用方法
+
+- Cesium.knockout.applyBindings(viewModel, domElement) 将视图模型绑定到 DOM 元素
+
+```js
+Cesium.knockout.applyBindings(viewModel, document.getElementById("panel"));
+```
+
+- Cesium.knockout.cleanNode(domElement) 清除元素的绑定
+
+3. 工具方法
+
+- Cesium.knockout.getObservable(viewModel, propertyName) 获取属性的 observable 对象。
+- Cesium.knockout.observable(initialValue) 创建可观察变量
+
+```js
+const obsValue = Cesium.knockout.observable(10);
+```
+
+- Cesium.knockout.computed(calculator) 创建计算属性
+
+```js
+const compValue = Cesium.knockout.computed(() => obsValue() * 2);
+```
+
+## Cesium.CallbackProperty
+
+Cesium.CallbackProperty 是 Cesium 的一种`动态属性机制`，它允许开发者通过回调函数实时计算实体的属性值，而不是直接存储静态值。这种设计在需要频繁更新或复杂计算的场景中非常有用。
+核心作用
+
+- 动态属性计算，在每一帧渲染时，Cesium 自动调用回调函数获取最新属性值。
+- 性能优化，避免手动频繁更新实体属性，由引擎内部统一调度
+- 响应式集成，完美适配需要随时间\交互变化的属性。
+
+基本语法
+
+```js
+// callback函数，返回当前属性值，isConstant是一个布尔值表示属性是否永不变化
+//回调返回新的平面参数（法向量 + 距离），但不创建新对象。
+new Cesium.CallbackProperty(callback, isConstant);
+```
+
+## Cesium.Plane
+
+Cesium.Plane 是 Cesium 中用于定义无限延伸的平面的数学对象，广泛应用与裁剪、碰撞检测、空间分析等场景。
+平面方程：定义为 normal · (point - origin) = distance（normal 是法向量，distance 是沿法向量到原点的有符号距离）
+无限延伸：没有边界，适用于全局空间计算
+方向性：法向量决定平面的真面和背面
+
+```js
+// normal是平面的单位法向量，distance表示从原点沿法向量到平面的距离
+new Cesium.Plane(normal, distance);
+
+// 示例
+// 创建一个平行于XY平面，且沿Z轴正向偏移100米的平面
+const normal = new Cesium.Cartesian3(0, 0, 1);
+const plane = new Cesium.Plane(normal, -100);
+```
+
+## 相机定位
+
+在 Cesium 中将相机定位到特定位置有很多种方法，根据不同的交互需求和场景复杂度，可以选择最合适的方式。
+
+### viewer.camera.flyTo
+
+以动画的形式飞向目标位置，适合场景切换或用户引导。
+
+```js
+
+```
+
+### viewer.camera.setView
+
+立即跳转到目标视角，无动画效果，适合快速切换。
+
+```js
+
+```
+
+### viewer.zoomTo
+
+自动计算最佳视角以完整显示目标，如实体或 3D 模型。
+
+```js
+
+```
+
+### viewer.camera.lookAt
+
+相机围绕某个固定目标点旋转观察。
+
+```js
+
+```
+
+### 通过相机坐标系精准控制
+
+使用相机局部坐标系进行毫米级定位，适合高级应用。
+
+```js
+
+```
+
+### 绑定到实体跟踪(动态跟踪)
+
+相机持续跟踪移动中的实体，如车辆、飞机等。
+
+```js
+
+```
