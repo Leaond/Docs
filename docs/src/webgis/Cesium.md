@@ -25,6 +25,41 @@
 Cesium 和 Three 都是基于 WebGL 的 3D 图形库，但他们的定位、功能和应用场景都有显著的区别：Threejs 是一款通用的 3D 渲染库，专注于构建艺术化、交互式的 3D 场景，例如游戏、产品展示、数据可视化等，同时 Three 的自由度较高，提供基础的渲染器、几何体、材质、光照等底层工具，但需要开发者自行实现复杂的功能；Cesium 是一款专注于地理信息、地球科学、地图可视化设计的库，内置全球地形、卫星影像、WGS84 坐标系等，支持海量的地理数据格式，提供日照分析、地形开挖等专业 GIS 工具。
 :::
 
+:::info CZML 文件
+czml 是 cesium 中的一种基于 JSON 的数据格式，用于描述时间动态的地理空间场景。它可以用来定义实体的属性，并支持时间动态变化。CZML 文件是一个 JSON 数组，其中每个对象描述一个实体或场景的属性。
+
+```json
+// 比如
+[
+  {
+    "id": "document",
+    "name": "CZML Example",
+    "version": "1.0"
+  },
+  {
+    "id": "point1",
+    "name": "Red Point",
+    "position": {
+      "cartographicDegrees": [104.0665, 30.5728, 1000]
+    },
+    "point": {
+      "color": {
+        "rgba": [255, 0, 0, 255]
+      },
+      "pixelSize": 10
+    }
+  }
+]
+```
+
+#### CZML 的特点
+
+1. 时间动态：支持描述随时间变化的属性，例如位置、颜色、大小等。适用于轨迹动画、动态数据可视化等场景。
+2. 基于 JSON：CZML 是一种 JSON 格式，易于阅读和解析。可以通过 HTTP 加载，也可以直接嵌入到代码中。
+3. CZML 是为 Cesium 量身定制的，Cesium 原生提供了支持。
+
+:::
+
 ## Cesium 环境搭建
 
 基于公司项目需求，使用 Vue3 框架来进行开发。首先使用 vite 创建模版项目
@@ -629,8 +664,17 @@ handler.setInputAction(function (movement) {
 scene.camera.flyTo({
   destination: Cesium.Cartesian3.fromDegrees(116.4, 39.9, 10000),
   orientation: {
+    // 控制相机的朝向，
+    // 单位是弧度，
+    // 0 表示朝向正北，正值表示顺时针旋转，负值表示逆时针旋转。
     heading: Cesium.Math.toRadians(0),
+    // 表示相机或对象的俯仰角（垂直旋转角度），
+    // 单位是弧度，
+    // 0 表示水平视角，正值表示向上倾斜，负值表示向下倾斜。
     pitch: Cesium.Math.toRadians(-45),
+    // 表示相机或对象的滚转角（围绕视线轴的旋转角度）。
+    // 单位是弧度。
+    // 0 表示没有滚转，正值表示顺时针滚转，负值表示逆时针滚转
     roll: 0,
   },
 });
@@ -733,44 +777,88 @@ const plane = new Cesium.Plane(normal, -100);
 
 在 Cesium 中将相机定位到特定位置有很多种方法，根据不同的交互需求和场景复杂度，可以选择最合适的方式。
 
-### viewer.camera.flyTo
+### viewer.camera.flyTo(options)
 
 以动画的形式飞向目标位置，适合场景切换或用户引导。
 
 ```js
+// 1.飞行到一个具体的位置
+// 相机最终定位的坐标
+    destination: Cesium.Cartesian3.fromDegrees(104.0665, 30.5728, 2000),
+    // 相机的飞行持续时间，如果不设置则会自动计算合适的时间
+    duration: 3,
+    //控制相机角度参数
+    orientation: {
+      roll: Cesium.Math.toRadians(roll.value), // 相机的滚转角度
+      pitch: Cesium.Math.toRadians(pitch.value), // 相机的俯仰角度
+      heading: Cesium.Math.toRadians(heading.value), // 相机的偏航角度
+    },
+    // 飞行完要执行的函数
+    complete: function () {
+      console.log("飞行完成");
+    },
+    // 飞行取消执行的函数
+    cancel: function () {
+      console.log("飞行取消");
+    },
 
+
+    // 2. 飞到一个矩形区域，并以俯视角(top-down view)查看该区域
+viewer.camera.flyTo({
+    // destination : Cesium.Rectangle.fromDegrees(west, south, east, north)
+    destination: Cesium.Rectangle.fromDegrees(102.0, 28.0, 108.0, 34.0) // 四川省的大致范围
+});
 ```
 
-### viewer.camera.setView
+### viewer.camera.setView(options)
 
 立即跳转到目标视角，无动画效果，适合快速切换。
 
 ```js
-
+viewer.camera.setView({
+  destination: Cesium.Cartesian3.fromDegrees(104.0665, 30.5728, 2000),
+});
 ```
 
-### viewer.zoomTo
+### viewer.zoomTo(target);
 
-自动计算最佳视角以完整显示目标，如实体或 3D 模型。
+viewer.zoomTo 是 Cesium 中用于自动调整相机视角的方法，它会自动计算最佳视角以完整显示目标，如实体或 3D 模型等。
 
 ```js
-
+const entity = viewer.entities.add({
+  position: Cesium.Cartesian3.fromDegrees(104.0665, 30.5728, 1000),
+  point: { pixelSize: 10, color: Cesium.Color.RED },
+});
+viewer.zoomTo(entity);
 ```
 
-### viewer.camera.lookAt
+### viewer.camera.lookAt(target, offset)
 
-相机围绕某个固定目标点旋转观察。
+将相机围绕某个`固定目标点`旋转观察。target 是目标点的位置，offset 是相机相对于目标点的偏移量，这个偏移量定义了相机与目标点之间的距离和方向。
 
 ```js
-
+viewer.value.camera.lookAt(
+  Cesium.Cartesian3.fromDegrees(104.0665, 30.5728, 0), // 目标点（成都市中心）
+  new Cesium.Cartesian3(0.0, -5000.0, 3000.0) // 偏移量（距离目标点的方向和距离）
+);
 ```
+
+如果需要恢复相机的自由控制，可以调用 viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY)，将相机从目标点解绑。
 
 ### 通过相机坐标系精准控制
 
 使用相机局部坐标系进行毫米级定位，适合高级应用。
 
 ```js
-
+const center = Cesium.Cartesian3.fromDegrees(116.4, 39.9);
+viewer.camera.lookAt(
+  center, // 目标点坐标
+  new Cesium.HeadingPitchRange( // 观察参数
+    Cesium.Math.toRadians(45), // 方位角
+    Cesium.Math.toRadians(-30), // 俯仰角
+    2000 // 距离
+  )
+);
 ```
 
 ### 绑定到实体跟踪(动态跟踪)
@@ -778,5 +866,25 @@ const plane = new Cesium.Plane(normal, -100);
 相机持续跟踪移动中的实体，如车辆、飞机等。
 
 ```js
+const camera = viewer.camera;
+const position = Cesium.Cartesian3.fromDegrees(116.4, 39.9, 100);
+const direction = Cesium.Cartesian3.normalize(
+  Cesium.Cartesian3.subtract(
+    position,
+    camera.position,
+    new Cesium.Cartesian3()
+  ),
+  new Cesium.Cartesian3()
+);
 
+// 设置相机位置和朝向
+camera.setView({
+  destination: position,
+  orientation: {
+    direction: direction,
+    up: camera.up, // 保持相机默认"上"方向
+  },
+});
 ```
+
+关于相机方法的更多参数配置[参考](https://cesium.com/learn/cesiumjs/ref-doc/Camera.html)
