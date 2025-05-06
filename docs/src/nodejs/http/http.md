@@ -55,13 +55,14 @@ response.write("测试");
 response.end("登录页面");
 ```
 
-![示例](../../images/node/http设置响应信息.png)
+![示例](/images/node/http设置响应信息.png)
 更多的属性，参考[官方文档](https://nodejs.org/docs/latest/api/http.html)
 
 :::tip
+
 - `__filename`: 返回当前模块文件被解析过后的绝对路径,
 - `__dirname`: 返回当前模块文件解析过后所在的文件夹(目录)的绝对路径
-:::
+  :::
 
 ## URL 模块
 

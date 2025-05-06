@@ -60,6 +60,10 @@ czml 是 cesium 中的一种基于 JSON 的数据格式，用于描述时间动�
 
 :::
 
+下面一张图是概括 Cesium 核心知识的关系图：
+
+![Cesium核心知识图](/images/gis/Cesium核心.jpg)
+
 ## Cesium 环境搭建
 
 基于公司项目需求，使用 Vue3 框架来进行开发。首先使用 vite 创建模版项目
@@ -148,6 +152,8 @@ Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(
 ## 观察者(Viewer)
 
 ## 实体(Entity)
+
+实体是指具有形状、属性和时序特征的空间对象，它是对存在于自然世界中地理实体的抽象。
 
 Entity 实体类是 Cesium 为开发者提供的高级绘图接口，开发者可以通过该类在 Cesium 中绘制各种空间数据，比如广告牌、文本信息、平面信息、几何体以及模型等。
 ···info
