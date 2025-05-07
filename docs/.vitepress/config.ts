@@ -48,7 +48,7 @@ export default defineConfig({
         text: "WebGIS",
         collapsed: false,
         items: [
-          { text: "WebGIS", link: "/src/webgis/index.md" },
+          // { text: "WebGIS", link: "/src/webgis/index.md" },
           // { text: "投影坐标系", link: "/src/webgis/坐标系.md" },
           // { text: "GIS数据结构", link: "/src/webgis/GIS数据结构.md" },
           // { text: "数据模型", link: "/src/webgis/数据模型.md" },
