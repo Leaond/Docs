@@ -61,6 +61,8 @@ WebGIS(网络地理信息系统)是基于互联网技术的地理信息系统(GI
 
 ### 瓦片数据(Tile Data)
 
+瓦片数据（Tile Data） 是高效渲染大规模 3D 地理空间数据的关键技术，它采用分层分块（Hierarchical Tile Pyramid）的方式组织数据，以实现动态加载和流畅可视化。
+
 瓦片可以包含多种数据类型，常见的形式包括：栅格瓦片、矢量瓦片、3D 瓦片、地形瓦片。
 
 - 栅格瓦片（Raster Tiles）。栅格瓦片主要的形式是与渲染的图片，用于传统的 Web 地图。如：https://tile.openstreetmap.org/{z}/{x}/{y}.png。
