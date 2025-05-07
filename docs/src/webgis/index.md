@@ -82,6 +82,32 @@ WebGIS(网络地理信息系统)是基于互联网技术的地理信息系统(GI
 2. 金字塔构建：为每个缩放级别生成不同精度的瓦片(低级别=合并，高级别=细分)。
 3. 存储与发布：直接托管瓦片数据，通过瓦片服务器实时生成。
 
+在 Cesium 中加载瓦片数据
+
+```js
+// 1. 加载影像瓦片（WMTS 服务）
+const imagery = new Cesium.WebMapTileServiceImageryProvider({
+  url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  layer: "osm",
+  style: "default",
+  format: "image/png",
+  tileMatrixSetID: "GoogleMapsCompatible",
+});
+viewer.imageryLayers.addImageryProvider(imagery);
+
+// 2. 加载 3D Tiles（建筑模型）
+const tileset = viewer.scene.primitives.add(
+  new Cesium.Cesium3DTileset({
+    url: "https://example.com/tileset/tileset.json",
+  })
+);
+
+// 3. 加载地形瓦片（Cesium 官方地形）
+viewer.terrainProvider = Cesium.createWorldTerrain({
+  requestWaterMask: true, // 显示水面效果
+});
+```
+
 ## 点云数据
 
 点云数据是指在一个三维坐标系统中的一组向量的集合，通常有三维扫描仪等设备获取，用于表示物体或场景的三维形状和表面特性。
