@@ -55,17 +55,17 @@ export default defineConfig({
       //     { text: "Cesium", link: "/src/webgis/Cesium.md" },
       //   ],
       // },
-      {
-        text: "算法",
-        collapsed: false,
-        items: [
-          { text: "动态规划", link: "/src/算法/动态规划.md" },
-          { text: "动态规划", link: "/src/算法/动态规划.md" },
-          { text: "双指针", link: "/src/算法/双指针.md" },
-          { text: "面试", link: "/src/算法/面试.md" },
-          { text: "面试", link: "/src/算法/面试总结.md" },
-        ],
-      },
+      // {
+      //   text: "算法",
+      //   collapsed: false,
+      //   items: [
+      //     { text: "动态规划", link: "/src/算法/动态规划.md" },
+      //     { text: "动态规划", link: "/src/算法/动态规划.md" },
+      //     { text: "双指针", link: "/src/算法/双指针.md" },
+      //     { text: "面试", link: "/src/算法/面试.md" },
+      //     { text: "面试", link: "/src/算法/面试总结.md" },
+      //   ],
+      // },
       {
         text: "网络",
         collapsed: false,
@@ -77,32 +77,32 @@ export default defineConfig({
           { text: "实现Promise", link: "/src/DIY/Promise.md" },
         ],
       },
-      {
-        text: "node",
-        collapsed: false,
-        items: [
-          { text: "Buffer", link: "/src/nodejs/Buffer/Buffer.md" },
-          { text: "fileSystem", link: "/src/nodejs/fs/fs.md" },
-          { text: "path", link: "/src/nodejs/path/path.md" },
-          { text: "HTTP", link: "/src/nodejs/http/http.md" },
-          { text: "express", link: "/src/nodejs/express/express.md" },
-        ],
-      },
-      {
-        text: "浏览器",
-        collapsed: false,
-        items: [
-          { text: "文件上传", link: "/src/浏览器/文件上传.md" },
-          { text: "浏览器", link: "/src/浏览器/浏览器.md" },
-          { text: "Web缓存", link: "/src/浏览器/web缓存.md" },
-        ],
-      },
+      // {
+      //   text: "node",
+      //   collapsed: false,
+      //   items: [
+      //     { text: "Buffer", link: "/src/nodejs/Buffer/Buffer.md" },
+      //     { text: "fileSystem", link: "/src/nodejs/fs/fs.md" },
+      //     { text: "path", link: "/src/nodejs/path/path.md" },
+      //     { text: "HTTP", link: "/src/nodejs/http/http.md" },
+      //     { text: "express", link: "/src/nodejs/express/express.md" },
+      //   ],
+      // },
+      // {
+      //   text: "浏览器",
+      //   collapsed: false,
+      //   items: [
+      //     { text: "文件上传", link: "/src/浏览器/文件上传.md" },
+      //     { text: "浏览器", link: "/src/浏览器/浏览器.md" },
+      //     { text: "Web缓存", link: "/src/浏览器/web缓存.md" },
+      //   ],
+      // },
 
-      {
-        text: "工程化",
-        collapsed: false,
-        items: [{ text: "Vite", link: "/src/工程化/vite/vite.md" }],
-      },
+      // {
+      //   text: "工程化",
+      //   collapsed: false,
+      //   items: [{ text: "Vite", link: "/src/工程化/vite/vite.md" }],
+      // },
       // {
       //   text: "webpack",
       //   collapsed: false,
@@ -120,42 +120,42 @@ export default defineConfig({
       //   ],
       // },
 
-      {
-        text: "TypeScript",
-        collapsed: false,
-        items: [
-          { text: "TypeScript", link: "/src/TypeScript/TypeScript.md" },
-          { text: "JavaScript", link: "/src/TypeScript/JS.md" },
-        ],
-      },
-      {
-        text: "项目及文档搭建",
-        collapsed: false,
-        items: [
-          { text: "VitePress搭建", link: "/src/项目搭建/vitepress搭建记录.md" },
-          { text: "vue3项目搭建", link: "/src/项目搭建/vue3项目搭建.md" },
-          { text: "路由", link: "/src/项目搭建/路由.md" },
-        ],
-      },
-      {
-        text: "css",
-        collapsed: true,
-        items: [
-          { text: "Introduction", link: "/introduction" },
-          { text: "Getting Started", link: "/getting-started" },
-        ],
-      },
-      {
-        text: "gsap",
-        collapsed: true,
-        items: [
-          { text: "概述", link: "/src/gsap/gsap.md" },
-          { text: "Tween", link: "/src/gsap/tween.md" },
-          { text: "Timeline", link: "/src/gsap/timeline.md" },
-          { text: "Easing", link: "/src/gsap/ease.md" },
-          { text: "Plugins", link: "/src/gsap/scrolltrigger.md" },
-        ],
-      },
+      // {
+      //   text: "TypeScript",
+      //   collapsed: false,
+      //   items: [
+      //     { text: "TypeScript", link: "/src/TypeScript/TypeScript.md" },
+      //     { text: "JavaScript", link: "/src/TypeScript/JS.md" },
+      //   ],
+      // },
+      // {
+      //   text: "项目及文档搭建",
+      //   collapsed: false,
+      //   items: [
+      //     { text: "VitePress搭建", link: "/src/项目搭建/vitepress搭建记录.md" },
+      //     { text: "vue3项目搭建", link: "/src/项目搭建/vue3项目搭建.md" },
+      //     { text: "路由", link: "/src/项目搭建/路由.md" },
+      //   ],
+      // },
+      // {
+      //   text: "css",
+      //   collapsed: true,
+      //   items: [
+      //     { text: "Introduction", link: "/introduction" },
+      //     { text: "Getting Started", link: "/getting-started" },
+      //   ],
+      // },
+      // {
+      //   text: "gsap",
+      //   collapsed: true,
+      //   items: [
+      //     { text: "概述", link: "/src/gsap/gsap.md" },
+      //     { text: "Tween", link: "/src/gsap/tween.md" },
+      //     { text: "Timeline", link: "/src/gsap/timeline.md" },
+      //     { text: "Easing", link: "/src/gsap/ease.md" },
+      //     { text: "Plugins", link: "/src/gsap/scrolltrigger.md" },
+      //   ],
+      // },
     ],
 
     // footer: {
