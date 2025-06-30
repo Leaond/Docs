@@ -2,6 +2,9 @@
 
 GIS 的数据结构分为 矢量数据结构、栅格数据结构、混合数据结构。
 
+:::info 栅格数据模型和矢量数据模型
+:::
+
 ## 矢量数据
 
 矢量文件：矢量数据是通过`点、线、面等几何对象`来表示地理空间信息的数据类型。`矢量文件的特点是精度高、存储空间小，适合表示具有明确边界的地理要素`。例如：道路、河流、行政区等。
@@ -35,6 +38,95 @@ GIS 的数据结构分为 矢量数据结构、栅格数据结构、混合数据
 - DXF、DWG：用于 CAD 软件的矢量数据格式，也可以在 GIS 中使用，常用于建筑和工程领域。
 - GPX：用于 GPS 设备的轨迹数据格式，支持点和线。
   ![矢量数据](/images/gis/矢量数据模型.png)
+
+### 关于 GeoJSON 数据的字段解析
+
+#### 1. 根对象结构
+
+GeoJSON 数据的最外层通常是一个 `FeatureCollection`、`Feature` 或几何对象（如 `Point`、`LineString` 等）。主要字段如下：
+
+| 字段名        | 类型            | 必选                        | 含义                                                                         |
+| ------------- | --------------- | --------------------------- | ---------------------------------------------------------------------------- |
+| `type`        | string          | 是                          | 指定 GeoJSON 对象类型，如 `"FeatureCollection"`、`"Feature"`、`"Point"` 等。 |
+| `features`    | Feature[]       | 仅 `FeatureCollection` 需要 | 包含多个地理要素（`Feature`）的数组。                                        |
+| `geometry`    | Geometry Object | 仅 `Feature` 需要           | 描述地理形状（如点、线、面）。                                               |
+| `properties`  | Object          | 仅 `Feature` 需要           | 存储该要素的属性数据（如名称、人口等）。                                     |
+| `coordinates` | Array           | 几何对象需要                | 定义几何图形的坐标（格式因几何类型而异）。                                   |
+
+---
+
+#### 2. 几何类型（`geometry.type`）
+
+GeoJSON 支持多种几何图形，每种图形的 `coordinates` 格式不同：
+
+| 类型                 | `coordinates` 示例                                  | 说明                           |
+| -------------------- | --------------------------------------------------- | ------------------------------ |
+| `Point`              | `[lon, lat]`                                        | 单个点（经度在前，纬度在后）。 |
+| `LineString`         | `[[lon1, lat1], [lon2, lat2], ...]`                 | 有序的点序列，形成线段。       |
+| `Polygon`            | `[[[lon1, lat1], [lon2, lat2], ..., [lon1, lat1]]]` | 闭合的多边形（首尾坐标相同）。 |
+| `MultiPoint`         | `[[lon1, lat1], [lon2, lat2], ...]`                 | 多个点。                       |
+| `MultiLineString`    | `[LineString1, LineString2, ...]`                   | 多条线段。                     |
+| `MultiPolygon`       | `[Polygon1, Polygon2, ...]`                         | 多个多边形。                   |
+| `GeometryCollection` | `[{geometry1}, {geometry2}, ...]`                   | 混合几何对象的集合。           |
+
+---
+
+#### 3. 要素（`Feature`）
+
+一个 `Feature` 表示一个地理要素，包含几何形状和属性：
+
+```json
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [116.4, 39.9]
+  },
+  "properties": {
+    "name": "北京市",
+    "population": 2171万
+  }
+}
+```
+
+---
+
+#### 4. 要素集合（`FeatureCollection`）
+
+多个 `Feature` 的集合：
+
+```json
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [116.4, 39.9] },
+      "properties": { "name": "北京" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [121.4, 31.2] },
+      "properties": { "name": "上海" }
+    }
+  ]
+}
+```
+
+---
+
+#### 5. 可选字段
+
+- `bbox`：边界框，格式为 `[minLon, minLat, maxLon, maxLat]`，用于快速空间检索。
+- `id`：要素的唯一标识符（非标准字段，但常见于某些库如 Mapbox）。
+
+---
+
+#### 6. 注意事项
+
+1. **坐标顺序**：GeoJSON 规定为 `[经度, 纬度]`（WGS84 坐标系），与常见习惯（纬度, 经度）相反。
+2. **闭合多边形**：多边形必须首尾闭合（最后一个点与第一个点相同）。
+3. **嵌套结构**：`MultiPolygon` 的 `coordinates` 是三维数组（例如：`[[[poly1], [hole1]], [[poly2]]]`）。
 
 ## 栅格数据
 

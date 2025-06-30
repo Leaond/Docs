@@ -1,0 +1,37 @@
+<!--
+ * @Date: 2025-06-23 13:52:47
+ * @LastEditors: liuzhengliang
+ * @LastEditTime: 2025-06-30 17:41:16
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <canvas
+      id="canvasId"
+      width="800px"
+      height="800px"
+      style="background-color: antiquewhite"
+    />
+    <script>
+      const can = document.getElementById("canvasId");
+      const ctx = can.getContext("2d");
+
+      //   绘制二阶beisaier
+      ctx.beginPath();
+      //   第一个控制点
+      ctx.moveTo(100, 100);
+      //   第二个控制点和一个结束点
+      ctx.quadraticCurveTo(200, 500, 400, 400);
+      ctx.stroke();
+
+      // TODO 绘制辅助控制点
+      // TODO 绘制三阶贝塞尔
+    </script>
+  </body>
+</html>
