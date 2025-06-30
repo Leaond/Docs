@@ -1,3 +1,10 @@
+<!--
+ * @Date: 2025-04-27 09:24:38
+ * @LastEditors: liuzhengliang
+ * @LastEditTime: 2025-06-23 17:50:59
+ * @Description:
+-->
+
 # websocket
 
 websocket 是`基于 TCP` 的一种新的`应用层`的进行`全双工通信`的协议。websocket 使得客户端和服务器之间的通信变得更加的简单，允许服务器主动向客户端推送数据。在 websocket API 中，浏览器和服务器只需要完成`一次握手`，两者之间就可以创建`持久性的链接`，并进行`数据双向传送`。
@@ -18,7 +25,7 @@ websocket 是`基于 TCP` 的一种新的`应用层`的进行`全双工通信`�
 ## websocket 的使用
 
 我们可以通过 WebSocket() 这个构造函数创建一个实例对象，通过实例对象身上的属性和方法来完成。
-当我们完成`let websocket = new WebSocket(XXXX)`之后,websocket 实例身上有如下属性：
+当我们完成`let websocket = new WebSocket(URL)`之后,websocket 实例身上有如下属性：
 
 - `binaryType`：使用二进制的数据类型连接；
 - `bufferedAmount(只读)`：未发送至服务器的字节数；

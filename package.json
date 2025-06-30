@@ -9,7 +9,7 @@
     "eslint": "^8.57.0",
     "eslint-webpack-plugin": "^4.1.0",
     "sass": "^1.70.0",
-    "vitepress": "^1.0.0-rc.20"
+    "vitepress": "^1.6.3"
   },
   "scripts": {
     "docs:dev": "vitepress dev docs",
