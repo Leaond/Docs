@@ -1,2 +1,4 @@
 node_modules
 dist
+# 忽略 .vitepress/cache 文件夹中的所有内容
+.vitepress/cache/
