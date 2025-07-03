@@ -1,0 +1,58 @@
+<!--
+ * @Date: 2025-06-23 13:52:47
+ * @LastEditors: liuzhengliang
+ * @LastEditTime: 2025-06-30 17:52:46
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <canvas
+      id="canvasId"
+      width="800px"
+      height="800px"
+      style="background-color: antiquewhite"
+    />
+    <script>
+      const can = document.getElementById("canvasId");
+      const ctx = can.getContext("2d");
+
+      // 1. 线性渐变
+      let gradient = ctx.createLinearGradient(200, 0, 600, 0);
+      gradient.addColorStop(0, "green");
+      gradient.addColorStop(1, "yellow");
+      ctx.fillStyle = gradient;
+      ctx.fillRect(100, 100, 600, 200);
+
+      //2.径向渐变
+      const radialgradient = ctx.createRadialGradient(
+        400,
+        400,
+        0,
+        400,
+        400,
+        100
+      );
+      radialgradient.addColorStop(0, "green");
+      radialgradient.addColorStop(1, "yellow");
+      ctx.fillStyle = radialgradient;
+      ctx.fillRect(300, 300, 200, 200);
+
+      // 3.纹理样式
+      // const img = new Image();
+      // img.src = "../../../public/images/canvas/sdq.jpg";
+      // img.width = 10;
+      // img.height = 10;
+      // img.onload = () => {
+      //   const pattern = ctx.createPattern(img, "repeat");
+      //   ctx.fillStyle = pattern;
+      //   ctx.fillRect(200, 200, 200, 200);
+      // };
+    </script>
+  </body>
+</html>
