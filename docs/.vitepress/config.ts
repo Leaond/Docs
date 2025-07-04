@@ -56,6 +56,7 @@ export default defineConfig({
           { text: "前端设计模式", link: "/src/webgis/前端设计模式.md" },
           { text: "jo开发者", link: "/src/webgis/jo开发者.md" },
           { text: "canvas", link: "/src/canvas/canvas.md" },
+          { text: "地理信息", link: "/src/webgis/地理信息.md" },
         ],
       },
       // {
