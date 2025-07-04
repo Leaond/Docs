@@ -1,0 +1,111 @@
+<!--
+ * @Date: 2025-06-23 13:52:47
+ * @LastEditors: liuzhengliang
+ * @LastEditTime: 2025-07-02 09:59:22
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <canvas
+      id="canvasId"
+      width="800px"
+      height="800px"
+      style="background-color: antiquewhite"
+    >
+      你的浏览器不支持canvas标签
+    </canvas>
+    <!-- 不可见的canvas  -->
+    <canvas id="offCanvas" style="display: none" />
+    <script>
+      const canvas = document.getElementById("canvasId");
+      const ctx = canvas.getContext("2d");
+
+      let offCanvas = document.getElementById("offCanvasId");
+      let offCtx = offCanvas.getContext("2d");
+
+      canvas.width = 820 / 2;
+      canvas.height = 1598 / 2;
+      canvas.width = 820;
+      canvas.height = 1598;
+      let scale = 2;
+      let image = new Image();
+      let isMouseDown = false;
+      let point = {};
+
+      image.src = "";
+      image.onload = function () {
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+        offCtx.drawImage(image, 0, 0, offCanvas.width, offCanvas.height);
+      };
+
+      canvas.onmousedown = function (e) {
+        e, preventDefault();
+        isMouseDown = true;
+        point = {
+          x: e.offsetX,
+          y: e.offsetY,
+        };
+        drawCanvasWithMagnifier(true, point);
+      };
+      canvas.onmouseup = function (e) {
+        e.preventDefault();
+        isMouseDown = false;
+        drawCanvasWithMagnifier(false);
+      };
+      canvas.onmousemove = function (e) {
+        e.preventDefault();
+        if (isMouseDown) {
+          point = {
+            x: e.offsetX,
+            y: e.offsetY,
+          };
+          drawCanvasWithMagnifier(true, point);
+        }
+      };
+      const drawCanvasWithMagnifier = (isShowMagnifer, point) => {
+        ctx.clearPoint(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+        if (isShowMagnifer) {
+          drawMagnifier(point);
+        }
+      };
+
+      const drawMagnifier = (point) => {
+        let mr = 200;
+        let imageLG_cx = point.x * scale;
+        let imageLG_cy = point.y * scale;
+        let sx = imageLG_cx - mr;
+        let sy = imageLG_cy - mr;
+        canvas.save();
+        ctx.lineWidth = 10.0;
+        ctx.strokeStyle = "#ccc";
+
+        // 绘制图形放大镜
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, mr, 0, Math.PI * 2, false);
+        ctx.stroke();
+        ctx.clip();
+
+        // 绘制放大后的图形
+        ctx.drawImage(
+          offCanvas,
+          sx,
+          sy,
+          2 * mr,
+          2 * mr,
+          dx,
+          dy,
+          2 * mr,
+          2 * mr
+        );
+        ctx.restore();
+      };
+    </script>
+  </body>
+</html>

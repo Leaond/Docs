@@ -126,6 +126,7 @@ const initCesium = () => {
     animation: true, //动画工具，是否显示左下角动画工具
     timeline: true, //时间轴工具
     fullscreenButton: true, //全屏按钮工具
+    shouldAnimation: true, //是否开启动画，true进入页面自动播放动画
   });
 };
 onMounted(() => {
@@ -1001,9 +1002,10 @@ new Cesium.CallbackProperty(callback, isConstant);
 ## Cesium.Plane
 
 Cesium.Plane 是 Cesium 中用于定义无限延伸的平面的数学对象，广泛应用与裁剪、碰撞检测、空间分析等场景。
-平面方程：定义为 normal · (point - origin) = distance（normal 是法向量，distance 是沿法向量到原点的有符号距离）
-无限延伸：没有边界，适用于全局空间计算
-方向性：法向量决定平面的真面和背面
+
+- 平面方程：定义为 normal · (point - origin) = distance（normal 是法向量，distance 是沿法向量到原点的有符号距离）
+- 无限延伸：没有边界，适用于全局空间计算
+- 方向性：法向量决定平面的真面和背面
 
 ```js
 // normal是平面的单位法向量，distance表示从原点沿法向量到平面的距离
@@ -1019,7 +1021,7 @@ const plane = new Cesium.Plane(normal, -100);
 
 在 Cesium 中将相机定位到特定位置有很多种方法，根据不同的交互需求和场景复杂度，可以选择最合适的方式。
 
-### viewer.camera.flyTo(options)
+### 1. viewer.camera.flyTo(options)
 
 以动画的形式飞向目标位置，适合场景切换或用户引导。
 
@@ -1052,7 +1054,7 @@ viewer.camera.flyTo({
 });
 ```
 
-### viewer.camera.setView(options)
+### 2. viewer.camera.setView(options)
 
 立即跳转到目标视角，无动画效果，适合快速切换。
 
@@ -1062,7 +1064,7 @@ viewer.camera.setView({
 });
 ```
 
-### viewer.zoomTo(target);
+### 3. viewer.zoomTo(target);
 
 viewer.zoomTo 是 Cesium 中用于自动调整相机视角的方法，它会自动计算最佳视角以完整显示目标，如实体或 3D 模型等。
 
@@ -1074,7 +1076,7 @@ const entity = viewer.entities.add({
 viewer.zoomTo(entity);
 ```
 
-### viewer.camera.lookAt(target, offset)
+### 4. viewer.camera.lookAt(target, offset)
 
 将相机围绕某个`固定目标点`旋转观察。target 是目标点的位置，offset 是相机相对于目标点的偏移量，这个偏移量定义了相机与目标点之间的距离和方向。
 
@@ -1087,7 +1089,7 @@ viewer.value.camera.lookAt(
 
 如果需要恢复相机的自由控制，可以调用 viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY)，将相机从目标点解绑。
 
-### 通过相机坐标系精准控制
+### 5. 通过相机坐标系精准控制
 
 使用相机局部坐标系进行毫米级定位，适合高级应用。
 
@@ -1103,7 +1105,7 @@ viewer.camera.lookAt(
 );
 ```
 
-### 绑定到实体跟踪(动态跟踪)
+### 6. 绑定到实体跟踪(动态跟踪)
 
 相机持续跟踪移动中的实体，如车辆、飞机等。
 
@@ -1119,15 +1121,37 @@ const direction = Cesium.Cartesian3.normalize(
   new Cesium.Cartesian3()
 );
 
-// 设置相机位置和朝向
-camera.setView({
-  destination: position,
-  orientation: {
-    direction: direction,
-    up: camera.up, // 保持相机默认"上"方向
-  },
-});
+viewer.trackedEntity = viewer.eneities;
 ```
 
 关于相机方法的更多参数配置[参考](https://cesium.com/learn/cesiumjs/ref-doc/Camera.html)
 地形数据加载，我们可以使用各大地图服务提供商的地形资源，也可以在其他平台上面下载一些地图资源然后在本地进行导入。
+
+## 其他的方法
+
+### Cesium.HeadingPitchRange
+
+Cesium.HeadingPitchRange 是 Cesium 中的一个类，用于表示相对于某个位置的观察视角和距离，通常用于相机定位、视图控制等场景。
+
+```js
+new Cesium.HeadingPitchRange(heading, pitch, range);
+```
+
+- heading: 航向角，偏航角。单位是弧度。表示观察者相对于正北方向的旋转角度。范围：0 表示正北，π/2 表示正东，π 表示正南，3π/2 表示正西
+- pitch：俯仰角，单位是弧度。表示观察者向上或向下看的倾斜角度。0 表示水平，正数表示向上看，负数表示向下看
+- range：距离（范围），单位是米。表示观察者与目标位置之间的直线距离
+
+## viewer.scene.drillPick
+
+drillPick 是 Cesium 中一个非常实用的场景拾取方法，它可以从屏幕坐标点"钻取"所有在该位置重叠的图元(Primitive)和实体(Entity)。
+
+返回一个包含所有被拾取到的对象的数组
+
+```js
+viewer.scene.drillPick(windowPosition, limit, width, height);
+```
+
+- windowPosition:Cartesian2,屏幕坐标位置（像素坐标）
+- limit 返回结果的最大数量限制
+- width。默认值 3 拾取区域的宽度（像素）
+- height，默认 3 拾取区域的高度（像素）

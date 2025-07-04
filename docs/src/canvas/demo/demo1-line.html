@@ -1,0 +1,63 @@
+<!--
+ * @Date: 2025-06-23 13:52:47
+ * @LastEditors: liuzhengliang
+ * @LastEditTime: 2025-06-30 17:20:13
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <canvas
+      id="canvasId"
+      width="800px"
+      height="800px"
+      style="background-color: antiquewhite"
+    />
+    <script>
+      const can = document.getElementById("canvasId");
+      const ctx = can.getContext("2d");
+      // console.log("++++++++++++++", ctx);
+      // ctx.moveTo(400, 400);
+      // ctx.lineTo(600, 600);
+      // ctx.lineWidth = 10;
+      // // stroke方法会将上面的内容全部绘制一遍
+      // ctx.stroke();
+
+      // ctx.moveTo(400, 400);
+      // ctx.lineTo(600, 600);
+      // //类似于lineWidth这些属性是全局唯一的，所以重新设置会进行覆盖
+      // ctx.lineWidth = 10;
+      // // stroke方法会将上面的内容全部绘制一遍
+      // ctx.stroke();
+
+      // 绘制三角形
+      ctx.beginPath();
+      ctx.moveTo(400, 400);
+      ctx.lineTo(600, 400);
+      ctx.lineTo(600, 600);
+      ctx.strokeStyle = "blue";
+      // ctx.lineTo(400, 400);
+      ctx.closePath(); //让路径自动闭合
+
+      // 让三角形填充
+      ctx.fillStyle = "green";
+      ctx.fill();
+      ctx.stroke();
+
+      // 绘制矩形
+      ctx.beginPath();
+      // 前两个参数是起始点的坐标，后面两个参数分别是矩形的宽高
+      // ctx.rect(300, 300, 200, 200);
+      // ctx.stroke();
+      // 直接调用api绘制矩形
+      // ctx.strokeRect(300, 300, 200, 200);
+      //绘制填充矩形
+      ctx.fillRect(300, 300, 200, 200);
+    </script>
+  </body>
+</html>

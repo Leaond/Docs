@@ -1,3 +1,10 @@
+<!--
+ * @Date: 2025-04-27 09:24:38
+ * @LastEditors: liuzhengliang
+ * @LastEditTime: 2025-06-23 17:50:59
+ * @Description:
+-->
+
 # websocket
 
 websocket 是`基于 TCP` 的一种新的`应用层`的进行`全双工通信`的协议。websocket 使得客户端和服务器之间的通信变得更加的简单，允许服务器主动向客户端推送数据。在 websocket API 中，浏览器和服务器只需要完成`一次握手`，两者之间就可以创建`持久性的链接`，并进行`数据双向传送`。

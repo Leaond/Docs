@@ -1,0 +1,42 @@
+<!--
+ * @Date: 2025-06-23 13:52:47
+ * @LastEditors: liuzhengliang
+ * @LastEditTime: 2025-07-02 10:09:34
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <canvas
+      id="myCanvas"
+      width="500px"
+      height="375px"
+      style="background-color: antiquewhite"
+    >
+      你的浏览器不支持canvas标签
+    </canvas>
+    <!-- 不可见的canvas  -->
+    <canvas
+      id="offCanvas"
+      width="500px"
+      height="375px"
+      style="background-color: antiquewhite"
+    />
+    <div class="btn-group">
+      <button onclick="origin()">还原</button>
+      <button onclick="grey()">黑白滤镜</button>
+    </div>
+    <script>
+      const myCanvas = document.getElementById("myCanvas");
+      const myCtx = myCanvas.getContext("2d");
+
+      let offCanvas = document.getElementById("offCanvasId");
+      let offCtx = offCanvas.getContext("2d");
+    </script>
+  </body>
+</html>
