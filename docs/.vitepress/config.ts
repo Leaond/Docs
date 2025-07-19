@@ -45,20 +45,58 @@ export default defineConfig({
     // 侧边栏
     sidebar: [
       {
-        text: "WebGIS",
+        text: "地理信息系统",
         collapsed: false,
         items: [
-          { text: "WebGIS", link: "/src/webgis/index.md" },
-          { text: "投影坐标系", link: "/src/webgis/坐标系.md" },
-          { text: "GIS数据结构", link: "/src/webgis/GIS数据结构.md" },
-          { text: "数据模型", link: "/src/webgis/数据模型.md" },
-          { text: "Cesium", link: "/src/webgis/Cesium.md" },
-          { text: "前端设计模式", link: "/src/webgis/前端设计模式.md" },
-          { text: "jo开发者", link: "/src/webgis/jo开发者.md" },
-          { text: "canvas", link: "/src/canvas/canvas.md" },
-          { text: "地理信息", link: "/src/webgis/地理信息.md" },
+          {
+            text: "第一章 空间数据投影",
+            link: "/src/地理信息系统/第一章 空间数据投影.md",
+          },
+          {
+            text: "第二章 地理空间与空间实体",
+            link: "/src/地理信息系统/第二章 地理空间与空间实体.md",
+          },
+          {
+            text: "第三章 空间数据概念模型",
+            link: "/src/地理信息系统/第三章 空间数据概念模型.md",
+          },
+          {
+            text: "第四章 空间数据结构",
+            link: "/src/地理信息系统/第四章 空间数据结构.md",
+          },
+          {
+            text: "第五章 空间数据库",
+            link: "/src/地理信息系统/第五章 空间数据库.md",
+          },
+          {
+            text: "第六章 空间数据采集与处理",
+            link: "/src/地理信息系统/第六章 空间数据采集与处理.md",
+          },
+          {
+            text: "第七章 空间分析",
+            link: "/src/地理信息系统/第七章 空间分析.md",
+          },
+          {
+            text: "第八章 数字高程模型",
+            link: "/src/地理信息系统/第八章 数字高程模型.md",
+          },
         ],
       },
+      // {
+      //   text: "WebGIS",
+      //   collapsed: false,
+      //   items: [
+      //     { text: "WebGIS", link: "/src/webgis/index.md" },
+      //     { text: "投影坐标系", link: "/src/webgis/坐标系.md" },
+      //     { text: "GIS数据结构", link: "/src/webgis/GIS数据结构.md" },
+      //     { text: "数据模型", link: "/src/webgis/数据模型.md" },
+      //     { text: "Cesium", link: "/src/webgis/Cesium.md" },
+      //     { text: "前端设计模式", link: "/src/webgis/前端设计模式.md" },
+      //     { text: "jo开发者", link: "/src/webgis/jo开发者.md" },
+      //     { text: "canvas", link: "/src/canvas/canvas.md" },
+      //     { text: "地理信息", link: "/src/webgis/地理信息.md" },
+      //   ],
+      // },
       // {
       //   text: "算法",
       //   collapsed: false,
