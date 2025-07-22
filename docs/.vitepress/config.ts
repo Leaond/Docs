@@ -80,6 +80,10 @@ export default defineConfig({
             text: "第八章 数字高程模型",
             link: "/src/地理信息系统/第八章 数字高程模型.md",
           },
+          {
+            text: "性能优化",
+            link: "/src/webgis/性能优化.md",
+          },
         ],
       },
       // {
