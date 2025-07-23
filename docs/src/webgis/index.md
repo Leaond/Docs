@@ -145,7 +145,33 @@ WMS（Web Map Service,动态地图服务）和 WMTS（Web Map Tile Service，静
 
 ```plaintext
 http://example.com/wms?SERVICE=WMS&REQUEST=GetMap&LAYERS=roads,rivers&BBOX=116.3,39.9,116.5,40.1&WIDTH=800&HEIGHT=600&FORMAT=image/png
+
+
 ```
+
+::: info bbox
+在 wms 服务中，bbox 是一个核心请求参数，用于指定客户端希望获取的地理空间范围。bbox 是一个由 4 个坐标值组成的字符串。
+
+```js
+BBOX=<minx>,<miny>,<maxx>,<maxy>
+
+http://example.com/wms?service=WMS&version=1.3.0&request=GetMap
+&layers=roads,rivers
+&styles=line,blue
+&format=image/png
+&width=800
+&height=600
+&crs=EPSG:4326
+&bbox=-180,-90,180,90
+```
+
+- minx 表示边界框左下角的 x 坐标，通常是经度或东向坐标
+- miny 表示边界框左下角 y 坐标，通常是维度或北向坐标
+- maxx 表示边界框右上角的 x 坐标
+- maxy 表示边界框右上角 y 坐标
+
+bbox 用来确定服务器应该返回哪一地理区域的地图。坐标参考必须与 CRS/SRS 参数指定的坐标参数系统一致。结合 WIDTH 和 HEIGHT 参数决定地图比例尺。
+:::
 
 ### **WMTS（Web Map Tile Service）**
 
@@ -196,11 +222,7 @@ http://example.com/wmts?SERVICE=WMTS&REQUEST=GetTile&LAYER=basemap&TILEMATRIX=10
 - 适用场景：GIS 分析、数据编辑。
 - 示例请求：
   ```plaintext
-  http://example.com/wfs?
-    SERVICE=WFS&
-    REQUEST=GetFeature&
-    TYPENAME=roads&
-    OUTPUTFORMAT=GeoJSON
+  http://example.com/wfs?SERVICE=WFS&REQUEST=GetFeature&TYPENAME=roads&OUTPUTFORMAT=GeoJSON
   ```
 
 #### **（2）WCS（Web Coverage Service）**
@@ -209,11 +231,7 @@ http://example.com/wmts?SERVICE=WMTS&REQUEST=GetTile&LAYER=basemap&TILEMATRIX=10
 - 适用场景：科学计算、高程分析。
 - 示例请求：
   ```plaintext
-  http://example.com/wcs?
-    SERVICE=WCS&
-    REQUEST=GetCoverage&
-    COVERAGE=dem&
-    FORMAT=GeoTIFF
+  http://example.com/wcs?SERVICE=WCS&REQUEST=GetCoverage&COVERAGE=dem&FORMAT=GeoTIFF
   ```
 
 #### **（3）TMS（Tile Map Service）**
@@ -253,8 +271,6 @@ http://example.com/wmts?SERVICE=WMTS&REQUEST=GetTile&LAYER=basemap&TILEMATRIX=10
 - **WMTS**：适合高性能、静态瓦片地图。
 - **WFS/WCS**：用于数据获取与分析。
 - **TMS/XYZ**：开源地图常用，非 OGC 标准但广泛支持。
-
-如果需要具体实现（如 Leaflet/OpenLayers 调用这些服务），可以进一步探讨！
 
 ## 点云数据
 
